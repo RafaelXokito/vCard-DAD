@@ -1,2 +1,3 @@
-# vCard
- vCard Project - DAD, TAES, IS
+# vCard-DAD
+ vCard-Frontend Vue 
+ vCard-Backend Laravel
