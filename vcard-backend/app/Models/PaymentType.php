@@ -10,6 +10,8 @@ class PaymentType extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'payment_types';
+
     //Primary Key Settings (code:string)
     protected $primaryKey = 'code';
     public $incrementing = false;

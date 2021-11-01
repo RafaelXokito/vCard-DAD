@@ -10,6 +10,8 @@ class Category extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'categories';
+
     protected $fillable = [ 'vcard', 'type', 'name'];
 
     public function transactions()

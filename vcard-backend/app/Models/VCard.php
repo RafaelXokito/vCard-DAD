@@ -10,6 +10,8 @@ class VCard extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'vcards';
+
     //Primary Key Settings (phone_number:string)
     protected $primaryKey = 'phone_number';
     public $incrementing = false;
@@ -19,5 +21,19 @@ class VCard extends Model
                             'blocked', 'balance', 'max_debit', 'custom_options', 'custom_data'];
 
 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'vcard', 'phone_number')->withTrashed();
+    }
+
+    public function paired_vcard()
+    {
+        return $this->hasMany(Transaction::class, 'pair_vcard', 'phone_number')->withTrashed();
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class, 'vcard', 'phone_number')->withTrashed();
+    }
 
 }

@@ -9,4 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DefaultCategory extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $table = 'default_categories';
+
+    protected $fillable = [ 'type', 'name'];
 }
