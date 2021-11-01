@@ -21,16 +21,6 @@ class PaymentType extends Model
 
     public function transactions()
     {
-        return $this->hasMany(Transaction::class, 'vcard', 'code')->withTrashed();
-    }
-
-    public function pair_vcards()
-    {
-        return $this->hasMany(Transaction::class, 'pair_vcard', 'code')->withTrashed();
-    }
-
-    public function categories()
-    {
-        return $this->hasMany(Category::class, 'vcard', 'code')->withTrashed();
+        return $this->hasMany(Transaction::class, 'payment_type', 'code')->withTrashed();
     }
 }
