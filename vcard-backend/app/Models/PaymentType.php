@@ -17,6 +17,10 @@ class PaymentType extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
+    protected $casts = [
+        'validation_rules' => 'json',
+    ];
+
     protected $fillable = [ 'code', 'name', 'description', 'validation_rules', 'custom_options', 'custom_data'];
 
     public function transactions()

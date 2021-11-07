@@ -1,0 +1,112 @@
+##### VCards
+GET http://localhost/api/vcards
+Accept: application/json
+###
+GET http://localhost/api/vcards/900000008
+Accept: application/json
+###
+POST http://localhost/api/vcards
+Content-Type: application/json
+
+{
+  "phone_number": "913406042",
+  "name": "Rafael Mendes Pereira",
+  "email": "2191266@my.ipleira.pt",
+  "password": "1234",
+  "confirmation_code": 1234
+}
+###
+PUT http://localhost/api/vcards
+Content-Type: application/json
+
+{
+  "name": "Rafael Mendes Pereira",
+  "email": "2191266@my.ipleira.pt",
+  "password": "1234",
+  "confirmation_code": 1234
+}
+
+### Categories
+POST http://localhost/api/categories
+Content-Type: application/json
+
+{
+  "vcard": "900000002",
+  "type": "D",
+  "name": "vacation"
+}
+### http://localhost/api/categories/{category}
+PATCH http://localhost/api/categories/1530
+Content-Type: application/json
+
+{
+  "vcard": "900000008",
+  "type": "D",
+  "name": "Category Changed By .http file"
+}
+###
+DELETE http://localhost/api/categories/60
+Accept: application/json
+###
+GET http://localhost/api/categories/60
+Accept: application/json
+###
+GET http://localhost/api/categories
+Accept: application/json
+###
+GET http://localhost/api/categories/237
+Accept: application/json
+###
+GET http://localhost/api/vcards/900000008/categories
+Accept: application/json
+###
+GET http://localhost/api/categories/59/category
+Accept: application/json
+
+
+
+### Payment_types (Create/Update/Delete only in DB)
+GET http://localhost/api/payment_types
+Accept: application/json
+###
+GET http://localhost/api/transactions/58/payment_type
+Accept: application/json
+### Transactions
+### Simulate a transaction
+POST http://localhost/api/transactions
+Content-Type: application/json
+
+{
+  "vcard": "900000008",
+  "type": "D",
+  "value": "1.00",
+  "payment_type": "VCARD",
+  "payment_reference": "900000002",
+  "category_id": "",
+  "description": "",
+  "custom_options": "",
+  "custom_data": ""
+}
+###
+PATCH  http://localhost/api/transactions/552
+Content-Type: application/json
+
+{
+  "category_id": "",
+  "description": "Teste de descrição"
+}
+###
+GET http://localhost/api/transactions
+Accept: application/json
+###
+GET http://localhost/api/transactions/553
+Accept: application/json
+###
+GET http://localhost/api/payment_types/VCARD/transactions
+Accept: application/json
+###
+GET http://localhost/api/vcards/900000008/transactions
+Accept: application/json
+###
+GET http://localhost/api/categories/237/transactions
+Accept: application/json

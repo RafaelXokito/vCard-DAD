@@ -16,26 +16,31 @@ class Transaction extends Model
                             'payment_reference', 'pair_transaction', 'pair_vcard', 'category_id', 'description',
                             'custom_options', 'custom_data'];
 
-    public function payment_type()
+    protected $casts = [
+        'datetime' => 'datetime',
+        'date'     => 'date'
+    ];
+
+    public function paymentType()
     {
         return $this->belongsTo(PaymentType::class, 'payment_type', 'code')->withTrashed();
     }
 
-    public function vcard()
+    public function vcard_ref()
     {
         return $this->belongsTo(VCard::class, 'vcard', 'phone_number')->withTrashed();
     }
 
     //A card makes a debit transaction and other the credit transaction
     //this is the id of the other part of transaction
-    public function pair_transaction()
+    public function pairTransaction()
     {
         return $this->hasOne(Transaction::class, 'pair_transaction')->withTrashed();
     }
 
     //A card makes a debit transaction and other the credit transaction
     //this is the phone_number (VCard) of the other part of transaction
-    public function pair_vcard()
+    public function pairVcard()
     {
         return $this->belongsTo(VCard::class, 'pair_vcard', 'phone_number')->withTrashed();
     }

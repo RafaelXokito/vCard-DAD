@@ -1,0 +1,56 @@
+{
+	"info": {
+		"_postman_id": "86d57476-5e0b-4022-b931-38573a25799e",
+		"name": "DAD-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "PATCH - Transaction",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "",
+						"value": "900000008",
+						"type": "text"
+					},
+					{
+						"key": "type",
+						"value": "s",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"category_id\": \"\",\n  \"description\": \"Teste de descrição\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/api/transactions/552",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"api",
+						"transactions",
+						"552"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
