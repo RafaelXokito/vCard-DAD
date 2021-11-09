@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
@@ -25,21 +26,18 @@ class AuthController extends Controller
         $validator = $request->validated();
 
         $bodyHttpRequest = [
-            'form_params' => [
-                'grant_type' => 'password',
-                'client_id' => self::CLIENT_ID,
-                'client_secret' => self::CLIENT_SECRET,
-                'username' => $validator["username"],
-                'password' => $validator["password"],
-                'scope' => ''
-            ],
-            'exceptions' => false,
+            'grant_type' => 'password',
+            'client_id' => self::CLIENT_ID,
+            'client_secret' => self::CLIENT_SECRET,
+            'username' => $validator["username"],
+            'password' => $validator["password"],
+            'scope' => ''
         ];
 
         $url = self::PASSPORT_SERVER_URL . '/oauth/token';
-        $http = new \GuzzleHttp\Client;
+        //$http = new \GuzzleHttp\Client;
 
-        $response = $http->post($url, $bodyHttpRequest);
+        $response = Http::asForm()->post($url,$bodyHttpRequest);
 
         $errorCode = $response->getStatusCode();
         if ($errorCode == '200') {
