@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
     }
 
     protected $policies = [
-        'App\Models\Model' => 'App\Policies\ModelPolicy',
+        //'App\Models\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**
@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        if (! $this->app->routesAreCached()) {
+        if (!$this->app->routesAreCached()) {
             Passport::routes();
         }
     }

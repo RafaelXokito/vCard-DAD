@@ -6,13 +6,14 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $table = 'users';
+    protected $table = 'view_auth_users';
 
     public $timestamps = false;
 
@@ -22,7 +23,9 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var string[]
      */
     protected $fillable = [
+        'username',
         'name',
+        'user_type',
         'email',
         'password',
     ];
@@ -45,4 +48,14 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function findForPassport($username)
+    {
+        return $this->where('username', $username)->first();
+    }
+
+    public function validateForPassportPasswordGrant($password)
+    {
+        return Hash::check($password, $this->password);
+    }
 }

@@ -19,63 +19,58 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::middleware(['auth:api'])->group(function () {
+    //CATEGORIES
+    Route::get('categories', [CategoryController::class, 'getCategories']);
 
-//CATEGORIES
-Route::get('categories', [CategoryController::class, 'getCategories']);
+    Route::get('categories/{category}', [CategoryController::class, 'getCategory']);
 
-Route::get('categories/{category}', [CategoryController::class, 'getCategory']);
+    Route::get('vcards/{vcard}/categories', [CategoryController::class, 'getCategoriesByVcard']);
 
-Route::get('vcards/{vcard}/categories', [CategoryController::class, 'getCategoriesByVcard']);
+    Route::get('categories/{transaction}/category', [CategoryController::class, 'getCategoryByTransaction']);
 
-Route::get('categories/{transaction}/category', [CategoryController::class, 'getCategoryByTransaction']);
+    Route::post('categories', [CategoryController::class, 'postCategory']);
 
-Route::post('categories', [CategoryController::class, 'postCategory']);
+    Route::patch('categories/{category}', [CategoryController::class, 'putCategory']);
 
-Route::patch('categories/{category}', [CategoryController::class, 'putCategory']);
+    Route::delete('categories/{category}', [CategoryController::class, 'deleteCategory']);
 
-Route::delete('categories/{category}', [CategoryController::class, 'deleteCategory']);
+    //TRANSACTIONS
+    Route::get('transactions', [TransactionController::class, 'getTransactions']);
 
-//TRANSACTIONS
-Route::get('transactions', [TransactionController::class, 'getTransactions']);
+    Route::get('transactions/{transaction}', [TransactionController::class, 'getTransaction']);
 
-Route::get('transactions/{transaction}', [TransactionController::class, 'getTransaction']);
+    Route::get('transactions/{transaction}/pair', [TransactionController::class, 'getPairTransaction']);
 
-Route::get('transactions/{transaction}/pair', [TransactionController::class, 'getPairTransaction']);
+    Route::get('payment_types/{payment_type}/transactions', [TransactionController::class, 'getTransactionsByPaymentType']);
 
-Route::get('payment_types/{payment_type}/transactions', [TransactionController::class, 'getTransactionsByPaymentType']);
+    Route::get('vcards/{vCard}/transactions', [TransactionController::class, 'getTransactionsByVcard']);
 
-Route::get('vcards/{vCard}/transactions', [TransactionController::class, 'getTransactionsByVcard']);
+    Route::get('categories/{category}/transactions', [TransactionController::class, 'getTransactionsByCategory']);
 
-Route::get('categories/{category}/transactions', [TransactionController::class, 'getTransactionsByCategory']);
+    Route::post('transactions', [TransactionController::class, 'postTransaction']);
 
-Route::post('transactions', [TransactionController::class, 'postTransaction']);
+    Route::patch('transactions/{transaction}', [TransactionController::class, 'putTransaction']);
 
-Route::patch('transactions/{transaction}', [TransactionController::class, 'putTransaction']);
+    //Route::delete('transactions/{transaction}', [TransactionController::class, 'deleteTransaction']);
 
-//Route::delete('transactions/{transaction}', [TransactionController::class, 'deleteTransaction']);
+    //PAYMENT_TYPES
+    Route::get('payment_types', [PaymentTypeController::class, 'getPaymentTypes'])->middleware('auth:api');
 
-//PAYMENT_TYPES
-Route::get('payment_types', [PaymentTypeController::class, 'getPaymentTypes']);
+    Route::get('transactions/{transaction}/payment_type', [PaymentTypeController::class, 'getPaymentTypeByTransaction'])->middleware('auth:api');
 
-Route::get('transactions/{transaction}/payment_type', [PaymentTypeController::class, 'getPaymentTypeByTransaction']);
+    //VCARD
+    Route::get('vcards', [VCardController::class, 'getVcards'])->middleware('auth:api');
 
-//VCARD
-Route::get('vcards', [VCardController::class, 'getVcards'])->middleware('auth');
+    Route::get('vcards/{vcard}', [VCardController::class, 'getVcard'])->middleware('auth:api');
 
-Route::get('vcards/{vcard}', [VCardController::class, 'getVcard']);
+});
 
-Route::post('vcards', [VCardController::class, 'postVcard']);
+Route::post('registerVCard', [AuthController::class, 'registerVCard']);
 
 //USER
 
 Route::post('signin', [AuthController::class, 'signin'])->name('login');
 
-Route::post('logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api');
 
-
-
-
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});

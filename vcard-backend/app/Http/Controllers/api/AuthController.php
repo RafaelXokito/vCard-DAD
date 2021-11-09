@@ -3,83 +3,86 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SigninPost;
+use App\Http\Requests\VCardPost;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\VCard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public function signin (Request $request) {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string',
-        ]);
-        if ($validator->fails())
-        {
-            return response(['errors'=>$validator->errors()->all()], 422);
-        }
+    const PASSPORT_SERVER_URL = "http://localhost";
+    const CLIENT_ID = 2;
+    const CLIENT_SECRET = 'gLptW4CUN5LQOLOiZYw2EcAchleK1ORMYMuDfvvV';
+    public function signin (SigninPost $request) {
+        //TODO PostSignin
+        $validator = $request->validated();
 
-        if (!Auth::attempt($request->only("email","password"))) {
-            return response(["message" => "NOT LOGGED IN"], 300);
-        }
+        $bodyHttpRequest = [
+            'form_params' => [
+                'grant_type' => 'password',
+                'client_id' => self::CLIENT_ID,
+                'client_secret' => self::CLIENT_SECRET,
+                'username' => $validator["username"],
+                'password' => $validator["password"],
+                'scope' => ''
+            ],
+            'exceptions' => false,
+        ];
 
-        $user = Auth::user();
+        $url = self::PASSPORT_SERVER_URL . '/oauth/token';
+        $http = new \GuzzleHttp\Client;
 
-        $token = $user->createToken('token')->plainTextToken;
-        $user->setRememberToken($token);
-        $user->save();
+        $response = $http->post($url, $bodyHttpRequest);
 
-        $cookie = cookie("jwt",$token, 60*24);//one day
-
-        $response = ['user' => $user];
-        return response($response, 200)->withCookie($cookie);
-        /*
-        $user = User::where('email', $request->email)->first();
-        if ($user) {
-            if (Hash::check($request->password, $user->password)) {
-                $token = $user->createToken('Laravel Password Grant Client')->plainTextToken;
-
-                $cookie = cookie("jwt",$token, 60*24);//one day
-
-                $response = ['user' => $user];
-                return response($response, 200)->withCookie($cookie);
-            } else {
-                $response = ["message" => "Password mismatch"];
-                return response($response, 422);
-            }
+        $errorCode = $response->getStatusCode();
+        if ($errorCode == '200') {
+            return json_decode((string) $response->getBody(), true);
         } else {
-            $response = ["message" =>'User does not exist'];
-            return response($response, 422);
-        }*/
+            return response()->json(
+                ['msg' => 'User credentials are invalid'], $errorCode
+            );
+        }
     }
 
     public function logout (Request $request) {
-        $cookie = Cookie::forget('jwt');
-        $token = $request->user()->token();
+        $accessToken = $request->user()->token();
+        $token = $request->user()->tokens->find($accessToken);
         $token->revoke();
-        $response = ['message' => 'You have been successfully logged out!'];
-        return response($response, 200)->withCookie($cookie);
+        $token->delete();
+        return response(['msg' => 'Token revoked'], 200);
     }
 
-    public function register (Request $request) {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-        if ($validator->fails())
-        {
-            return response(['errors'=>$validator->errors()->all()], 422);
+    public function registerVCard (VCardPost $request) {
+        $vcard = new VCard();
+        $validated_data = $request->validated();
+
+        try {
+            $vcard->phone_number = $validated_data["phone_number"];
+            $vcard->name = $validated_data["name"];
+            $vcard->email = $validated_data["email"];
+            if ($request->hasFile('imagem_url')) {
+                $vcard->photo_url = basename(Storage::disk('local')->putFileAs('vcard_photos\\', $validated_data['photo_url'], $vcard->phone_number . "_" . Str::random(6) . '.jpg'));
+            }
+            $vcard->password = bcrypt($validated_data["password"]);
+            $vcard->confirmation_code = bcrypt($validated_data["confirmation_code"]);
+            $vcard->blocked = false;
+
+            $vcard->save();
+
+            //return new VCardResource($vcard);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(array(
+                'code'      =>  400,
+                'message'   =>  $th->getMessage()
+                ), 400);
         }
-        $request['password']=Hash::make($request['password']);
-        $request['remember_token'] = Str::random(10);
-        $user = User::create($request->toArray());
-        $token = $user->createToken('Laravel Password Grant Client')->accessToken;
-        $response = ['token' => $token];
-        return response($response, 200);
     }
 }
