@@ -19,7 +19,7 @@ class AuthService {
     return axios
       .post(PASSPORT_SERVER_URL + '/oauth/token', bodyFormData)
       .then(response => {
-        if (response.data.token) {
+        if (response.data.access_token) {
           localStorage.setItem('user', JSON.stringify(response.data.user));
         }
 

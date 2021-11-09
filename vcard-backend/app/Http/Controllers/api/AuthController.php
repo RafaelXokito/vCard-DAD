@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
 {
@@ -25,23 +26,21 @@ class AuthController extends Controller
         //TODO PostSignin
         $validator = $request->validated();
 
-        $bodyHttpRequest = [
+        request()->request->add([
             'grant_type' => 'password',
             'client_id' => self::CLIENT_ID,
             'client_secret' => self::CLIENT_SECRET,
             'username' => $validator["username"],
             'password' => $validator["password"],
             'scope' => ''
-        ];
+        ]);
 
-        $url = self::PASSPORT_SERVER_URL . '/oauth/token';
-        //$http = new \GuzzleHttp\Client;
+        $request = Request::create(self::PASSPORT_SERVER_URL . '/oauth/token', 'POST');
 
-        $response = Http::asForm()->post($url,$bodyHttpRequest);
-
+        $response = Route::dispatch($request);
         $errorCode = $response->getStatusCode();
         if ($errorCode == '200') {
-            return json_decode((string) $response->getBody(), true);
+            return json_decode((string) $response->content(), true);
         } else {
             return response()->json(
                 ['msg' => 'User credentials are invalid'], $errorCode
