@@ -5,19 +5,19 @@ const API_URL = 'http://localhost/api/';
 
 class UserService {
   getPublicContent() {
-    return axios.get(API_URL + 'vcards');
+    //return axios.get(API_URL + 'vcards');
   }
 
   getUserBoard() {
-    return axios.get(API_URL + 'user', { headers: authHeader() });
+    return axios.get(API_URL + 'users', { headers: authHeader() });
   }
 
-  getModeratorBoard() {
-    return axios.get(API_URL + 'mod', { headers: authHeader() });
+  getUser(username){
+    return axios.get(API_URL + 'users/' + username, { headers: authHeader() });
   }
 
   getAdminBoard() {
-    return axios.get(API_URL + 'admin', { headers: authHeader() });
+    //return axios.get(API_URL + 'administrators', { headers: authHeader() });
   }
 }
 

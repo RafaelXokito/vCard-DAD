@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <nav v-if="$route.name != 'register' && $route.name != 'login'" class="navbar navbar-expand navbar-dark bg-dark">
       <a href="/" class="navbar-brand">vCards</a>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
-          <router-link to="/home" class="nav-link">
+          <router-link to="home" class="nav-link">
             <font-awesome-icon icon="home" /> Home
           </router-link>
         </li>
@@ -18,7 +18,7 @@
 
       <div v-if="!currentUser" class="navbar-nav ml-auto">
         <li class="nav-item">
-          <router-link to="/register" class="nav-link">
+          <router-link to="register" class="nav-link">
             <font-awesome-icon icon="user-plus" /> Sign Up
           </router-link>
         </li>

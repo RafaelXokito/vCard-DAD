@@ -40,7 +40,16 @@ class AuthController extends Controller
         $response = Route::dispatch($request);
         $errorCode = $response->getStatusCode();
         if ($errorCode == '200') {
-            return json_decode((string) $response->content(), true);
+            if (Auth::attempt($validator)) {
+                $auxResponse = json_decode((string) $response->content(), true);
+                $auxResponse["username"] = Auth::user()->username;
+            }else {
+                $auxResponse = json_decode((string) $response->content(), true);
+
+            }
+            return response()->json(
+                ["user" => $auxResponse]
+            );;
         } else {
             return response()->json(
                 ['msg' => 'User credentials are invalid'], $errorCode

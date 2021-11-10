@@ -20,7 +20,6 @@ class VCard extends Model
     protected $fillable = [ 'phone_number', 'name', 'email', 'photo_url', 'password', 'confirmation_code',
                             'blocked', 'balance', 'max_debit', 'custom_options', 'custom_data'];
 
-
     public function transactions()
     {
         return $this->hasMany(Transaction::class, 'vcard', 'phone_number')->withTrashed();

@@ -15,21 +15,25 @@ const routes = [
   },
   {
     path: "/home",
+    name: "home",
     component: Home,
   },
   {
     path: "/login",
+    name: "login",
     component: Login,
   },
   {
     path: "/register",
+    name: "register",
     component: Register,
   },
   {
-    path: "/profile",
+    path: '/profile',
+    component: Profile,
+    props: true,
     name: "profile",
     // lazy-loaded
-    component: Profile,
   },
   {
     path: "/admin",

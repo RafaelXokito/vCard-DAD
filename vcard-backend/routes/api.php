@@ -55,14 +55,17 @@ Route::middleware(['auth:api'])->group(function () {
     //Route::delete('transactions/{transaction}', [TransactionController::class, 'deleteTransaction']);
 
     //PAYMENT_TYPES
-    Route::get('payment_types', [PaymentTypeController::class, 'getPaymentTypes'])->middleware('auth:api');
+    Route::get('payment_types', [PaymentTypeController::class, 'getPaymentTypes']);
 
-    Route::get('transactions/{transaction}/payment_type', [PaymentTypeController::class, 'getPaymentTypeByTransaction'])->middleware('auth:api');
+    Route::get('transactions/{transaction}/payment_type', [PaymentTypeController::class, 'getPaymentTypeByTransaction']);
 
     //VCARD
-    Route::get('vcards', [VCardController::class, 'getVcards'])->middleware('auth:api');
+    Route::get('vcards', [VCardController::class, 'getVcards']);
 
-    Route::get('vcards/{vcard}', [VCardController::class, 'getVcard'])->middleware('auth:api');
+    Route::get('vcards/{vcard}', [VCardController::class, 'getVcard']);
+
+    //USERS
+    Route::get('users/{username}', [UserController::class, 'getUser']);
 
 });
 

@@ -19,9 +19,6 @@ class PaymentTypeController extends Controller
 
     public function getPaymentTypes(Request $request)
     {
-        $user = User::where("remember_token", $request->cookie('jwt'))->get()->first();
-        Auth::login($user);
-        return Auth::check() == true ? "true" : "false";
         return new PaymentTypeResource(PaymentType::all());
     }
 }
