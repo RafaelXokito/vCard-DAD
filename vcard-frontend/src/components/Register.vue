@@ -3,8 +3,7 @@
   <div class="container-fluid">
   <div class="row main-content bg-success text-center">
     <div class="col-md-4 text-center company__info">
-      <span class="company__logo"><h2><span class="fa fa-android"></span></h2></span>
-      <h4 class="company_title">Your Company Logo</h4>
+      <span class="company__logo"><img :src="this.logoImageURL"></span>
     </div>
     <div class="col-md-8 col-xs-12 col-sm-12 login_form ">
       <div class="container-fluid">
@@ -14,10 +13,21 @@
         <div class="row">
           <Form @submit="handleRegister" :validation-schema="schema" class="w-75 mx-auto">
             <div v-if="!successful">
+              <div class="form-group image-upload">
+                <label for="file-input">
+                  <img class="rounded-circle" :src="img_src">
+                </label>
+                <input id="file-input" @change="onFileChange" type="file" />
+              </div>
               <div class="form-group">
-                <label for="username">Username</label>
-                <Field name="username" type="text" class="form-control" />
-                <ErrorMessage name="username" class="error-feedback" />
+                <label for="phone_number">Phone Number</label>
+                <Field name="phone_number" type="text" class="form-control" />
+                <ErrorMessage name="phone_number" class="error-feedback" />
+              </div>
+              <div class="form-group">
+                <label for="name">Name</label>
+                <Field name="name" type="text" class="form-control" />
+                <ErrorMessage name="name" class="error-feedback" />
               </div>
               <div class="form-group">
                 <label for="email">Email</label>
@@ -29,15 +39,24 @@
                 <Field name="password" type="password" class="form-control" />
                 <ErrorMessage name="password" class="error-feedback" />
               </div>
+              <div class="form-group">
+                <label for="confirmation_code">Confirmation Code</label>
+                <Field name="confirmation_code" type="password" class="form-control" />
+                <ErrorMessage name="confirmation_code" class="error-feedback" />
+              </div>
 
               <div class="form-group">
                 <button class="btn btn-primary btn-block mx-auto" :disabled="loading">
-                  <span
-                    v-show="loading"
-                    class="spinner-border spinner-border-sm"
-                  ></span>
-                  Sign Up
+                  <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+                  <span> Sign Up</span>
                 </button>
+              </div>
+              <div class="form-group" v-if="message">
+                <ul class="alert alert-danger" role="alert">
+                  <li v-for="(value, key) in errors" :key="key">
+                    {{value[0]}}
+                  </li>
+                </ul>
               </div>
             </div>
           </Form>
@@ -65,11 +84,15 @@ export default {
   },
   data() {
     const schema = yup.object().shape({
-      username: yup
+      phone_number: yup
         .string()
-        .required("Username is required!")
-        .min(3, "Must be at least 3 characters!")
-        .max(20, "Must be maximum 20 characters!"),
+        .required("Phone Number is required!")
+        .matches(/^([9][1236])[0-9]*$/, "Phone Number must be a portuguese phone number!"),
+      name: yup
+        .string()
+        .required("Name is required!")
+        .min(2, "Name must be at least 2 characters!")
+        .max(50, "Name must be maximum 50 characters!"),
       email: yup
         .string()
         .required("Email is required!")
@@ -78,8 +101,13 @@ export default {
       password: yup
         .string()
         .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
-        .max(40, "Must be maximum 40 characters!"),
+        .min(4, "Password must be at least 4 characters!")
+        .max(40, "Password must be maximum 40 characters!"),
+      confirmation_code: yup
+        .number()
+        .typeError("Confirmation Code must be numbers")
+        .required("Confirmation Code is required!")
+        .test('len', 'Confirmation Code must be exactly 4 numbers', val => (val+ "").length === 4),
     });
 
     return {
@@ -87,6 +115,8 @@ export default {
       loading: false,
       message: "",
       schema,
+      img_src: this.defaultImageProfileURL,
+      errors: {}
     };
   },
   computed: {
@@ -104,24 +134,27 @@ export default {
       this.message = "";
       this.successful = false;
       this.loading = true;
-
       this.$store.dispatch("auth/register", user).then(
-        (data) => {
-          this.message = data.message;
-          this.successful = true;
-          this.loading = false;
+        () => {
+          this.$router.push("/profile");
         },
         (error) => {
+          console.log(error.response.data.errors);
+          this.errors = error.response.data.errors;
           this.message =
             (error.response &&
               error.response.data &&
-              error.response.data.message) ||
+              error.response.data) ||
             error.message ||
             error.toString();
           this.successful = false;
           this.loading = false;
         }
       );
+    },
+    onFileChange(e) {
+      const file = e.target.files[0];
+      this.img_src = URL.createObjectURL(file);
     },
   },
 };
@@ -135,8 +168,11 @@ export default {
 	margin: 5em auto;
 	display: flex;
 }
+.company__logo>img{
+  width: 70%;
+}
 .company__info{
-	background-color: #008080;
+	background-color: #e7f0fe;
 	border-top-left-radius: 20px;
 	border-bottom-left-radius: 20px;
 	display: flex;
@@ -157,11 +193,21 @@ export default {
 		border-bottom-left-radius:20px;
 	}
 }
-@media screen and (min-width: 642px) and (max-width:800px){
+@media screen and (min-width: 641px) and (max-width:800px){
 	.main-content{width: 70%;}
+  .company__info{
+		border-top-right-radius:20px;
+		border-bottom-right-radius:0px;
+		border-bottom-left-radius:0px;
+	}
+  .login_form{
+		border-top-left-radius:0px;
+    border-top-right-radius:0px !important;
+		border-bottom-left-radius:20px;
+	}
 }
 .row > h2{
-	color:#008080;
+	color:#23a0ed;
 }
 .login_form{
 	background-color: #fff;
@@ -185,7 +231,7 @@ form{
 	transition: all .5s ease;
 }
 .form__input:focus{
-	border-bottom-color: #008080;
+	border-bottom-color: #e7f0fe;
 	box-shadow: 0 0 5px rgba(0,80,80,.4); 
 	border-radius: 4px;
 }
@@ -193,15 +239,31 @@ form{
 	transition: all .5s ease;
 	width: 70%;
 	border-radius: 30px;
-	color:#008080;
+	color:#23a0ed;
 	font-weight: 600;
 	background-color: #fff;
-	border: 1px solid #008080;
+	border: 1px solid #23a0ed;
 	margin-top: 1.5em;
 	margin-bottom: 1em;
 }
 .btn:hover, .btn:focus{
-	background-color: #008080;
+	background-color: #23a0ed;
 	color:#fff;
+}
+
+.image-upload>input {
+  display: none;
+}
+
+.rounded-circle {
+  width: 120px; 
+  cursor: pointer;
+}
+ul {
+  list-style-type: none;
+}
+.error-feedback{
+  color: #db3b3b;
+  font-size: 12px;
 }
 </style>

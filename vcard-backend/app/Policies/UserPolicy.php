@@ -23,7 +23,10 @@ class UserPolicy
 
     public function view(User $user, User $user2)
     {
-        return true;
+        if ($user2->id == $user->id) {
+            return false;
+        }
+        return false;
     }
 
     public function create(User $user)

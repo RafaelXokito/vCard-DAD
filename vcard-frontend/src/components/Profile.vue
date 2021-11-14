@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <body v-if="isUserVisible">
-      <section class="section about-section gray-bg" id="about">
+        <section class="section about-section gray-bg" id="about">
             <div class="container">
                 <div class="row align-items-center flex-row-reverse">
                     <div class="col-lg-6">
@@ -12,11 +12,11 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="about-avatar text-center">
-                            <img class="w-50" :src=" user.photo_url != '' ? user.photo_url : 'https://bootdey.com/img/Content/avatar/avatar7.png'" :title="currentUser.username+'Photo'" alt="">
+                            <img class="w-50 rounded-circle" :src="this.baseURL + user.photo_url" :title="currentUser.username+'Photo'" alt="">
                         </div>
                     </div>
                 </div>
-                <div class="counter">
+                <div class="counter mt-3">
                     <div class="row">
                         <div class="col-6 col-lg-3">
                             <div class="count-data text-center">
@@ -70,9 +70,11 @@ export default {
     if (!this.currentUser) {
       this.$router.push("/login");
     } else {
-      this.user = await UserService.getUser(this.currentUser.username);
-      this.user = this.user.data.data;
-      this.isUserVisible = true;
+      if (this.currentUser.username) {
+        this.user = await UserService.getUser(this.currentUser.id);
+        this.user = this.user.data.data;
+        this.isUserVisible = true;
+      }
     }
   },
   watch: {

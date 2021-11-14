@@ -59,4 +59,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return Hash::check($password, $this->password);
     }
+
+    public function vcard_ref()
+    {
+        return $this->belongsTo(VCard::class, 'username', 'phone_number')->withTrashed();
+    }
 }

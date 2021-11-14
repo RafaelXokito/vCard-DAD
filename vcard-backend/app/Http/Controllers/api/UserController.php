@@ -8,8 +8,13 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    public function getUser($username)
+    public function getUser(User $user)
     {
-        return new UserResource(User::where('username', $username)->first());
+        return new UserResource($user);
+    }
+
+    public function getUsers()
+    {
+        return UserResource::collection(User::all());
     }
 }

@@ -1,14 +1,12 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost/api/';
-
 class AuthService {
   login(user) {
     let bodyFormData = new FormData()
     bodyFormData.set('username', user.username)
     bodyFormData.set('password', user.password)
     return axios
-      .post(API_URL + 'signin', bodyFormData)
+      .post('signin', bodyFormData)
       .then(response => {
         if (response.data.user) {
           localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -22,10 +20,19 @@ class AuthService {
   }
 
   register(user) {
-    return axios.post(API_URL + 'signup', {
-      username: user.username,
+    return axios.post('registerVCard', {
+      phone_number: user.phone_number,
+      name: user.name,
       email: user.email,
-      password: user.password
+      photo_url: user.photo_url,
+      password: user.password,
+      confirmation_code: user.confirmation_code,
+    })
+    .then(response => {
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      return response.data.user;
     });
   }
 }

@@ -1,17 +1,17 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-class UserService {
+class TransactionService {
   getPublicContent() {
     //return axios.get(API_URL + 'vcards');
   }
 
-  getUserBoard() {
-    return axios.get('users', { headers: authHeader() });
+  getTransactionBoard() {
+    return axios.get('transactions', { headers: authHeader() });
   }
 
-  getUser(id){
-    return axios.get('users/' + id, { headers: authHeader() });
+  getTransaction(id){
+    return axios.get('transactions/' + id, { headers: authHeader() });
   }
 
   getAdminBoard() {
@@ -19,4 +19,4 @@ class UserService {
   }
 }
 
-export default new UserService();
+export default new TransactionService();

@@ -24,7 +24,7 @@ class UserResource extends JsonResource
                     'username' => $this->username,
                     'name' => $this->name,
                     'email' => $this->email,
-                    'photo_url' => $this->photo_url != null ? URL::to('/') . "/storage/fotos/" . $this->photo_url : "",
+                    'photo_url' => $this->photo_url != null ? "storage/fotos/" . $this->photo_url : "storage/fotos/default_image.png",
                     'user_type' => $this->user_type
                 ];
         }

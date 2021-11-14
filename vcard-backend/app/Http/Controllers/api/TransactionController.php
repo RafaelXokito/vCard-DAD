@@ -10,6 +10,7 @@ use App\Models\PaymentType;
 use App\Models\Transaction;
 use App\Models\VCard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
@@ -21,7 +22,8 @@ class TransactionController extends Controller
 
     public function getTransactions(Request $request)
     {
-        return new TransactionResource(Transaction::all());
+        $transactions = Auth::user()->user_type == 'A' ? Transaction::all() : Auth::user()->vcard_ref->transactions;
+        return TransactionResource::collection($transactions);
     }
 
     public function getPairTransaction(Request $request, Transaction $transaction)

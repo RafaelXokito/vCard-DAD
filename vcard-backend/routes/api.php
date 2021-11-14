@@ -65,7 +65,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('vcards/{vcard}', [VCardController::class, 'getVcard']);
 
     //USERS
-    Route::get('users/{username}', [UserController::class, 'getUser']);
+    Route::get('users/{user}', [UserController::class, 'getUser'])->middleware('can:view,user');
+
+    Route::get('users', [UserController::class, 'getUsers']);
 
 });
 

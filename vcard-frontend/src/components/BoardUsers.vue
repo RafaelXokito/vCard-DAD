@@ -1,25 +1,44 @@
 <template>
   <div class="container">
-    <header class="jumbotron">
-      <h3>{{ content }}</h3>
-    </header>
+    <user-table
+    :users="users"
+    :showId="false"
+    @edit="editUser"
+  ></user-table>
   </div>
 </template>
 
 <script>
 import UserService from "../services/user.service";
 
+import UserTable from "./UsersTable.vue"
+
 export default {
-  name: "User",
+  name: "Users",
+  components: {
+    UserTable
+  },
   data() {
     return {
       content: "",
+      users: []
     };
+  },
+  computed: {
+    totalUsers () {
+      return this.users.length
+    }
+  },
+  methods: {
+    editUser(user){
+      console.log(user);
+    }
   },
   mounted() {
     UserService.getUserBoard().then(
-      (response) => {
-        this.content = response.data;
+      (users) => {
+        console.log(users);
+        this.users = users.data.data;
       },
       (error) => {
         this.content =
