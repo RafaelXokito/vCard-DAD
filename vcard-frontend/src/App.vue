@@ -33,7 +33,7 @@
             <ul class="navbar-nav mr-auto">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <img :src="defaultImageProfileURL" class="rounded-circle z-depth-0 avatar-img" style="width: 30px;" alt="avatar image">
+                  <img :src="baseURL + currentUser.photo_url" class="rounded-circle z-depth-0 avatar-img" style="width: 30px;" alt="avatar image">
                   {{ currentUser.username }}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">

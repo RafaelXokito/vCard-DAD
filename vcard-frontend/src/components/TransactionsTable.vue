@@ -11,7 +11,6 @@
         <th class="align-middle">payment_type</th>
         <th class="align-middle">type</th>
         <th>
-
         </th>
       </tr>
     </thead>

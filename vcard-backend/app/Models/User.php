@@ -28,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'user_type',
         'email',
         'password',
+        'photo_url'
     ];
 
     /**
@@ -52,7 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function findForPassport($username)
     {
-        return $this->where('username', $username)->first();
+        return $this->where('username', $username)->where('blocked', 0)->first();
     }
 
     public function validateForPassportPasswordGrant($password)

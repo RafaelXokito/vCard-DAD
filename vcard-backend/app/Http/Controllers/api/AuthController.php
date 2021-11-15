@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ConfirmationCodePost;
 use App\Http\Requests\SigninPost;
 use App\Http\Requests\VCardPost;
 use Illuminate\Http\Request;
@@ -49,6 +50,7 @@ class AuthController extends Controller
                 $auxResponse = json_decode((string) $response->content(), true);
                 $auxResponse["username"] = Auth::user()->username;
                 $auxResponse["user_type"] = Auth::user()->user_type;
+                $auxResponse["photo_url"] = Auth::user()->photo_url != null ? "storage/fotos/" . Auth::user()->photo_url : "storage/fotos/default_image.png";
                 $auxResponse["id"] = Auth::user()->id;
             }else {
                 $auxResponse = json_decode((string) $response->content(), true);
@@ -101,5 +103,22 @@ class AuthController extends Controller
                 'message'   =>  $th->getMessage()
                 ), 400);
         }
+    }
+
+    public function confirmationCode(ConfirmationCodePost $request, User $user)
+    {
+        $validator = $request->validated();
+        if (Hash::check($validator["confirmationCode"], $user->vcard_ref->confirmation_code)) {
+            return response()->json(
+                ['code'      =>  200,
+                'message'   =>  "Confirmation Code matched!"]
+            , 200);
+        }else{
+            return response()->json(
+                ['code'      =>  422,
+                'message'   =>  "Confirmation Code was NOT matched!"]
+            , 422);
+        }
+
     }
 }

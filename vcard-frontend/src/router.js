@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import Home from "./components/Home.vue";
 import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
+import ConfirmationCode from "./components/ConfirmationCode.vue";
 // lazy-loaded
 const Profile = () => import("./components/Profile.vue")
 const BoardAdmin = () => import("./components/BoardAdmin.vue")
@@ -10,16 +11,6 @@ const BoardTransactions = () => import("./components/BoardTransactions.vue")
 
 
 const routes = [
-  {
-    path: "/",
-    name: "home",
-    component: Home,
-  },
-  {
-    path: "/home",
-    name: "home",
-    component: Home,
-  },
   {
     path: "/login",
     name: "login",
@@ -31,17 +22,28 @@ const routes = [
     component: Register,
   },
   {
+    path: "/",
+    name: "home",
+    component: Home,
+  },
+  {
+    path: "/home",
+    name: "home",
+    component: Home,
+  },
+  {
+    path: '/confirmationCode',
+    component: ConfirmationCode,
+    props: true,
+    name: "confirmationCode",
+    // lazy-loaded
+  },
+  {
     path: '/profile',
     component: Profile,
     props: true,
     name: "profile",
     // lazy-loaded
-  },
-  {
-    path: "/admin",
-    name: "admin",
-    // lazy-loaded
-    component: BoardAdmin,
   },
   {
     path: "/users",
@@ -54,6 +56,12 @@ const routes = [
     name: "transactions",
     // lazy-loaded
     component: BoardTransactions,
+  },
+  {
+    path: "/admin",
+    name: "admin",
+    // lazy-loaded
+    component: BoardAdmin,
   },
 ];
 

@@ -67,8 +67,9 @@ Route::middleware(['auth:api'])->group(function () {
     //USERS
     Route::get('users/{user}', [UserController::class, 'getUser'])->middleware('can:view,user');
 
-    Route::get('users', [UserController::class, 'getUsers']);
+    Route::get('users', [UserController::class, 'getUsers'])->middleware('can:viewAny,App\Models\User');
 
+    Route::post('users/{user}/confirmationCode', [AuthController::class, 'confirmationCode'])->middleware('can:view,user');
 });
 
 Route::post('registerVCard', [AuthController::class, 'registerVCard']);

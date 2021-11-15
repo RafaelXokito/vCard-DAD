@@ -1,4 +1,5 @@
 import axios from 'axios';
+import authHeader from './auth-header';
 
 class AuthService {
   login(user) {
@@ -34,6 +35,17 @@ class AuthService {
       }
       return response.data.user;
     });
+  }
+
+  async confirmationCode(user) {
+    let promise = await axios.post('users/'+ user.id +'/confirmationCode', {"confirmationCode": user.confirmationCode}, { headers: authHeader() })
+      .then(response => {
+        user = JSON.parse(localStorage.getItem('user'));
+        user['confirmationCode'] = true;
+        localStorage.setItem('user', JSON.stringify(user));
+        console.log(user);
+      });
+    return promise;
   }
 }
 
