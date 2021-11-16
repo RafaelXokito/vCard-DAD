@@ -1,4 +1,5 @@
 <template>
+<div v-if="isTableVisible">
   <table class="table">
     <thead>
       <tr>
@@ -16,7 +17,7 @@
     </thead>
     <tbody>
       <tr
-        v-for="transaction in transactions"
+        v-for="transaction in transactions.data"
         :key="transaction.id"
         :class="transaction.transaction_type == 'A' ? 'table-success' : ''"
       >
@@ -42,16 +43,26 @@
       </tr>
     </tbody>
   </table>
+    <div class="row">
+        <pagination class="mx-auto" align="center" :data="transactions" @pagination-change-page="list"></pagination>
+    </div>
+</div>
 </template>
 
 <script>
+import Pagination from './Pagination.vue'
+
 export default {
 
   name: "TransactionsTable",
+  components: {
+      //JwPagination
+      Pagination
+  },
   props: {
     transactions: {
-      type: Array,
-      default: () => [],
+      type: Object,
+      default: () => {},
     },
     showId: {
       type: Boolean,
@@ -80,12 +91,26 @@ export default {
   },
   emits: [
     'edit',
+    'list'
   ],
+  data() {
+      return {
+          isTableVisible: false,
+      }
+  },
+  mounted() {
+    this.list()
+  },
   methods: {
     editClick (transaction) {
       this.$emit('edit', transaction)
     },
-  }
+    async list(link){
+        await this.$emit('list', link)
+        this.isTableVisible = true;
+    },
+  },
+  
 }
 </script>
 

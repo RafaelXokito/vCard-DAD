@@ -6,8 +6,8 @@ class TransactionService {
     //return axios.get(API_URL + 'vcards');
   }
 
-  getTransactionBoard() {
-    return axios.get('transactions', { headers: authHeader() });
+  async getTransactionBoard(link='transactions?page=1') {
+    return await axios.get(link, { headers: authHeader() });
   }
 
   getTransaction(id){

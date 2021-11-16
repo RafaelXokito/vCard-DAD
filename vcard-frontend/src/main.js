@@ -7,10 +7,12 @@ import "bootstrap"
 
 import { FontAwesomeIcon } from './plugins/font-awesome'
 import axios from 'axios';
+import Pagination from 'v-pagination-3';
 
 const app = createApp(App)
   .use(router)
   .use(store)
+  .component('pagination', Pagination)
   .component("font-awesome-icon", FontAwesomeIcon);
 
 router.beforeEach((to, from, next) => {

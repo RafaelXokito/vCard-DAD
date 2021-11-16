@@ -75,8 +75,7 @@ export default {
   },
   methods: {
     handleConfirmationCode(user) {
-      this.loading = true;
-      if (user != null){
+        this.loading = true;
         user["id"] = this.$store.state.auth.user.id;
         this.$store.dispatch("auth/confirmationCode", user).then(
             () => {
@@ -92,7 +91,6 @@ export default {
                 error.toString();
             }
         );
-      }
     },
   },
 };

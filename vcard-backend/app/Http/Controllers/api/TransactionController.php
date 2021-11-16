@@ -22,7 +22,7 @@ class TransactionController extends Controller
 
     public function getTransactions(Request $request)
     {
-        $transactions = Auth::user()->user_type == 'A' ? Transaction::all() : Auth::user()->vcard_ref->transactions;
+        $transactions = Auth::user()->user_type == 'A' ? Transaction::paginate(10) : Auth::user()->vcard_ref->transactions()->paginate(10);
         return TransactionResource::collection($transactions);
     }
 

@@ -6,8 +6,8 @@ class UserService {
     //return axios.get(API_URL + 'vcards');
   }
 
-  getUserBoard() {
-    return axios.get('users', { headers: authHeader() });
+  async getUserBoard(link='users?page=1') {
+    return await axios.get(link, { headers: authHeader() });
   }
 
   getUser(id){

@@ -4,6 +4,7 @@
     :transactions="transactions"
     :showId="false"
     @edit="editTransaction"
+    @list="list"
   ></transactions-table>
   </div>
 </template>
@@ -32,22 +33,25 @@ export default {
   methods: {
     editTransaction(transaction){
       console.log(transaction);
+    },
+    list(link){
+        TransactionService.getTransactionBoard(link).then(
+            ({data}) => {
+                this.transactions = data;
+            },
+            (error) => {
+                this.content =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            }
+        );
     }
   },
   mounted() {
-    TransactionService.getTransactionBoard().then(
-      (transactions) => {
-        this.transactions = transactions.data.data;
-      },
-      (error) => {
-        this.content =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-      }
-    );
+    this.list();
   },
 };
 </script>

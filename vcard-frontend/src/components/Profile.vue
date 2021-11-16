@@ -97,13 +97,6 @@ export default {
       }
     }
   },
-  watch: {
-    isUserVisible(value) {
-      if (value === true) {
-        console.log(value);
-      }
-    },
-  },
 };
 </script>
 

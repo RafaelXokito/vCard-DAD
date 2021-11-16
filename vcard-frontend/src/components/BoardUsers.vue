@@ -4,6 +4,7 @@
     :users="users"
     :showId="false"
     @edit="editUser"
+    @list="list"
   ></user-table>
   </div>
 </template>
@@ -32,23 +33,26 @@ export default {
   methods: {
     editUser(user){
       console.log(user);
+    },
+    list(link){
+        UserService.getUserBoard(link).then(
+            ({data}) => {
+              console.log(data);
+              this.users = data;
+            },
+            (error) => {
+                this.content =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            }
+        );
     }
   },
   mounted() {
-    UserService.getUserBoard().then(
-      (users) => {
-        console.log(users);
-        this.users = users.data.data;
-      },
-      (error) => {
-        this.content =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-      }
-    );
+    this.list();
   },
 };
 </script>

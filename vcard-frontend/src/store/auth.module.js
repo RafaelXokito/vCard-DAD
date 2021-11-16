@@ -40,6 +40,7 @@ export const auth = {
     confirmationCode({ commit }, user) {
       return AuthService.confirmationCode(user).then(
         () => {
+          commit('confirmationCodeSuccess');
           return Promise.resolve();
         },
         error => {
@@ -72,7 +73,9 @@ export const auth = {
     registerFailure(state) {
       state.status.loggedIn = false;
       state.user = null;
-      
+    },
+    confirmationCodeSuccess(state) {
+      state.status.loggedIn;
     },
   }
 };
