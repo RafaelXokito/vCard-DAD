@@ -14,6 +14,11 @@ class TransactionService {
     return axios.get('transactions/' + id, { headers: authHeader() });
   }
 
+  postTransaction(transaction){
+    transaction["type"] = "D";
+    return axios.post('transactions',transaction, { headers: authHeader() })
+  }
+
   getAdminBoard() {
     //return axios.get(API_URL + 'administrators', { headers: authHeader() });
   }

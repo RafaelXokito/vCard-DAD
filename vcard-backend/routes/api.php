@@ -19,17 +19,17 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::middleware(['auth:api'])->group(function () {
+Route::middleware(['auth:api','can:accessCritial,App\Models\VCard'])->group(function () {
     //CATEGORIES
-    Route::get('categories', [CategoryController::class, 'getCategories']);
+    Route::get('categories', [CategoryController::class, 'getCategories'])->middleware('can:viewAny,App\Models\Category');
 
-    Route::get('categories/{category}', [CategoryController::class, 'getCategory']);
+    Route::get('categories/{category}', [CategoryController::class, 'getCategory'])->middleware('can:view,category');;
 
-    Route::get('vcards/{vcard}/categories', [CategoryController::class, 'getCategoriesByVcard']);
+    Route::get('vcards/{vcard}/categories', [CategoryController::class, 'getCategoriesByVcard'])->middleware('can:view,vcard');
 
     Route::get('categories/{transaction}/category', [CategoryController::class, 'getCategoryByTransaction']);
 
-    Route::post('categories', [CategoryController::class, 'postCategory']);
+    Route::post('categories', [CategoryController::class, 'postCategory'])->middleware('can:create,App\Models\Category');;
 
     Route::patch('categories/{category}', [CategoryController::class, 'putCategory']);
 
@@ -69,7 +69,15 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::get('users', [UserController::class, 'getUsers'])->middleware('can:viewAny,App\Models\User');
 
-    Route::post('users/{user}/confirmationCode', [AuthController::class, 'confirmationCode'])->middleware('can:view,user');
+    Route::post('vards/{vcard}/confirmationCode', [AuthController::class, 'confirmationCode'])->middleware('can:view,vcard');
+
+    Route::get('vards/{vcard}/makeConfirmationPhoneNumber', [AuthController::class, 'makeConfirmationPhoneNumber']);//->middleware('can:view,vcard');
+
+    Route::post('vards/{vcard}/verifyConfirmationPhoneNumber', [AuthController::class, 'verifyConfirmationPhoneNumber']);//->middleware('can:view,vcard');
+
+    Route::get('vards/{vcard}/closeConfirmationPhoneNumber', [AuthController::class, 'cancelConfirmationPhoneNumber']);//->middleware('can:view,vcard');
+
+    Route::get('vards/{vcard}/checkConfirmationPhoneNumber', [AuthController::class, 'checkConfirmationPhoneNumber']);//->middleware('can:view,vcard');
 });
 
 Route::post('registerVCard', [AuthController::class, 'registerVCard']);

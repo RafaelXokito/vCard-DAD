@@ -32,11 +32,12 @@
                 <span> Login</span>
               </button>
             </div>
-
-            <div class="form-group">
-              <div v-if="message" class="alert alert-danger" role="alert">
-                {{ message }}
-              </div>
+            <div class="form-group" v-if="message">
+              <ul class="alert alert-danger" role="alert">
+                <li v-for="(value, key) in errors" :key="key">
+                  {{value[0]}}
+                </li>
+              </ul>
             </div>
           </Form>
         </div>
@@ -71,6 +72,7 @@ export default {
       loading: false,
       message: "",
       schema,
+      errors: {}
     };
   },
   computed: {
@@ -80,7 +82,7 @@ export default {
   },
   created() {
     if (this.loggedIn) {
-      this.$router.push("/profile");
+      this.$router.push("/");
     }
   },
   methods: {
@@ -89,10 +91,11 @@ export default {
       if (user != null)
       this.$store.dispatch("auth/login", user).then(
         () => {
-          this.$router.push("/profile");
+            this.$router.push("/");
         },
         (error) => {
           this.loading = false;
+          this.errors = error.response.data.errors;
           this.message =
             (error.response &&
               error.response.data &&
@@ -186,7 +189,9 @@ form{
 	background-color: #23a0ed;
 	color:#fff;
 }
-
+ul {
+  list-style-type: none;
+}
 .error-feedback{
   color: #db3b3b;
   font-size: 12px;

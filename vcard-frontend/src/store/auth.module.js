@@ -1,4 +1,5 @@
 import AuthService from '../services/auth.service';
+import VCardService from '../services/vcard.service';
 
 const user = JSON.parse(localStorage.getItem('user'));
 const initialState = user
@@ -48,6 +49,17 @@ export const auth = {
         }
       );
     },
+    updateVCardBalance({ commit }, user) {
+      return VCardService.getVCard(user["id"],`vcards/${user["id"]}?balance=true`).then(
+        user => {
+          commit('updateBalance',user);
+          return Promise.resolve();
+        },
+        error => {
+          return Promise.reject(error);
+        }
+      )
+    },
   },
   mutations: {
     loginSuccess(state, user) {
@@ -77,5 +89,8 @@ export const auth = {
     confirmationCodeSuccess(state) {
       state.status.loggedIn;
     },
+    updateBalance(state, user) {
+      state.user = user;
+    }
   }
 };

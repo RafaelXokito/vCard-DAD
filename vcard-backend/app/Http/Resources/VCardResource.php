@@ -12,8 +12,17 @@ class VCardResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
+    public static $format = "default";
     public function toArray($request)
     {
-        return parent::toArray($request);
+        switch (VCardResource::$format) {
+            case 'balance':
+                return [
+                    'balance' => $this->balance,
+                ];
+                break;
+            default:
+                return parent::toArray($request);
+        }
     }
 }

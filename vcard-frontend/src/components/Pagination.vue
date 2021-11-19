@@ -45,7 +45,6 @@ export default {
     },
     computed: {
         links(){
-            console.log(this.data)
             return this.data.meta.links.filter((e, index) => {return index !== 0 && index !== this.data.meta.links.length-1})
         },
         next(){

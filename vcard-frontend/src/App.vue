@@ -29,6 +29,13 @@
               </router-link>
             </li>
           </div>
+          <div class="navbar-nav" v-if="$route.name== 'createTransaction'">
+            <li class="nav-item">
+                <router-link to="register" class="nav-link">
+                  {{ currentUser.balance }}<font-awesome-icon icon="euro-sign" /> 
+                </router-link>
+            </li>
+          </div>
           <div v-if="currentUser" class="navbar-nav ml-auto">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item dropdown">
@@ -76,7 +83,7 @@ export default {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
     }
-  }
+  },
 };
 </script>
 

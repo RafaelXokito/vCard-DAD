@@ -14,22 +14,25 @@ class CategoryPolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        return true;
+        //return false;
     }
 
     public function viewAny(User $user)
     {
-        return false;
+        return true;
     }
 
     public function view(User $user, Category $category)
     {
-        return true;
+        if ($category->vcard == $user->vcard_ref->phone_number) {
+            return true;
+        }
+        return false;
     }
 
     public function create(User $user)
     {
-        return false;
+        return $user->user_type == 'V';
     }
 
     public function store(User $user)

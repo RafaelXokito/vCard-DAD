@@ -13,7 +13,7 @@ class UserPolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        return true;
+        //return false;
     }
 
     public function viewAny(User $user)
@@ -24,7 +24,7 @@ class UserPolicy
     public function view(User $user, User $user2)
     {
         if ($user2->id == $user->id) {
-            return false;
+            return true;
         }
         return false;
     }

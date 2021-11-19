@@ -123,7 +123,6 @@ export default {
   },
   watch:{
     users(newVal){
-      console.log(newVal)
       if (newVal) {
         this.isTableVisible = true;
       }

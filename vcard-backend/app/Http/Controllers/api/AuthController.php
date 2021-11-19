@@ -10,22 +10,20 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\VCard;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\NotificationController;
 
 class AuthController extends Controller
 {
     const PASSPORT_SERVER_URL = "http://localhost";
     const CLIENT_ID = 2;
-    const CLIENT_SECRET = 'gLptW4CUN5LQOLOiZYw2EcAchleK1ORMYMuDfvvV';
+
     public function signin (SigninPost $request, $default = true) {
-        //TODO PostSignin
         if ($default) {
             $validator = $request->validated();
         }else {
@@ -35,7 +33,7 @@ class AuthController extends Controller
         request()->request->add([
             'grant_type' => 'password',
             'client_id' => self::CLIENT_ID,
-            'client_secret' => self::CLIENT_SECRET,
+            'client_secret' => env('PASSPORT_SECRET'),
             'username' => $validator["username"],
             'password' => $validator["password"],
             'scope' => ''
@@ -54,14 +52,14 @@ class AuthController extends Controller
                 $auxResponse["id"] = Auth::user()->id;
             }else {
                 $auxResponse = json_decode((string) $response->content(), true);
-
             }
+
             return response()->json(
                 ["user" => $auxResponse]
             );
         } else {
             return response()->json(
-                ['msg' => 'User credentials are invalid'], $errorCode
+                ["message" => "The given data was invalid.","errors" => ["auth"=>["User credentials are invalid."]]], $errorCode
             );
         }
     }
@@ -79,6 +77,7 @@ class AuthController extends Controller
         $validator = $request->validated();
         DB::beginTransaction();
 
+
         try {
             $vcard->phone_number = $validator["phone_number"];
             $vcard->name = $validator["name"];
@@ -88,9 +87,14 @@ class AuthController extends Controller
             }
             $vcard->password = bcrypt($validator["password"]);
             $vcard->confirmation_code = bcrypt($validator["confirmation_code"]);
+
+            $vcard->custom_data = json_encode(["phonenumber_confirmed"=> "false"]);
+
             $vcard->blocked = false;
+
             $vcard->save();
             DB::commit();
+
 
             $requestSignin = new SigninPost(['username' => $validator["phone_number"], 'password' => $validator["password"]]);
 
@@ -105,10 +109,10 @@ class AuthController extends Controller
         }
     }
 
-    public function confirmationCode(ConfirmationCodePost $request, User $user)
+    public function confirmationCode(ConfirmationCodePost $request, User $vcard)
     {
         $validator = $request->validated();
-        if (Hash::check($validator["confirmationCode"], $user->vcard_ref->confirmation_code)) {
+        if (Hash::check($validator["confirmationCode"], $vcard->vcard_ref->confirmation_code)) {
             return response()->json(
                 ['code'      =>  200,
                 'message'   =>  "Confirmation Code matched!"]
@@ -120,5 +124,80 @@ class AuthController extends Controller
             , 422);
         }
 
+    }
+
+    public function makeConfirmationPhoneNumber()
+    {
+        $vcard = Auth::user()->vcard_ref;
+        $custom_data = $vcard->custom_data;
+        $custom_data = json_decode((string) $custom_data, true);
+
+        $response = NotificationController::makeVerification();
+        $custom_data["phonenumber_confirmed"] = $response->getRequestId();
+
+        $vcard->custom_data = json_encode($custom_data);
+        $vcard->save();
+        return response()->json(
+            ['code'      =>  200,
+            'message'   =>  "Confirmation Phone Code Generated!"]
+        , 200);
+        //return NotificationController::makeVerification();
+    }
+
+    public function verifyConfirmationPhoneNumber(Request $request)
+    {
+        $vcard = Auth::user()->vcard_ref;
+        $custom_data = $vcard->custom_data;
+        $custom_data = json_decode((string) $custom_data, true);
+
+        $result = NotificationController::verifyVerification($custom_data["phonenumber_confirmed"], $request->code);
+        if ($result->getRequestData()["status"] == 0) {
+            $custom_data["phonenumber_confirmed"] = true;
+            $vcard->custom_data = json_encode($custom_data);
+            $vcard->save();
+
+            return response()->json(
+                ['code'      =>  200,
+                'message'   =>  "Confirmation Phone Code matched!"]
+            , 200);
+        }
+        if ($result->getRequestData()["status"] == 16) {
+            return response()->json(
+                ['code'      =>  422,
+                'message'   =>  $result->getResponseData()["error_text"]]
+            , 422);
+        }
+        return response()->json(
+            ['code'      =>  500,
+            'message'   =>  $result->getResponseData()]
+        , 500);
+    }
+
+    public function cancelConfirmationPhoneNumber()
+    {
+
+        $vcard = Auth::user()->vcard_ref;
+        $custom_data = $vcard->custom_data;
+        $custom_data = json_decode((string) $custom_data, true);
+
+        return NotificationController::cancelVerification($custom_data["phonenumber_confirmed"]);
+    }
+
+    public function checkConfirmationPhoneNumber()
+    {
+        $vcard = Auth::user()->vcard_ref;
+        $custom_data = $vcard->custom_data;
+        $custom_data = json_decode((string) $custom_data, true);
+
+        if ($custom_data["phonenumber_confirmed"] == "true") {
+            return response()->json(
+                ['code'      =>  200,
+                'message'   =>  "Confirmation Phone Code Done!"]
+            , 200);
+        }
+        return response()->json(
+            ['code'      =>  300,
+            'message'   =>  "Confirmation Phone Code Not Done!"]
+        , 200);
     }
 }

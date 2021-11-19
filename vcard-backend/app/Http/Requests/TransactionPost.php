@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\PaymentType;
 use App\Models\VCard;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class TransactionPost extends FormRequest
@@ -16,7 +17,7 @@ class TransactionPost extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -26,10 +27,7 @@ class TransactionPost extends FormRequest
      */
     public function rules()
     {
-        $data = $this->request->all();
-        //return ['payment_type' => "", 'payment_reference' => ""];
         return [
-            'vcard'             => ['required','bail','exists:vcards,phone_number'],
             'type'              => ['required','bail', Rule::in(['D'/*, 'C'*/])],
             'value'             => ['required','bail','numeric', function ($attribute, $value, $fail) {
                                         if ($value <= 0) {
@@ -38,18 +36,18 @@ class TransactionPost extends FormRequest
                                         if (!preg_match("/^[0-9]+(\.[0-9]{1,2})?$/", $value)) {
                                             $fail('The value need to have two decimal places.');
                                         }
-                                        if ($value > VCard::findOrFail($this->vcard)->balance) {
+                                        if ($value > VCard::findOrFail(Auth::user()->vcard_ref->phone_number)->balance) {
                                             $fail('Dont have enough balance to complete this transaction.');
                                         }
-                                        if ($value > VCard::findOrFail($this->vcard)->max_debit) {
-                                            $fail('Dont have enough balance to complete this transaction.');
+                                        if ($value > VCard::findOrFail(Auth::user()->vcard_ref->phone_number)->max_debit) {
+                                            $fail('The value exced the max debit per transaction transaction.');
                                         }
                                     }],
-            'category_id'       => ['nullable','exists:categories,id'],
+            'category'       => ['nullable','exists:categories,id'],
             'payment_type'      => ['required','bail','exists:payment_types,code'],
             'payment_reference' => ['required',function($attribute, $value, $fail) {
                                             if (!preg_match("/^".PaymentType::findOrFail($this->request->all()["payment_type"])->validation_rules["regex"]."?$/", $value)) {
-                                                $fail('The value need to have two decimal places.');
+                                                $fail('Invalid Payment Reference format.');
                                             }
                                         }],
             'description'       => 'nullable',

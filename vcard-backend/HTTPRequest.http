@@ -77,7 +77,7 @@ POST http://localhost/api/transactions
 Content-Type: application/json
 
 {
-  "vcard": "900000008",
+  "vcard": "900000008", //Came with Auth
   "type": "D",
   "value": "1.00",
   "payment_type": "VCARD",

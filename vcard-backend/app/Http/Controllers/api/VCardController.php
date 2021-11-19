@@ -19,6 +19,10 @@ class VCardController extends Controller
 
     public function getVcard(Request $request, VCard $vcard)
     {
+        if ($request->has("balance") && $request->balance == true) {
+            VCardResource::$format = "balance";
+        }
+
         return new VCardResource($vcard);
     }
 

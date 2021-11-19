@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\HasApiTokens;
 
@@ -53,7 +54,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function findForPassport($username)
     {
-        return $this->where('username', $username)->where('blocked', 0)->first();
+        //$vcards = VCard::where('custom_data','like', '%"phonenumber_confirmed": true%')->pluck('phone_number');->whereIn('id', $vcards)
+        return $this->where('username', $username)->where('deleted_at', NULL)->where('blocked', 0)->first();
     }
 
     public function validateForPassportPasswordGrant($password)

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryPost;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Models\Transaction;
@@ -10,6 +11,8 @@ use App\Models\User;
 use App\Models\VCard;
 use Facade\FlareClient\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -34,7 +37,16 @@ class CategoryController extends Controller
 
     public function getCategoriesByVcard(Request $request, VCard $vcard)
     {
-        return new CategoryResource($vcard->categories);
+        $categories = $vcard->categories();
+        if ($request->has("type")) {
+            $categories = $categories->where("type", $request->type);
+        }
+        if ($request->has("page")) {
+            $categories = $categories->paginate(15);
+        }else {
+            $categories = $categories->get();
+        }
+        return CategoryResource::collection($categories);
     }
 
     public function getCategoryByTransaction(Request $request, Transaction $transaction)
@@ -42,19 +54,20 @@ class CategoryController extends Controller
         return new CategoryResource($transaction->category);
     }
 
-    public function postCategory(Request $request)
+    public function postCategory(CategoryPost $request)
     {
         $category = new Category();
-        $category->vcard = VCard::findOrFail($request->vcard)->phone_number;
+        $category->vcard = Auth::user()->vcard_ref->phone_number;
+        $validator = $request->validated();
         try {
-            if ($request->type != 'C' && $request->type != 'D') {
+            /*if ($validator["type"] != 'C' && $validator["type"] != 'D') {
                 return response()->json(array(
                     'code'      =>  400,
                     'message'   =>  "Type of category should be 'C' (Credit) or 'D' (Debit)."
                     ), 400);
-            }
-            $category->type = $request->type;
-            $category->name = strtolower($request->name);
+            }*/
+            $category->type = $validator["type"];
+            $category->name = strtolower($validator["name"]);
             $category->save();
 
             return new CategoryResource($category);

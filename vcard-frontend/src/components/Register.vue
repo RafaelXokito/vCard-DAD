@@ -136,10 +136,10 @@ export default {
       this.loading = true;
       this.$store.dispatch("auth/register", user).then(
         () => {
-          this.$router.push("/profile");
+          this.$router.push("confirmationPhoneNumber");
         },
         (error) => {
-          console.log(error.response.data.errors);
+          this.loading = false;
           this.errors = error.response.data.errors;
           this.message =
             (error.response &&

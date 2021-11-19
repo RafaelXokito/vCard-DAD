@@ -5,19 +5,20 @@
     <div class="col-md-4 text-center company__info">
       <span class="company__logo"><img :src="this.logoImageURL"></span>
     </div>
-    <div class="col-md-8 col-xs-12 col-sm-12 confirmationCode_form ">
+    <div class="col-md-8 col-xs-12 col-sm-12 confirmationPhoneNumber_form ">
       <div class="container-fluid">
         <button type="button" class="close" @click="close" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         <div class="row p-3">
-          <h2 class="w-75 mx-auto">Confirmation Code</h2>
+          <h2 class="w-75 mx-auto">Confirm Phone Number</h2>
+          <h6 class="w-75 mx-auto">Check your phone number and insert the validation code that you recieved</h6>
         </div>
         <div class="row">
-          <Form @submit="handleConfirmationCode" :validation-schema="schema" class="w-75 mx-auto">
+          <Form @submit="handleConfirmationPhoneNumber" :validation-schema="schema" class="w-75 mx-auto">
             <div class="form-group">
-              <Field name="confirmationCode" type="password" class="form-control" />
-              <ErrorMessage name="confirmationCode" class="error-feedback" />
+              <Field name="code" type="text" class="form-control" />
+              <ErrorMessage name="code" class="error-feedback" />
             </div>
 
             <div class="form-group">
@@ -48,8 +49,10 @@
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
+import VCardService from "../services/vcard.service"
+
 export default {
-  name: "ConfirmationCode",
+  name: "ConfirmationPhoneNumber",
   components: {
     Form,
     Field,
@@ -57,7 +60,7 @@ export default {
   },
   data() {
     const schema = yup.object().shape({
-      confirmationCode: yup.string().required("Confirmation Code is required!"),
+      code: yup.string().required("Confirmation Phone Number is required!"),
     });
 
     return {
@@ -66,46 +69,42 @@ export default {
       schema,
     };
   },
-  
-  created() {
-    if (this.confirmationCode) {
-      this.$router.go(-1);
-    }
-  },
   props: {
-    forceConfirmationCode: {
+    forceConfirmationPhoneNumber: {
       type: Boolean,
       default: false,
-    },
-  },
-  computed: {
-    confirmationCode() {
-      return this.forceConfirmationCode ? '' : this.$store.state.auth.user.confirmationCode ?? this.$store.state.auth.user.user_type == 'A';
     },
   },
   emits: [
     'success',
   ],
+  created() {
+    this.loading = true;
+    this.message = "";
+    let user = this.$store.state.auth.user;
+    VCardService.makeConfirmationPhoneNumber(user).then(
+        () => {
+          this.loading = false;
+        },
+        (error) => {
+        this.loading = false;
+        this.message =
+            (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+            error.message ||
+            error.toString();
+        }
+    );
+  },
   methods: {
-    handleConfirmationCode(user) {
+    handleConfirmationPhoneNumber(user) {
         this.loading = true;
         this.message = "";
         user["id"] = this.$store.state.auth.user.id;
-        this.$store.dispatch("auth/confirmationCode", user).then(
+        VCardService.verifyConfirmationPhoneNumber(user).then(
             () => {
-                this.$store.dispatch("auth/updateVCardBalance", user).then(() => {
-                  this.loading = false;
-                  this.close(true);
-                },
-                (error) => {
-                  this.loading = false;
-                  this.message =
-                      (error.response &&
-                      error.response.data &&
-                      error.response.data.message) ||
-                      error.message ||
-                      error.toString();
-                })
+                this.$router.back();
             },
             (error) => {
             this.loading = false;
@@ -118,14 +117,29 @@ export default {
             }
         );
     },
-    close(bool=false){
-      if (this.forceConfirmationCode) {
-        this.$emit('success', {"confirmationCode": bool})
-      } else {
-        this.$router.go(-1);
-      }
-    }
+    close(){
+      this.$router.back();
+    },
+    beforeDestroy() {
+      let user = {};
+      user["id"] = this.$store.state.auth.user.id;
+      VCardService.closeConfirmationPhoneNumber(user).then(
+          (e) => {
+            console.log(e);
+          },
+          (error) => {
+          this.loading = false;
+          this.message =
+              (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+              error.message ||
+              error.toString();
+          }
+      );
+    },
   },
+
 };
 </script>
 
@@ -157,7 +171,7 @@ export default {
 	.company__info{
 		display: none;
 	}
-	.confirmationCode_form{
+	.confirmationPhoneNumber_form{
 		border-top-left-radius:20px;
 		border-bottom-left-radius:20px;
 	}
@@ -168,7 +182,7 @@ export default {
 .row > h2{
 	color:#23a0ed;
 }
-.confirmationCode_form{
+.confirmationPhoneNumber_form{
 	background-color: #fff;
 	border-top-right-radius:20px;
 	border-bottom-right-radius:20px;
