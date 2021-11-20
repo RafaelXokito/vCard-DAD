@@ -29,14 +29,14 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\VCard'])->group(func
 
     Route::get('categories/{transaction}/category', [CategoryController::class, 'getCategoryByTransaction']);
 
-    Route::post('categories', [CategoryController::class, 'postCategory'])->middleware('can:create,App\Models\Category');;
+    Route::post('categories', [CategoryController::class, 'postCategory'])->middleware('can:create,App\Models\Category');
 
     Route::patch('categories/{category}', [CategoryController::class, 'putCategory']);
 
     Route::delete('categories/{category}', [CategoryController::class, 'deleteCategory']);
 
     //TRANSACTIONS
-    Route::get('transactions', [TransactionController::class, 'getTransactions']);
+    Route::get('transactions', [TransactionController::class, 'getTransactions'])->middleware('can:view,App\Models\Transaction');
 
     Route::get('transactions/{transaction}', [TransactionController::class, 'getTransaction']);
 

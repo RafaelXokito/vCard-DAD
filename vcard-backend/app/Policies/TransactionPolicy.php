@@ -14,7 +14,9 @@ class TransactionPolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        return false;
+        if ($user->user_type == 'A') {
+            return true;
+        }
     }
 
     public function viewAny(User $user)
@@ -24,7 +26,7 @@ class TransactionPolicy
 
     public function view(User $user, Transaction $transaction)
     {
-        return true;
+		return true;
     }
 
     public function create(User $user)

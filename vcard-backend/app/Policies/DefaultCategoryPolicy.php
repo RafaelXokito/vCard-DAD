@@ -14,7 +14,9 @@ class DefaultCategoryPolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        return false;
+        if ($user->user_type == 'A') {
+            return true;
+        }
     }
 
     public function viewAny(User $user)

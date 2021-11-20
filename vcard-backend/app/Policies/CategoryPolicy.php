@@ -14,7 +14,9 @@ class CategoryPolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        //return false;
+        if ($user->user_type == 'A') {
+            return true;
+        }
     }
 
     public function viewAny(User $user)
@@ -40,18 +42,27 @@ class CategoryPolicy
         return false;
     }
 
-    public function edit(User $user)
+    public function edit(User $user, Category $category)
     {
+        if ($category->vcard == $user->vcard_ref->phone_number) {
+            return true;
+        }
         return false;
     }
 
-    public function update(User $user)
+    public function update(User $user, Category $category)
     {
+        if ($category->vcard == $user->vcard_ref->phone_number) {
+            return true;
+        }
         return false;
     }
 
-    public function delete(User $user)
+    public function delete(User $user, Category $category)
     {
+        if ($category->vcard == $user->vcard_ref->phone_number) {
+            return true;
+        }
         return false;
     }
 
@@ -60,8 +71,11 @@ class CategoryPolicy
         return false;
     }
 
-    public function forceDelete(User $user)
+    public function forceDelete(User $user, Category $category)
     {
+        if ($category->vcard == $user->vcard_ref->phone_number) {
+            return true;
+        }
         return false;
     }
 }

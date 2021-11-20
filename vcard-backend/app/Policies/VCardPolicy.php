@@ -14,7 +14,9 @@ class VCardPolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        //
+        if ($user->user_type == 'A') {
+            return true;
+        }
     }
 
     public function viewAny(User $user)
@@ -32,7 +34,7 @@ class VCardPolicy
 
     public function create(User $user)
     {
-        return false;
+        return true;
     }
 
     public function store(User $user)
@@ -40,18 +42,27 @@ class VCardPolicy
         return false;
     }
 
-    public function edit(User $user)
+    public function edit(User $user, User $vcard)
     {
+        if ($user->vcard_ref->id == $vcard->phone_number) {
+            return true;
+        }
         return false;
     }
 
-    public function update(User $user)
+    public function update(User $user, User $vcard)
     {
+        if ($user->vcard_ref->id == $vcard->phone_number) {
+            return true;
+        }
         return false;
     }
 
-    public function delete(User $user)
+    public function delete(User $user, User $vcard)
     {
+        if ($user->vcard_ref->id == $vcard->phone_number) {
+            return true;
+        }
         return false;
     }
 
@@ -62,9 +73,9 @@ class VCardPolicy
 
     public function accessCritial(User $user)
     {
-        if ($user->user_type == 'A') {
+        /*if ($user->user_type == 'A') {
             return true;
-        }
+        }*/
         $vcard = $user->vcard_ref;
         if (!$vcard->custom_data) {
             return false;
