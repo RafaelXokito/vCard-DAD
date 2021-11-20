@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import CategoryService from "../services/category.service";
+import CategoryService from "../../services/category.service";
 
 import CategoriesTable from "./CategoriesTable.vue"
 import CreateCategory from './CreateCategory.vue'

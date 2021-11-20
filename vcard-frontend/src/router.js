@@ -1,17 +1,20 @@
-import { createWebHistory, createRouter } from "vue-router";
-import Home from "./components/Home.vue";
-import Login from "./components/Login.vue";
-import Register from "./components/Register.vue";
-import ConfirmationCode from "./components/ConfirmationCode.vue";
-import ConfirmationPhoneNumber from "./components/ConfirmationPhoneNumber.vue";
-import CreateTransaction from "./components/CreateTransaction.vue";
+import { createWebHistory, createRouter } from "vue-router"
+import Dashboard from "./components/Dashboard.vue"
+import Login from "./components/auth/Login.vue"
+import Register from "./components/auth/Register.vue"
+import ConfirmationCode from "./components/auth/ConfirmationCode.vue"
+import ConfirmationPhoneNumber from "./components/auth/ConfirmationPhoneNumber.vue"
+import CreateTransaction from "./components/transactions/CreateTransaction.vue"
+import CreateCategory from "./components/categories/CreateCategory.vue"
+import ChangeConfirmationCode from "./components/auth/ChangeConfirmationCode.vue"
+import ChangePassword from "./components/auth/ChangePassword.vue"
 
 // lazy-loaded
-const Profile = () => import("./components/Profile.vue")
-const BoardAdmin = () => import("./components/BoardAdmin.vue")
-const BoardUsers = () => import("./components/BoardUsers.vue")
-const BoardTransactions = () => import("./components/BoardTransactions.vue")
-const BoardCategories = () => import("./components/BoardCategories.vue")
+const Profile = () => import("./components/profile/Profile.vue")
+const BoardAdmin = () => import("./components/admin/BoardAdmin.vue")
+const BoardUsers = () => import("./components/users/BoardUsers.vue")
+const BoardTransactions = () => import("./components/transactions/BoardTransactions.vue")
+const BoardCategories = () => import("./components/categories/BoardCategories.vue")
 
 const routes = [
   {
@@ -26,14 +29,28 @@ const routes = [
   },
   {
     path: "/",
-    name: "home",
-    component: Home,
+    name: "dashboard",
+    component: Dashboard,
   },
   {
     path: '/confirmationCode',
     component: ConfirmationCode,
     props: true,
     name: "confirmationCode",
+    // lazy-loaded
+  },
+  {
+    path: '/changePassword',
+    component: ChangePassword,
+    props: true,
+    name: "changePassword",
+    // lazy-loaded
+  },
+  {
+    path: '/changeConfirmationCode',
+    component: ChangeConfirmationCode,
+    props: true,
+    name: "changeConfirmationCode",
     // lazy-loaded
   },
   {
@@ -63,7 +80,7 @@ const routes = [
     component: BoardTransactions,
   },
   {
-    path: "/createTransaction",
+    path: "/transactions/create",
     name: "createTransaction",
     component: CreateTransaction,
   },
@@ -74,16 +91,22 @@ const routes = [
     component: BoardCategories,
   },
   {
+    path: "/categories/create",
+    name: "createCategory",
+    // lazy-loaded
+    component: CreateCategory,
+  },
+  {
     path: "/admin",
     name: "admin",
     // lazy-loaded
     component: BoardAdmin,
   },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
 
-export default router;
+export default router

@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import TransactionService from "../services/transaction.service";
+import TransactionService from "../../services/transaction.service";
 
 import TransactionsTable from "./TransactionsTable.vue"
 

@@ -49,7 +49,7 @@
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
-import VCardService from "../services/vcard.service"
+import VCardService from "../../services/vcard.service"
 
 export default {
   name: "ConfirmationPhoneNumber",

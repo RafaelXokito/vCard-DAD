@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import Pagination from './Pagination.vue'
+import Pagination from '../global/Pagination.vue'
 export default {
 
   name: "CategoryTable",

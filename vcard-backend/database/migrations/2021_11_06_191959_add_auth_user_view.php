@@ -16,11 +16,9 @@ class AddAuthUserView extends Migration
     {
         DB::statement("
       CREATE VIEW view_auth_users AS
-      (
         SELECT phone_number as id, 'V' as user_type, phone_number as username, password, name, email, blocked, confirmation_code, photo_url, deleted_at from vcards
         union
         SELECT id, 'A', email, password, name, email, 0, null, null, null from users
-      )
     ");
     }
 

@@ -96,13 +96,13 @@
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
-import ConfirmationCode from "../components/ConfirmationCode.vue"
+import ConfirmationCode from "../auth/ConfirmationCode.vue"
 
-import PaymentTypeService from "../services/payment-type.service";
-import CategoryService from "../services/category.service";
-import TransactionService from "../services/transaction.service";
+import PaymentTypeService from "../../services/payment-type.service";
+import CategoryService from "../../services/category.service";
+import TransactionService from "../../services/transaction.service";
 
-import Utils from "../utils/utils"
+import Utils from "../../utils/utils"
 
 export default {
     name: "CreateTransaction",
