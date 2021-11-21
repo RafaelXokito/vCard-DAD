@@ -7,12 +7,10 @@
           v-if="showId"
           class="align-middle"
         >#</th>
-        <th class="align-middle">oldBalance</th>
-        <th class="align-middle">newBalance</th>
-        <th class="align-middle">payment_type</th>
-        <th class="align-middle">type</th>
-        <th>
-        </th>
+        <th class="align-middle">Old Balance</th>
+        <th class="align-middle">New Balance</th>
+        <th class="align-middle">Payment Type</th>
+        <th class="align-middle">Type</th>
       </tr>
     </thead>
     <tbody>
@@ -28,24 +26,22 @@
         <td class="align-middle">{{ transaction.old_balance }}</td>
         <td class="align-middle">{{ transaction.new_balance }}</td>
         <td class="align-middle">{{ transaction.payment_type }}</td>
-        <td class="align-middle">{{ transaction.type }}</td>
+        <td class="align-middle">{{ transaction.type == 'C' ? 'Credit' : 'Debit' }}</td>
         <td
           class="text-end align-middle"
         >
           <div class="d-flex justify-content-end">
-            <button
-              class="btn btn-xs btn-light"
-              @click="editClick(transaction)"
-            > <i class="bi bi-xs bi-pencil"></i>e
+            <button class="btn btn-xs btn-warning" @click="editClick(transaction)">
+              <font-awesome-icon :icon="['fas', 'pen']" size="xs" />
             </button>
           </div>
         </td>
       </tr>
     </tbody>
   </table>
-    <div class="row">
-        <pagination class="mx-auto" align="center" :data="transactions" @pagination-change-page="list"></pagination>
-    </div>
+  <div class="d-flex justify-content-center">
+      <pagination class="mx-auto" align="center" :data="transactions" @pagination-change-page="list"></pagination>
+  </div>
 </div>
 </template>
 

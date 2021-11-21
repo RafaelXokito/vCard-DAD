@@ -2,28 +2,28 @@
   <nav aria-label="Page navigation example">
     <ul class="pagination">
         <li class="page-item">
-            <a class="page-link" v-on:click="nextOrPrev(start)" aria-label="Previous">
+            <a class="page-link" v-on:click="nextOrPrev(start)" aria-label="Previous" style="cursor: pointer;">
                 <span aria-hidden="true">&laquo;&laquo;</span>
-                <span class="sr-only">Start</span>
+                <span class="sr-only"></span>
             </a>
         </li>
         <li class="page-item">
-            <a class="page-link" v-on:click="nextOrPrev(prev)" aria-label="Previous">
+            <a class="page-link" v-on:click="nextOrPrev(prev)" aria-label="Previous" style="cursor: pointer;">
                 <span aria-hidden="true">&laquo;</span>
-                <span class="sr-only">Previous</span>
+                <span class="sr-only"></span>
             </a>
         </li>
         <li v-for="(link, index) in links" v-bind:key="index" class="page-item" :class="link.active ? 'active': ''"><a style="cursor: pointer;" class="page-link" v-on:click="paginationChanged(link)">{{link.label}}</a></li>
         <li class="page-item">
-            <a class="page-link" v-on:click="nextOrPrev(next)" aria-label="Next">
+            <a class="page-link" v-on:click="nextOrPrev(next)" aria-label="Next" style="cursor: pointer;">
                 <span aria-hidden="true">&raquo;</span>
-                <span class="sr-only">Next</span>
+                <span class="sr-only"></span>
             </a>
         </li>
         <li class="page-item">
-            <a class="page-link" v-on:click="nextOrPrev(end)" aria-label="Next">
+            <a class="page-link" v-on:click="nextOrPrev(end)" aria-label="Next" style="cursor: pointer;">
                 <span aria-hidden="true">&raquo;&raquo;</span>
-                <span class="sr-only">End</span>
+                <span class="sr-only"></span>
             </a>
         </li>
     </ul>

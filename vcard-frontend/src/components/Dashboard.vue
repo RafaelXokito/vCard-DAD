@@ -1,21 +1,6 @@
 <template>
-  <div class="container">
-    <header class="jumbotron">
-      <div class="row text-center">
-        <div class="col-md-3 col-sm-6">
-          <router-link class="btn btn-primary btn-lg" to="transactions"><span>Transaction List</span></router-link>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <router-link class="btn btn-primary btn-lg" to="createTransaction"><span>Create Transaction</span></router-link>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <router-link class="btn btn-primary btn-lg" to="profile"><span>Profile</span></router-link>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <router-link class="btn btn-primary btn-lg" to="categories"><span>Categories</span></router-link>
-        </div>
-      </div>
-    </header>
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
   </div>
 </template>
 
@@ -24,7 +9,7 @@ export default {
   name: "Dashboard",
   data() {
     return {
-      content: "",
+      content: ''
     };
   },
 };

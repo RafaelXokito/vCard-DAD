@@ -10,8 +10,7 @@
           width="30"
           height="24"
           class="d-inline-block align-text-top"
-        >
-        VCard</a>
+        ></a>
       <button
         id="buttonSidebarExpandId"
         class="navbar-toggler"
@@ -41,7 +40,7 @@
                 class="rounded-circle z-depth-0 avatar-img"
                 alt="avatar image"
               >
-              <span class="avatar-text">Nome de Teste</span>
+              <span class="avatar-text">{{currentUser.username}}</span>
             </a>
             <ul
               class="dropdown-menu dropdown-menu-dark dropdown-menu-end"
@@ -50,9 +49,9 @@
               <li>
                 <router-link
                   class="dropdown-item"
-                  :class="{active: $route.name == 'profile'}"
+                  :class="{active: $route.name === 'profile'}"
                   to="/profile"
-                ><i class="bi bi-person-square"></i>Profile
+                ><font-awesome-icon :icon="['fas', 'address-card']" size="lg" /> Profile
                 </router-link>
               </li>
               <li>
@@ -61,7 +60,7 @@
                   :class="{active: $route.name === 'changePassword'}"
                   to="/changePassword"
                 >
-                  <i class="bi bi-key-fill"></i>Change password
+                  <font-awesome-icon :icon="['fas', 'key']" size="lg" /> Change password
                 </router-link>
               </li>
               <li>
@@ -70,7 +69,7 @@
                   :class="{active: $route.name === 'changeConfirmationCode'}"
                   to="/changeConfirmationCode"
                 >
-                  <i class="bi bi-key-fill"></i>Change confirmation code
+                  <font-awesome-icon :icon="['fas', 'fingerprint']" size="lg" /> Change confirmation code
                 </router-link>
               </li>
               <li>
@@ -102,57 +101,57 @@
           <ul class="nav flex-column">
             <li class="nav-item">
               <router-link
-                class="nav-link"
-                :class="{active: $route.name === 'dashboard'}"
+                class="nav-link py-3"
+                :class="{active: $route.name.includes('dashboard')}"
                 to="/"
-              ><i class="bi bi-house"></i>
-                Dashboard
+              ><font-awesome-icon :icon="['fas', 'home']" size="lg" />
+                . Dashboard
               </router-link>
             </li>
 
             <!-- Admin -->
             <li v-if="currentUser.user_type == 'A'" class="nav-item">
               <router-link
-                class="nav-link w-100 me-3"
-                :class="{active: $route.name === 'users'}"
+                class="nav-link w-100 me-3 py-3"
+                :class="{active: $route.name.includes('users')}"
                 to="/users"
               >
-                <i class="bi bi-people"></i>
-                Users
+                <font-awesome-icon :icon="['fas', 'users']" size="lg" />
+                . Users
               </router-link>
             </li>
 
             <!-- All -->
             <li class="nav-item d-flex justify-content-between align-items-center pe-3">
               <router-link
-                class="nav-link w-100 me-3"
-                :class="{active: $route.name === 'transactions'}"
+                class="nav-link w-100 me-3 py-3"
+                :class="{active: $route.name.includes('transactions')}"
                 to="/transactions"
               >
-                <i class="bi bi-list-check"></i>
-                Transactions
+                <font-awesome-icon :icon="['fas', 'money-bill-wave']" size="lg" />
+                . Transactions
               </router-link>
               <router-link
                 class="link-secondary"
                 to="/transactions/create"
                 aria-label="Create Transaction"
-              ><i class="bi bi-xs bi-plus-circle"></i>
+              ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />
               </router-link>
             </li>
             <li class="nav-item d-flex justify-content-between align-items-center pe-3">
               <router-link
-                class="nav-link w-100 me-3"
-                :class="{active: $route.name === 'categories'}"
+                class="nav-link w-100 me-3 py-3"
+                :class="{active: $route.name.includes('categories')}"
                 to="categories"
               >
-                <i class="bi bi-list-check"></i>
-                Categories
+                <font-awesome-icon :icon="['fas', 'layer-group']" size="lg" />
+                . Categories
               </router-link>
               <router-link
                 class="link-secondary"
                 to="/categories/create"
                 aria-label="Create Category"
-              ><i class="bi bi-xs bi-plus-circle"></i>
+              ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />
               </router-link>
             </li>
           </ul>
@@ -176,7 +175,7 @@
                     class="rounded-circle z-depth-0 avatar-img"
                     alt="avatar image"
                   >
-                  <span class="avatar-text">Nome de Teste</span>
+                  <span class="avatar-text">{{currentUser.username}}</span>
                 </a>
                 <ul
                   class="dropdown-menu"
@@ -187,7 +186,7 @@
                       class="dropdown-item"
                       :class="{active: $route.name == 'profile'}"
                       to="/profile"
-                    ><i class="bi bi-person-square"></i>Profile
+                    ><font-awesome-icon :icon="['fas', 'address-card']" size="lg" /> Profile
                     </router-link>
                   </li>
                   <li>
@@ -195,14 +194,14 @@
                       class="dropdown-item"
                       :class="{active: $route.name === 'changePassword'}"
                       to="/changePassword"
-                    ><i class="bi bi-key-fill"></i>Change password</router-link>
+                    ><font-awesome-icon :icon="['fas', 'key']" size="lg" /> Change password</router-link>
                   </li>
                   <li>
                     <router-link
                       class="dropdown-item"
                       :class="{active: $route.name === 'changeConfirmationCode'}"
                       to="changeConfirmationCode"
-                    ><i class="bi bi-key-fill"></i>Change confirmation code</router-link>
+                    ><font-awesome-icon :icon="['fas', 'fingerprint']" size="lg" />Change confirmation code</router-link>
                   </li>
                   <li>
                     <hr class="dropdown-divider">
@@ -219,7 +218,7 @@
         </div>
       </nav>
 
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <main class="ms-sm-auto px-md-4" :class="{'col-md-12 col-lg-12': currentUser == null, 'col-md-9 col-lg-10': currentUser != null, }">
         <router-view></router-view>
       </main>
 
@@ -250,7 +249,7 @@ export default {
 };
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
 @import "./assets/css/dashboard.css";
 
 .avatar-img {
@@ -275,5 +274,9 @@ export default {
 
 #sidebarMenu {
   overflow-y: auto;
+}
+
+.fa-plus-circle:hover {
+    color: black;
 }
 </style>
