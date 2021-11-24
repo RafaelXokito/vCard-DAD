@@ -1,4 +1,7 @@
 <template>
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Categories</h1>
+  </div>
   <div class="container">
       {{content}}
     <create-category @create="createCategory" :messageCreate="messageCreate"></create-category>
@@ -12,7 +15,7 @@
 </template>
 
 <script>
-import CategoryService from "../services/category.service";
+import CategoryService from "../../services/category.service";
 
 import CategoriesTable from "./CategoriesTable.vue"
 import CreateCategory from './CreateCategory.vue'

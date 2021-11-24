@@ -22,13 +22,14 @@ use App\Models\DefaultCategory;
 
 class AuthController extends Controller
 {
-    const PASSPORT_SERVER_URL = "http://localhost";
+    const PASSPORT_SERVER_URL = "http://vcard-backend.test";
     const CLIENT_ID = 2;
 
-    public function signin (SigninPost $request, $default = true) {
+    public function signin(SigninPost $request, $default = true)
+    {
         if ($default) {
             $validator = $request->validated();
-        }else {
+        } else {
             $validator = $request;
         }
 
@@ -52,7 +53,7 @@ class AuthController extends Controller
                 $auxResponse["user_type"] = Auth::user()->user_type;
                 $auxResponse["photo_url"] = Auth::user()->photo_url != null ? "storage/fotos/" . Auth::user()->photo_url : "storage/fotos/default_image.png";
                 $auxResponse["id"] = Auth::user()->id;
-            }else {
+            } else {
                 $auxResponse = json_decode((string) $response->content(), true);
             }
 
@@ -61,12 +62,14 @@ class AuthController extends Controller
             );
         } else {
             return response()->json(
-                ["message" => "The given data was invalid.","errors" => ["auth"=>["User credentials are invalid."]]], $errorCode
+                ["message" => "The given data was invalid.", "errors" => ["auth" => ["User credentials are invalid."]]],
+                $errorCode
             );
         }
     }
 
-    public function logout (Request $request) {
+    public function logout(Request $request)
+    {
         $accessToken = $request->user()->token();
         $token = $request->user()->tokens->find($accessToken);
         $token->revoke();
@@ -74,7 +77,8 @@ class AuthController extends Controller
         return response(['msg' => 'Token revoked'], 200);
     }
 
-    public function registerVCard (VCardPost $request) {
+    public function registerVCard(VCardPost $request)
+    {
         $vcard = new VCard();
         $validator = $request->validated();
         DB::beginTransaction();
@@ -89,7 +93,7 @@ class AuthController extends Controller
             $vcard->password = bcrypt($validator["password"]);
             $vcard->confirmation_code = bcrypt($validator["confirmation_code"]);
 
-            $vcard->custom_data = json_encode(["phonenumber_confirmed"=> "false"]);
+            $vcard->custom_data = json_encode(["phonenumber_confirmed" => "false"]);
 
             $vcard->blocked = false;
 
@@ -117,7 +121,7 @@ class AuthController extends Controller
             return response()->json(array(
                 'code'      =>  400,
                 'message'   =>  $th->getMessage()
-                ), 400);
+            ), 400);
         }
     }
 
@@ -126,16 +130,21 @@ class AuthController extends Controller
         $validator = $request->validated();
         if (Hash::check($validator["confirmationCode"], $vcard->vcard_ref->confirmation_code)) {
             return response()->json(
-                ['code'      =>  200,
-                'message'   =>  "Confirmation Code matched!"]
-            , 200);
-        }else{
+                [
+                    'code'      =>  200,
+                    'message'   =>  "Confirmation Code matched!"
+                ],
+                200
+            );
+        } else {
             return response()->json(
-                ['code'      =>  422,
-                'message'   =>  "Confirmation Code was NOT matched!"]
-            , 422);
+                [
+                    'code'      =>  422,
+                    'message'   =>  "Confirmation Code was NOT matched!"
+                ],
+                422
+            );
         }
-
     }
 
     public function makeConfirmationPhoneNumber()
@@ -150,9 +159,12 @@ class AuthController extends Controller
         $vcard->custom_data = json_encode($custom_data);
         $vcard->save();
         return response()->json(
-            ['code'      =>  200,
-            'message'   =>  "Confirmation Phone Code Generated!"]
-        , 200);
+            [
+                'code'      =>  200,
+                'message'   =>  "Confirmation Phone Code Generated!"
+            ],
+            200
+        );
         //return NotificationController::makeVerification();
     }
 
@@ -169,20 +181,29 @@ class AuthController extends Controller
             $vcard->save();
 
             return response()->json(
-                ['code'      =>  200,
-                'message'   =>  "Confirmation Phone Code matched!"]
-            , 200);
+                [
+                    'code'      =>  200,
+                    'message'   =>  "Confirmation Phone Code matched!"
+                ],
+                200
+            );
         }
         if ($result->getRequestData()["status"] == 16) {
             return response()->json(
-                ['code'      =>  422,
-                'message'   =>  $result->getResponseData()["error_text"]]
-            , 422);
+                [
+                    'code'      =>  422,
+                    'message'   =>  $result->getResponseData()["error_text"]
+                ],
+                422
+            );
         }
         return response()->json(
-            ['code'      =>  500,
-            'message'   =>  $result->getResponseData()]
-        , 500);
+            [
+                'code'      =>  500,
+                'message'   =>  $result->getResponseData()
+            ],
+            500
+        );
     }
 
     public function cancelConfirmationPhoneNumber()
@@ -203,13 +224,19 @@ class AuthController extends Controller
 
         if ($custom_data["phonenumber_confirmed"] == "true") {
             return response()->json(
-                ['code'      =>  200,
-                'message'   =>  "Confirmation Phone Code Done!"]
-            , 200);
+                [
+                    'code'      =>  200,
+                    'message'   =>  "Confirmation Phone Code Done!"
+                ],
+                200
+            );
         }
         return response()->json(
-            ['code'      =>  300,
-            'message'   =>  "Confirmation Phone Code Not Done!"]
-        , 200);
+            [
+                'code'      =>  300,
+                'message'   =>  "Confirmation Phone Code Not Done!"
+            ],
+            200
+        );
     }
 }
