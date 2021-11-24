@@ -16,7 +16,7 @@ const app = createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon);
 
 router.beforeEach((to, from, next) => {
-  let user = JSON.parse(localStorage.getItem('user'));
+  //let user = JSON.parse(localStorage.getItem('user'));
   let auth = store.state.auth;
   if (to.name !== 'login' && to.name !== 'register' && !auth.status.loggedIn) next({ name: 'login' })
   /*else if ( user !== null && (user.user_type !== 'A' && (to.name === 'transactions' ||

@@ -31,8 +31,10 @@ class TransactionController extends Controller
         return new TransactionResource($transaction->pairTransaction);
     }
 
+    //Deprecated - Could use filter
     public function getTransactionsByPaymentType(Request $request, PaymentType $paymentType)
     {
+        trigger_error("Deprecated function called.", E_USER_NOTICE);
         return new TransactionResource($paymentType->transactions);
     }
 
@@ -147,7 +149,9 @@ class TransactionController extends Controller
     public function putTransaction(Request $request, Transaction $transaction)
     {
         $data = $request->all();
-        $transaction->description = $data["description"];
+        if ($request->has("description")) {
+            $transaction->description = $data["description"];
+        }
         if ($request->has("category_id") && $data["category_id"] != null) {
             $transaction->category_id = Category::findOrFail($data["category_id"])->id;
         }else{

@@ -14,9 +14,7 @@ class PaymentTypePolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        if ($user->user_type == 'A') {
-            return true;
-        }
+        //
     }
 
     public function viewAny(User $user)
@@ -24,43 +22,38 @@ class PaymentTypePolicy
         return true;
     }
 
-    public function view(User $user, PaymentType $paymentType)
+    public function view(User $user)
     {
-        return true;
-    }
-
-    public function create(User $user)
-    {
-        return false;
+        return $user->user_type == 'A';
     }
 
     public function store(User $user)
     {
-        return false;
+        return $user->user_type == 'A';
     }
 
     public function edit(User $user)
     {
-        return false;
+        return $user->user_type == 'A';
     }
 
     public function update(User $user)
     {
-        return false;
+        return $user->user_type == 'A';
     }
 
     public function delete(User $user)
     {
-        return false;
+        return $user->user_type == 'A';
     }
 
     public function restore(User $user)
     {
-        return false;
+        return $user->user_type == 'A';
     }
 
     public function forceDelete(User $user)
     {
-        return false;
+        return $user->user_type == 'A';
     }
 }

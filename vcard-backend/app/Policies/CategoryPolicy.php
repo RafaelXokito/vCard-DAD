@@ -32,14 +32,9 @@ class CategoryPolicy
         return false;
     }
 
-    public function create(User $user)
-    {
-        return $user->user_type == 'V';
-    }
-
     public function store(User $user)
     {
-        return false;
+        return $user->user_type == 'V';
     }
 
     public function edit(User $user, Category $category)

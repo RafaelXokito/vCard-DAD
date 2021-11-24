@@ -17,7 +17,7 @@ class TransactionPost extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        return Auth::check() && Auth::user()->user_type == 'V';
     }
 
     /**

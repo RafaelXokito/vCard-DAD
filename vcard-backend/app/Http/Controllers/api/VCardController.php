@@ -7,6 +7,7 @@ use App\Http\Requests\VCardPost;
 use App\Http\Resources\VCardResource;
 use App\Models\VCard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -79,6 +80,29 @@ class VCardController extends Controller
         }
     }
 
+    public function remove(Request $request)
+    {
+        $vcard = Auth::user()->vcard_ref;
+        $oldName = $vcard->name;
+        $oldPhoneNumber = $vcard->phone_number;
+        if ($vcard->balance != 0) {
+            return response()->json(array(
+                'code'      =>  406, //Not Acceptable
+                'message'   =>  "vCard balance may be 0 to remove account!"
+                ), 422); //Not Acceptable
+        }
 
+        if ($vcard->transactions->count() == 0) {
+            $vcard->force_delete();
+        }else {
+            $vcard->softDeletes();
+        }
+
+        return response()->json(array(
+            'code'      =>  200,
+            'message'   =>  "vCard was removed [". $oldPhoneNumber ."]:". $oldName ."!"
+        ), 200);
+
+    }
 
 }

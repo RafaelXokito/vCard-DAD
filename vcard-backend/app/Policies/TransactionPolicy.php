@@ -14,53 +14,51 @@ class TransactionPolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        if ($user->user_type == 'A') {
-            return true;
-        }
+        //return false;
     }
 
     public function viewAny(User $user)
     {
-        return false;
+        return true;
     }
 
     public function view(User $user, Transaction $transaction)
     {
-		return true;
-    }
-
-    public function create(User $user)
-    {
+        if ($transaction->vcard == $user->vcard_ref->phone_number) {
+            return true;
+        }
         return false;
     }
 
-    public function store(User $user)
+    public function viewPair(User $user)
     {
+        if ($user->user_type == 'A') {
+            return true;
+        }
         return false;
     }
 
-    public function edit(User $user)
+    public function store(User $user, Transaction $transaction)
     {
+        if ($transaction->vcard == $user->vcard_ref->phone_number) {
+            return true;
+        }
         return false;
     }
 
-    public function update(User $user)
+    public function edit(User $user, Transaction $transaction)
     {
+        if ($transaction->vcard == $user->vcard_ref->phone_number) {
+            return true;
+        }
         return false;
     }
 
-    public function delete(User $user)
+    public function update(User $user, Transaction $transaction)
     {
-        return false;
-    }
-
-    public function restore(User $user)
-    {
-        return false;
-    }
-
-    public function forceDelete(User $user)
-    {
+        if ($transaction->vcard == $user->vcard_ref->phone_number) {
+            return true;
+        }
         return false;
     }
 }

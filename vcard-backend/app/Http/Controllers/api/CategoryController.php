@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryPatch;
 use App\Http\Requests\CategoryPost;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
@@ -60,12 +61,6 @@ class CategoryController extends Controller
         $category->vcard = Auth::user()->vcard_ref->phone_number;
         $validator = $request->validated();
         try {
-            /*if ($validator["type"] != 'C' && $validator["type"] != 'D') {
-                return response()->json(array(
-                    'code'      =>  400,
-                    'message'   =>  "Type of category should be 'C' (Credit) or 'D' (Debit)."
-                    ), 400);
-            }*/
             $category->type = $validator["type"];
             $category->name = strtolower($validator["name"]);
             $category->save();
@@ -102,6 +97,27 @@ class CategoryController extends Controller
     }
 
     public function putCategory(Request $request, Category $category)
+    {
+        try {
+            if ($category->transactions->count() && $request->type != $category->type) {
+                return "You can't change a category type that already have transactions.";
+            }
+            if ($request->type != 'C' && $request->type != 'D') {
+                return "Type of category should be 'C' (Credit) or 'D' (Debit)";
+            }
+            $category->type = $request->type;
+            $category->name = $request->name;
+            $category->save();
+            return new CategoryResource($category);
+        } catch (\Throwable $th) {
+            return response()->json(array(
+                'code'      =>  400,
+                'message'   =>  $th->getMessage()
+            ), 400);
+        }
+    }
+
+    public function patchCategory(CategoryPatch $request, Category $category)
     {
         try {
             if ($category->transactions->count() && $request->type != $category->type) {

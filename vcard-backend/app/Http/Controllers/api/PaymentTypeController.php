@@ -21,4 +21,9 @@ class PaymentTypeController extends Controller
     {
         return PaymentTypeResource::collection(PaymentType::all());
     }
+
+    public function getPaymentType(PaymentType $paymentType)
+    {
+        return new PaymentTypeResource($paymentType);
+    }
 }

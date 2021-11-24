@@ -15,7 +15,7 @@ class CategoryPost extends FormRequest
      */
     public function authorize()
     {
-        return Auth::check();
+        return Auth::check() && Auth::user()->user_type == 'V';
     }
 
     /**
@@ -26,7 +26,7 @@ class CategoryPost extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required'],
+            'name' => ['required', 'string'],
             'type' => ['required', Rule::in(['D', 'C'])]
         ];
     }

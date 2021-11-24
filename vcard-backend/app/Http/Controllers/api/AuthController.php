@@ -17,6 +17,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\NotificationController;
+use App\Models\Category;
+use App\Models\DefaultCategory;
 
 class AuthController extends Controller
 {
@@ -77,7 +79,6 @@ class AuthController extends Controller
         $validator = $request->validated();
         DB::beginTransaction();
 
-
         try {
             $vcard->phone_number = $validator["phone_number"];
             $vcard->name = $validator["name"];
@@ -91,6 +92,17 @@ class AuthController extends Controller
             $vcard->custom_data = json_encode(["phonenumber_confirmed"=> "false"]);
 
             $vcard->blocked = false;
+
+            $defaultCategories = DefaultCategory::all();
+
+            foreach ($defaultCategories as $defaultCategory) {
+                $newCategory = new Category();
+                $newCategory->vcard = $vcard;
+
+                $newCategory->type = $defaultCategory->type;
+                $newCategory->name = $defaultCategory->name;
+                $newCategory->save();
+            }
 
             $vcard->save();
             DB::commit();
