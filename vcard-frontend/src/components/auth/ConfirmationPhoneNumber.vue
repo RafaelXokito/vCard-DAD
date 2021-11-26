@@ -101,7 +101,7 @@ export default {
     handleConfirmationPhoneNumber(user) {
         this.loading = true;
         this.message = "";
-        user["id"] = this.$store.state.auth.user.id;
+        user["id"] = this.$store.state.auth.user.username;
         VCardService.verifyConfirmationPhoneNumber(user).then(
             () => {
                 this.$router.back();
@@ -122,7 +122,7 @@ export default {
     },
     beforeDestroy() {
       let user = {};
-      user["id"] = this.$store.state.auth.user.id;
+      user["id"] = this.$store.state.auth.user.username;
       VCardService.closeConfirmationPhoneNumber(user).then(
           (e) => {
             console.log(e);

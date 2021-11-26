@@ -8,13 +8,13 @@ import CreateTransaction from "./components/transactions/CreateTransaction.vue"
 import CreateCategory from "./components/categories/CreateCategory.vue"
 import ChangeConfirmationCode from "./components/auth/ChangeConfirmationCode.vue"
 import ChangePassword from "./components/auth/ChangePassword.vue"
-
 // lazy-loaded
 const Profile = () => import("./components/profile/Profile.vue")
 const BoardAdmin = () => import("./components/admin/BoardAdmin.vue")
 const BoardUsers = () => import("./components/users/BoardUsers.vue")
 const BoardTransactions = () => import("./components/transactions/BoardTransactions.vue")
 const BoardCategories = () => import("./components/categories/BoardCategories.vue")
+const CategoriesTable = () => import("./components/categories/CategoriesTable.vue")
 
 const routes = [
   {
@@ -89,12 +89,20 @@ const routes = [
     name: "categories",
     // lazy-loaded
     component: BoardCategories,
-  },
-  {
-    path: "/categories/create",
-    name: "createCategory",
-    // lazy-loaded
-    component: CreateCategory,
+    children: [
+      {
+        path: "",
+        name: "categoriesTable",
+        // lazy-loaded
+        component: CategoriesTable,
+      },
+      {
+        path: "create",
+        name: "createCategory",
+        // lazy-loaded
+        component: CreateCategory,
+      },
+    ]
   },
   {
     path: "/admin",

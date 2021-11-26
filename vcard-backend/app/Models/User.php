@@ -54,7 +54,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function findForPassport($username)
     {
-        //$vcards = VCard::where('custom_data','like', '%"phonenumber_confirmed": true%')->pluck('phone_number');->whereIn('id', $vcards)
+        //$vcards = VCard::where('custom_data','not like', '%"phonenumber_confirmed": true%')->pluck('phone_number');->whereNotIn('id', $vcards)
         return $this->where('username', $username)->where('deleted_at', NULL)->where('blocked', 0)->first();
     }
 

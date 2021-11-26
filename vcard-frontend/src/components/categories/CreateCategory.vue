@@ -38,7 +38,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
 export default {
-    name: "CreateCategory",
+    name: "createCategoryd",
     components: {
         Form,
         Field,

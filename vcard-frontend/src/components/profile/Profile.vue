@@ -91,7 +91,7 @@ export default {
       this.$router.push("/login");
     } else {
       if (this.currentUser.username) {
-        this.user = await UserService.getUser(this.currentUser.id);
+        this.user = await UserService.getUser(this.currentuser.username);
         this.user = this.user.data.data;
         this.isUserVisible = true;
       }

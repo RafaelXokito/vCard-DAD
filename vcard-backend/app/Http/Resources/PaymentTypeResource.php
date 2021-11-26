@@ -15,8 +15,11 @@ class PaymentTypeResource extends JsonResource
     public function toArray($request)
     {
         return [
+			'code' => $this->code,
 			'name' => $this->name,
 			'description' => $this->description,
+			'validation_rules' => $this->validation_rules,
+			'custom_data' => $this->custom_data,
 		];
     }
 }

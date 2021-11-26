@@ -67,6 +67,8 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\VCard'])->group(func
     Route::get('vcards/{vcard}', [VCardController::class, 'getVcard']);
 
     //USERS
+    Route::get('users/me', [UserController::class, 'getMe']);
+
     Route::get('users/{user}', [UserController::class, 'getUser'])->middleware('can:view,user');
 
     Route::get('users', [UserController::class, 'getUsers'])->middleware('can:viewAny,App\Models\User');

@@ -20,8 +20,8 @@
                         <div class="col-sm-3 col-5" v-for="paymentType in paymentTypes" v-bind:key="paymentType.code">
                             <Field v-model="payment_type" type="radio" :id="'paymentType'+paymentType.code" name="payment_type" :title="'Payment Type '+paymentType.code" :value="paymentType.code" class='radio mx-auto d-none'></Field>
                             <label :for="'paymentType'+paymentType.code">
-                                <img v-if="getImage(paymentType.custom_data)" :ref="'paymentType'+paymentType.code" :for="'paymentType'+paymentType.code" :alt="paymentType.code + ' Image'" class="fit-image radio" :src="getImage(paymentType.custom_data)" style="width: 105px; height: 55px;"> 
-                                <span v-else class="radio text-center" :ref="'paymentType'+paymentType.code" style="width: 105px; height: 55px;">{{ paymentType.name }}</span> 
+                                <img v-if="getImage(paymentType.custom_data)" :ref="'paymentType'+paymentType.code" :class="{'selected': paymentType.code == payment_type}" :for="'paymentType'+paymentType.code" :alt="paymentType.code + ' Image'" class="fit-image radio" :src="getImage(paymentType.custom_data)" style="width: 105px; height: 55px;"> 
+                                <span v-else class="radio text-center" :class="{'selected': paymentType.code === payment_type}" style="width: 105px; height: 55px;">{{ paymentType.name }}</span> 
                             </label>
                         </div>
                         <br>
@@ -188,6 +188,7 @@ export default {
         await PaymentTypeService.getPaymentTypeBoard().then(
             ({data}) => {
                 this.paymentTypes = data.data;
+                this.payment_type = "VCARD";
             },
             (error) => {
                 this.messageCreate =
@@ -198,7 +199,7 @@ export default {
                 error.toString();
             }
         );
-        await CategoryService.getCategoryBoard(this.$store.state.auth.user.id,`vcards/${this.$store.state.auth.user.id}/categories?type=D`).then(
+        await CategoryService.getCategoryBoard(this.$store.state.auth.user.username,`vcards/${this.$store.state.auth.user.username}/categories?type=D`).then(
             ({data}) => {
                 this.categories = data.data;
             },
@@ -213,14 +214,6 @@ export default {
         );
         this.loadingDependencies = false;
     },
-    watch: {
-        payment_type(newVal, oldVal){
-            if (oldVal != "") {
-                this.$refs["paymentType"+oldVal].classList.toggle("selected");
-            }
-            this.$refs["paymentType"+newVal].classList.toggle("selected");
-        }
-    }
 }
 </script>
 

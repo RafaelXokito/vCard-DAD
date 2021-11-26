@@ -7,8 +7,8 @@
           v-if="showId"
           class="align-middle"
         >#</th>
-        <th class="align-middle">name</th>
-        <th class="align-middle">type</th>
+        <th class="align-middle">Name</th>
+        <th class="align-middle">Type</th>
         <th>
         </th>
       </tr>
@@ -23,23 +23,21 @@
           v-if="showId"
           class="align-middle"
         >{{ category.id }}</td>
-        <td class="align-middle">{{ category.name }}</td>
+        <td class="align-middle">{{ category.name.charAt(0).toUpperCase() + category.name.slice(1) }}</td>
         <td class="align-middle">{{ category.type }}</td>
         <td
           class="text-end align-middle"
         >
           <div class="d-flex justify-content-end">
-            <button
-              class="btn btn-xs btn-light"
-              @click="editClick(category)"
-            > <i class="bi bi-xs bi-pencil"></i>e
+            <button class="btn btn-xs btn-warning" @click="editClick(transaction)">
+              <font-awesome-icon :icon="['fas', 'pen']" size="xs" />
             </button>
           </div>
         </td>
       </tr>
     </tbody>
   </table>
-    <div class="row">
+    <div class="d-flex justify-content-center">
         <pagination class="mx-auto" align="center" :data="categories" @pagination-change-page="list"></pagination>
     </div>
 </div>
@@ -47,20 +45,17 @@
 
 <script>
 import Pagination from '../global/Pagination.vue'
-export default {
+import CategoryService from "../../services/category.service";
 
-  name: "CategoryTable",
+export default {
+  name: "categoriesTable",
   components: {
       Pagination,
   },
   props: {
-    categories: {
-      type: Object,
-      default: () => {},
-    },
     showId: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
   emits: [
@@ -70,17 +65,31 @@ export default {
   data() {
       return {
           isTableVisible: false,
+          categories: {}
       }
   },
   mounted() {
+    console.log("mount");
     this.list()
   },
   methods: {
     editClick (category) {
       this.$emit('edit', category)
     },
-    async list(link){
-        await this.$emit('list', link)
+    list(link){
+      CategoryService.getCategoryBoard(this.$store.state.auth.user.username, link).then(
+          ({data}) => {
+              this.categories = data;
+          },
+          (error) => {
+              this.content =
+              (error.response &&
+                  error.response.data &&
+                  error.response.data.message) ||
+              error.message ||
+              error.toString();
+          }
+      );
     },
   },
   watch:{

@@ -90,7 +90,7 @@ export default {
     handleConfirmationCode(user) {
         this.loading = true;
         this.message = "";
-        user["id"] = this.$store.state.auth.user.id;
+        user["id"] = this.$store.state.auth.user.username;
         this.$store.dispatch("auth/confirmationCode", user).then(
             () => {
                 this.$store.dispatch("auth/updateVCardBalance", user).then(() => {

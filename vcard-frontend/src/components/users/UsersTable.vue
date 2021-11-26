@@ -24,13 +24,13 @@
       <tbody>
         <tr
           v-for="user in users.data"
-          :key="user.id"
+          :key="user.username"
           :class="user.user_type == 'A' ? 'table-success' : ''"
         >
           <td
             v-if="showId"
             class="align-middle"
-          >{{ user.id }}</td>
+          >{{ user.username }}</td>
           <td
             v-if="showPhoto"
             class="align-middle"

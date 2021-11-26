@@ -42,11 +42,11 @@ router.beforeEach((to, from, next) => {
   else next()
 })
 
-axios.defaults.baseURL = "http://vcard-backend.test/api"
+axios.defaults.baseURL = "http://localhost/api"
 app.config.globalProperties.$axios = axios
 
-app.config.globalProperties.baseURL = "http://vcard-backend.test/"
-app.config.globalProperties.defaultImageProfileURL = "http://vcard-backend.test/storage/fotos/avatar.jpg"
-app.config.globalProperties.logoImageURL = "http://vcard-backend.test/storage/fotos/logo.png"
+app.config.globalProperties.baseURL = "http://localhost/"
+app.config.globalProperties.defaultImageProfileURL = "http://localhost/storage/fotos/avatar.jpg"
+app.config.globalProperties.logoImageURL = "http://localhost/storage/fotos/logo.png"
 
 app.mount('#app')

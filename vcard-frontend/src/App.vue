@@ -1,4 +1,5 @@
 <template>
+<div v-if="contentShow">
   <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top flex-md-nowrap p-0 shadow">
     <div v-if="currentUser != null" class="container-fluid">
       <a
@@ -102,7 +103,7 @@
             <li class="nav-item">
               <router-link
                 class="nav-link py-3"
-                :class="{active: $route.name.includes('dashboard')}"
+                :class="{active: $route.name === ('dashboard')}"
                 to="/"
               ><font-awesome-icon :icon="['fas', 'home']" size="lg" />
                 . Dashboard
@@ -113,8 +114,8 @@
             <li v-if="currentUser.user_type == 'A'" class="nav-item">
               <router-link
                 class="nav-link w-100 me-3 py-3"
-                :class="{active: $route.name.includes('users')}"
-                to="/users"
+                :class="{active: $route.name === ('users')}"
+                :to="{name: 'users'}"
               >
                 <font-awesome-icon :icon="['fas', 'users']" size="lg" />
                 . Users
@@ -125,15 +126,15 @@
             <li class="nav-item d-flex justify-content-between align-items-center pe-3">
               <router-link
                 class="nav-link w-100 me-3 py-3"
-                :class="{active: $route.name.includes('transactions')}"
-                to="/transactions"
+                :class="{active: $route.name === ('transactions')}"
+                :to="{name: 'transactions'}"
               >
                 <font-awesome-icon :icon="['fas', 'money-bill-wave']" size="lg" />
                 . Transactions
               </router-link>
               <router-link
                 class="link-secondary"
-                to="/transactions/create"
+                :to="{name: 'createTransaction'}"
                 aria-label="Create Transaction"
               ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />
               </router-link>
@@ -142,14 +143,14 @@
               <router-link
                 class="nav-link w-100 me-3 py-3"
                 :class="{active: $route.name.includes('categories')}"
-                to="categories"
+                :to="{name: 'categoriesTable'}"
               >
                 <font-awesome-icon :icon="['fas', 'layer-group']" size="lg" />
                 . Categories
               </router-link>
               <router-link
                 class="link-secondary"
-                to="/categories/create"
+                :to="{name: 'createCategory'}"
                 aria-label="Create Category"
               ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />
               </router-link>
@@ -185,7 +186,7 @@
                     <router-link
                       class="dropdown-item"
                       :class="{active: $route.name == 'profile'}"
-                      to="/profile"
+                      :to="{name: 'profile'}"
                     ><font-awesome-icon :icon="['fas', 'address-card']" size="lg" /> Profile
                     </router-link>
                   </li>
@@ -193,14 +194,14 @@
                     <router-link
                       class="dropdown-item"
                       :class="{active: $route.name === 'changePassword'}"
-                      to="/changePassword"
+                      :to="{name: 'changePassword'}"
                     ><font-awesome-icon :icon="['fas', 'key']" size="lg" /> Change password</router-link>
                   </li>
                   <li>
                     <router-link
                       class="dropdown-item"
                       :class="{active: $route.name === 'changeConfirmationCode'}"
-                      to="changeConfirmationCode"
+                      :to="{name: 'changeConfirmationCode'}"
                     ><font-awesome-icon :icon="['fas', 'fingerprint']" size="lg" />Change confirmation code</router-link>
                   </li>
                   <li>
@@ -224,18 +225,22 @@
 
     </div>
   </div>
+</div>
 </template>
 
 <script>
 export default {
   name: 'RootComponent',
   computed: {
+    contentShow(){
+      return this.$store.state.auth.user && this.$store.state.auth.user.username;
+    },
     currentUser() {
       return this.$store.state.auth.user;
     },
     showAdminBoard() {
-      if (this.currentUser && this.currentUser['roles']) {
-        return this.currentUser['roles'].includes('ROLE_ADMIN');
+      if (this.currentUser && this.currentUser['user_type']) {
+        return this.currentUser['user_type'].includes('A');
       }
       return false;
     },
@@ -245,6 +250,9 @@ export default {
       this.$store.dispatch('auth/logout');
       this.$router.push('/login');
     }
+  },
+  created() {
+    this.$store.dispatch('auth/getMe');
   },
 };
 </script>

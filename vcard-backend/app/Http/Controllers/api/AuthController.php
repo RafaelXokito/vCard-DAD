@@ -22,7 +22,7 @@ use App\Models\DefaultCategory;
 
 class AuthController extends Controller
 {
-    const PASSPORT_SERVER_URL = "http://vcard-backend.test";
+    const PASSPORT_SERVER_URL = "http://localhost";
     const CLIENT_ID = 2;
 
     public function signin(SigninPost $request, $default = true)
@@ -46,19 +46,27 @@ class AuthController extends Controller
 
         $response = Route::dispatch($request);
         $errorCode = $response->getStatusCode();
+
+
         if ($errorCode == '200') {
             if (Auth::attempt(['username' => $validator["username"], 'password' => $validator["password"]])) {
+                if (Auth::user()->vcard_ref != null && (Auth::user()->vcard_ref->custom_data == null || Auth::user()->vcard_ref->custom_data["phonenumber_confirmed"] != true)) {
+                    return response()->json(
+                        ["message" => "The phone number was not confirmed.", "errors" => ["auth" => ["The phone number was not confirmed."]]],
+                        303 //303 See Other
+                    );
+                }
                 $auxResponse = json_decode((string) $response->content(), true);
-                $auxResponse["username"] = Auth::user()->username;
+                /*$auxResponse["username"] = Auth::user()->username;
                 $auxResponse["user_type"] = Auth::user()->user_type;
                 $auxResponse["photo_url"] = Auth::user()->photo_url != null ? "storage/fotos/" . Auth::user()->photo_url : "storage/fotos/default_image.png";
-                $auxResponse["id"] = Auth::user()->id;
+                $auxResponse["id"] = Auth::user()->id;*/
             } else {
                 $auxResponse = json_decode((string) $response->content(), true);
             }
 
             return response()->json(
-                ["user" => $auxResponse]
+                ["user" => $auxResponse], $errorCode
             );
         } else {
             return response()->json(

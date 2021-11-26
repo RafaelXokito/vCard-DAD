@@ -12,7 +12,7 @@ class VCardService {
     return promise; 
   }
   async makeConfirmationPhoneNumber(user){
-    let promise = await axios.get('vards/'+ user.id +'/makeConfirmationPhoneNumber', { headers: authHeader() })
+    let promise = await axios.get('vards/'+ user.username +'/makeConfirmationPhoneNumber', { headers: authHeader() })
       .then(() => {
         return promise; 
       });
@@ -20,7 +20,7 @@ class VCardService {
   }
   async verifyConfirmationPhoneNumber(user){
     console.log(user.code);
-    let promise = await axios.post('vards/'+ user.id +'/verifyConfirmationPhoneNumber',{"code": user.code}, { headers: authHeader() })
+    let promise = await axios.post('vards/'+ user.username +'/verifyConfirmationPhoneNumber',{"code": user.code}, { headers: authHeader() })
       .then(() => {
         return promise; 
       });
@@ -28,7 +28,7 @@ class VCardService {
   }
 
   async closeConfirmationPhoneNumber(user){
-    let promise = await axios.get('vards/'+ user.id +'/closeConfirmationPhoneNumber', { headers: authHeader() })
+    let promise = await axios.get('vards/'+ user.username +'/closeConfirmationPhoneNumber', { headers: authHeader() })
       .then(() => {
         return promise; 
       });
@@ -36,7 +36,7 @@ class VCardService {
   }
 
   async checkConfirmationPhoneNumber(user){
-    let promise = await axios.get('vards/'+ user.id +'/checkConfirmationPhoneNumber', { headers: authHeader() })
+    let promise = await axios.get('vards/'+ user.username +'/checkConfirmationPhoneNumber', { headers: authHeader() })
       .then(() => {
         return promise; 
       });

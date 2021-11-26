@@ -24,9 +24,9 @@ class VCardPolicy
         return false;
     }
 
-    public function view(User $user, User $vcard)
+    public function view(User $user, VCard $vcard)
     {
-        if ($user->vcard_ref->id == $vcard->phone_number) {
+        if ($user->id == $vcard->phone_number) {
             return true;
         }
         return false;
@@ -81,7 +81,6 @@ class VCardPolicy
             return false;
         }
         $custom_data = $vcard->custom_data;
-        $custom_data = json_decode((string) $custom_data, true);
 
         if ($custom_data["phonenumber_confirmed"] == "true")
             return true;

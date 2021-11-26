@@ -1,4 +1,5 @@
 import AuthService from '../services/auth.service';
+import UserService from '../services/user.service';
 import VCardService from '../services/vcard.service';
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -21,6 +22,14 @@ export const auth = {
           return Promise.reject(error);
         }
       );
+    },
+    async getMe({ commit }){
+      return await UserService.getMe().then(
+        result => {
+          commit('getMeSucess', result.data.data);
+          return Promise.resolve(result.data.data);
+        }
+      )
     },
     logout({ commit }) {
       AuthService.logout();
@@ -62,6 +71,9 @@ export const auth = {
     },
   },
   mutations: {
+    getMeSucess(state, user){
+      Object.assign(state.user,user);
+    },
     loginSuccess(state, user) {
       state.status.loggedIn = true;
       state.user = user;

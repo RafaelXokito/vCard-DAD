@@ -10,8 +10,12 @@ class UserService {
     return await axios.get(link, { headers: authHeader() });
   }
 
-  getUser(id){
-    return axios.get('users/' + id, { headers: authHeader() });
+  get(username){
+    return axios.get('users/' + username, { headers: authHeader() });
+  }
+
+  getMe(){
+    return axios.get('users/me', { headers: authHeader() });
   }
 
   getAdminBoard() {
