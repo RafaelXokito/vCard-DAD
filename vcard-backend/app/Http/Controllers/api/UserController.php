@@ -34,5 +34,11 @@ class UserController extends Controller
     {
         return UserResource::collection(User::paginate(10));
     }
-
+	
+	public function update_password(PasswordPost $request, User $user)
+    {
+        $user->password = bcrypt($request->validated()['password']);
+        $user->save();
+        return new UserResource($user);
+    }
 }

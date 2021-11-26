@@ -13,48 +13,48 @@ class UserPolicy
     // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
-        if ($user->user_type == 'A') {
-            return true;
-        }
+        //
     }
 
     public function viewAny(User $user)
     {
-        return false;
+        return $user->type == "A";
     }
 
-	public function view(User $user, User $model)
+    public function view(User $user, User $model)
     {
-        return ($user->id == $model->id);
+        return $user->type == "A" || $user->id == $model->id;
     }
-	
-	/*
-    public function view(User $user, User $user2)
-    {
-        if ($user2->id == $user->id) {
-            return true;
-        }
-        return false;
-    }*/
 
+    public function edit(User $user, User $model)
+    {
+        return $user->type == "A" || $user->id == $model->id;
+    }
+
+    public function update(User $user, User $model)
+    {
+        return $user->type == "A" || $user->id == $model->id;
+    }
+
+    public function updatePassword(User $user, User $model)
+    {
+        return $user->id == $model->id;
+    }
+
+    public function updateCode(User $user, User $model)
+    {
+        return $user->id == $model->id;
+    }
+
+    
     public function create(User $user)
     {
-        return false;
+        return true;
     }
 
     public function store(User $user)
     {
         return false;
-    }
-
-    public function edit(User $user, User $model)
-    {
-        return ($user->id == $model->id);
-    }
-
-    public function update(User $user, User $model)
-    {
-        return ($user->id == $model->id);
     }
 
     public function delete(User $user)

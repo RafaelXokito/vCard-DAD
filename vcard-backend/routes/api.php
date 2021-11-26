@@ -70,6 +70,8 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\VCard'])->group(func
     Route::get('users/me', [UserController::class, 'getMe']);
 
     Route::get('users/{user}', [UserController::class, 'getUser'])->middleware('can:view,user');
+	
+	Route::patch('users/{user}/password', [UserController::class, 'update_password'])->middleware('can:updatePassword,user');
 
     Route::get('users', [UserController::class, 'getUsers'])->middleware('can:viewAny,App\Models\User');
 
