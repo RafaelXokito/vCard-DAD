@@ -11,13 +11,13 @@
           <h2 class="w-75 mx-auto">Register</h2>
         </div>
         <div class="row">
-          <Form @submit="handleRegister" :validation-schema="schema" class="w-75 mx-auto">
+          <Form @submit="handleRegister" :validation-schema="schema" class="w-75 mx-auto" method="POST" enctype="multipart/form-data">
             <div v-if="!successful">
               <div class="form-group image-upload">
                 <label for="file-input">
                   <img class="rounded-circle" :src="img_src">
                 </label>
-                <input id="file-input" @change="onFileChange" type="file" />
+                <Field name="photo_url" id="file-input" @change="onFileChange" type="file" />
               </div>
               <div class="form-group">
                 <label for="phone_number">Phone Number</label>
@@ -109,7 +109,6 @@ export default {
         .required("Confirmation Code is required!")
         .test('len', 'Confirmation Code must be exactly 4 numbers', val => (val+ "").length === 4),
     });
-
     return {
       successful: false,
       loading: false,
@@ -136,7 +135,7 @@ export default {
       this.loading = true;
       this.$store.dispatch("auth/register", user).then(
         () => {
-          this.$router.push("confirmationPhoneNumber");
+          this.$router.push({name: "confirmationPhoneNumber", params: {phoneNumber: user["phone_number"] }});
         },
         (error) => {
           this.loading = false;

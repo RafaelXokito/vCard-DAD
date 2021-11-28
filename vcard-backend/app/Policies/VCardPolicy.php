@@ -44,7 +44,7 @@ class VCardPolicy
 
     public function edit(User $user, User $vcard)
     {
-        if ($user->vcard_ref->id == $vcard->phone_number) {
+        if ($user->id == $vcard->phone_number) {
             return true;
         }
         return false;
@@ -52,15 +52,15 @@ class VCardPolicy
 
     public function update(User $user, User $vcard)
     {
-        if ($user->vcard_ref->id == $vcard->phone_number) {
+        if ($user->id == $vcard->phone_number) {
             return true;
         }
         return false;
     }
 
-    public function delete(User $user, User $vcard)
+    public function delete(User $user, VCard $vcard)
     {
-        if ($user->vcard_ref->id == $vcard->phone_number) {
+        if ($user->id == $vcard->phone_number) {
             return true;
         }
         return false;
@@ -80,7 +80,7 @@ class VCardPolicy
         if (!$vcard->custom_data) {
             return false;
         }
-        $custom_data = $vcard->custom_data;
+        $custom_data = json_decode((string) $vcard->custom_data, true);
 
         if ($custom_data["phonenumber_confirmed"] == "true")
             return true;

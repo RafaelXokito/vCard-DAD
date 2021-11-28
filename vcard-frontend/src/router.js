@@ -6,12 +6,15 @@ import ConfirmationCode from "./components/auth/ConfirmationCode.vue"
 import ConfirmationPhoneNumber from "./components/auth/ConfirmationPhoneNumber.vue"
 import CreateTransaction from "./components/transactions/CreateTransaction.vue"
 import CreateCategory from "./components/categories/CreateCategory.vue"
-import ChangeConfirmationCode from "./components/auth/ChangeConfirmationCode.vue"
-import ChangePassword from "./components/auth/ChangePassword.vue"
+import ChangeConfirmationCode from "./components/profile/ChangeConfirmationCode.vue"
+import ChangePassword from "./components/profile/ChangePassword.vue"
+import DeleteProfile from "./components/profile/DeleteProfile.vue"
 // lazy-loaded
 const Profile = () => import("./components/profile/Profile.vue")
+const EditProfile = () => import("./components/profile/EditProfile.vue")
 const BoardAdmin = () => import("./components/admin/BoardAdmin.vue")
 const BoardUsers = () => import("./components/users/BoardUsers.vue")
+const BoardProfile = () => import("./components/profile/BoardProfile.vue")
 const BoardTransactions = () => import("./components/transactions/BoardTransactions.vue")
 const BoardCategories = () => import("./components/categories/BoardCategories.vue")
 const CategoriesTable = () => import("./components/categories/CategoriesTable.vue")
@@ -54,7 +57,7 @@ const routes = [
     // lazy-loaded
   },
   {
-    path: '/confirmationPhoneNumber',
+    path: '/confirmationPhoneNumber/:phoneNumber',
     component: ConfirmationPhoneNumber,
     props: true,
     name: "confirmationPhoneNumber",
@@ -62,10 +65,44 @@ const routes = [
   },
   {
     path: '/profile',
-    component: Profile,
+    component: BoardProfile,
     props: true,
-    name: "profile",
-    // lazy-loaded
+    children: [
+      {
+        path: '',
+        component: Profile,
+        name: "showProfile",
+        // lazy-loaded
+      },
+      {
+        path: 'edit',
+        component: EditProfile,
+        props: true,
+        name: "editProfile",
+        // lazy-loaded
+      },
+      {
+        path: '/changePassword',
+        component: ChangePassword,
+        props: true,
+        name: "changePassword",
+        // lazy-loaded
+      },
+      {
+        path: '/changeConfirmationCode',
+        component: ChangeConfirmationCode,
+        props: true,
+        name: "changeConfirmationCode",
+        // lazy-loaded
+      },
+      {
+        path: '/deleteProfile',
+        component: DeleteProfile,
+        props: true,
+        name: "deleteProfile",
+        // lazy-loaded
+      },
+    ]
   },
   {
     path: "/users",

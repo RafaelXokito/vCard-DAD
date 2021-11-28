@@ -65,6 +65,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function vcard_ref()
     {
-        return $this->belongsTo(VCard::class, 'username', 'phone_number')->withTrashed();
+        return $this->belongsTo(VCard::class, 'id', 'phone_number')->withTrashed();
+    }
+
+    public function admin_ref()
+    {
+        return $this->belongsTo(Administrator::class, 'id', 'id')->withTrashed();
     }
 }

@@ -8,12 +8,16 @@
             <ErrorMessage name="name" class="error-feedback" />
         </div>
         <div class="form-group">
-            <label for="type">Debit</label>
-            <Field name="type" type="radio" value="D" class="form-control" />
-            <ErrorMessage name="type" class="error-feedback" />
-            <label for="type">Credit</label>
-            <Field name="type" type="radio" value="C" class="form-control"/>
-            <ErrorMessage name="type" class="error-feedback" />
+            <div class="form-check">
+                <label class="form-check-label" for="type">Debit</label>
+                <Field name="type" type="radio" value="D" class="form-check-input" />
+                <ErrorMessage name="type" class="error-feedback" />
+            </div>
+            <div class="form-check">
+                <label class="form-check-label" for="type">Credit</label>
+                <Field name="type" type="radio" value="C" class="form-check-input"/>
+                <ErrorMessage name="type" class="error-feedback" />
+            </div>
         </div>
         <div class="form-group">
             <div v-if="messageCreate" class="alert alert-danger" role="alert">
@@ -37,18 +41,14 @@
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
+import CategoryService from "../../services/category.service";
+
 export default {
     name: "createCategoryd",
     components: {
         Form,
         Field,
         ErrorMessage,
-    },
-    props: {
-        messageCreate: {
-        type: String,
-        default: () => "",
-        },
     },
     data() {
         const schema = yup.object().shape({
@@ -58,6 +58,7 @@ export default {
         return {
             loading: false,
             schema,
+            messageCreate: ""
         };
     },
     emits: [
@@ -66,8 +67,23 @@ export default {
     methods: {
     async handleCreate(category) {
       this.loading = true;
-      await this.$emit('create', category)
+      await this.createCategory(category);
       this.loading = false;
+    },
+    createCategory(category){
+        CategoryService.postCategory(category).then(
+            () => {
+                this.$router.push({name: 'categoriesTable'});
+            },
+            (error) => {
+                this.messageCreate =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            }
+        );
     },
   },
 }

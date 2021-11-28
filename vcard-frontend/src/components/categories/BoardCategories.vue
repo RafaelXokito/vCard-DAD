@@ -38,21 +38,6 @@ export default {
     editCategory(category){
       console.log(category);
     },
-    createCategory(category){
-        CategoryService.postCategory(category).then(
-            () => {
-                this.list();
-            },
-            (error) => {
-                this.messageCreate =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-            }
-        );
-    },
     list(link){
         CategoryService.getCategoryBoard(this.$store.state.auth.user.username, link).then(
             ({data}) => {

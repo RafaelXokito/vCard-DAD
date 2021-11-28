@@ -14,9 +14,27 @@ class UserService {
     return axios.get('users/' + username, { headers: authHeader() });
   }
 
-  getMe(){
-    return axios.get('users/me', { headers: authHeader() });
+  async getMe(){
+    return await axios.get('users/me', { headers: authHeader() });
   }
+
+  async updateUser(user){
+    return await axios.patch(`users/${user.username}`,user, { headers: authHeader() });
+  }
+
+  async updateUserPhoto(form){
+    console.log(form);
+    return await axios.post(`users/${form.get("username")}/updateUserPhoto`,form, { headers: authHeader(`multipart/form-data; charset=utf-8;`) });
+  }
+
+  async updatePasswordUser(user) {
+    return await axios.patch(`users/${user.username}/updatePassword`,user, { headers: authHeader() });
+  }
+
+  async updateConfirmationCodeUser(user) {
+    return await axios.patch(`users/${user.username}/updateConfirmationCode`,user, { headers: authHeader() });
+  }
+  
 
   getAdminBoard() {
     //return axios.get(API_URL + 'administrators', { headers: authHeader() });

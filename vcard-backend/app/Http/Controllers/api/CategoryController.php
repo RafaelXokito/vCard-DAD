@@ -43,9 +43,9 @@ class CategoryController extends Controller
             $categories = $categories->where("type", $request->type);
         }
         if ($request->has("page")) {
-            $categories = $categories->paginate(15);
+            $categories = $categories->orderBy('created_at', 'desc')->paginate(15);
         }else {
-            $categories = $categories->get();
+            $categories = $categories->orderBy('created_at', 'desc')->get();
         }
         return CategoryResource::collection($categories);
     }

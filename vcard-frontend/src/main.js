@@ -30,15 +30,10 @@ const app = createApp(App)
 
 
 router.beforeEach((to, from, next) => {
-  //let user = JSON.parse(localStorage.getItem('user'));
   let auth = store.state.auth;
-  if (to.name !== 'login' && to.name !== 'register' && !auth.status.loggedIn) next({ name: 'login' })
-  /*else if ( user !== null && (user.user_type !== 'A' && (to.name === 'transactions' ||
-                                                          to.name === 'profile' ||
-                                                          to.name === 'users' ||
-                                                          to.name === 'createTransaction' ||
-                                                          to.name === 'categories') &&
-                                                          user.confirmationCode !== true)  ) next({ name: 'confirmationCode' })*/
+  if (to.name !== 'login' && to.name !== 'register' 
+      && to.name !== 'confirmationPhoneNumber' 
+      && !auth.status.loggedIn) next({ name: 'login' })
   else next()
 })
 

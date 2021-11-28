@@ -67,6 +67,7 @@ export default {
       loading: false,
       message: "",
       schema,
+      phoneNumber: this.$route.params.phoneNumber
     };
   },
   props: {
@@ -81,10 +82,29 @@ export default {
   created() {
     this.loading = true;
     this.message = "";
-    let user = this.$store.state.auth.user;
+    let user = {}
+    user["phoneNumber"] = this.$route.params.phoneNumber
     VCardService.makeConfirmationPhoneNumber(user).then(
         () => {
           this.loading = false;
+        },
+        (error) => {
+        this.loading = false;
+        this.message =
+            (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+            error.message ||
+            error.toString();
+        }
+    );
+  },
+  beforeUnmount() {
+    let user = {};
+    user["phoneNumber"] = this.phoneNumber
+    VCardService.closeConfirmationPhoneNumber(user).then(
+        () => {
+          //console.log(e);
         },
         (error) => {
         this.loading = false;
@@ -101,10 +121,10 @@ export default {
     handleConfirmationPhoneNumber(user) {
         this.loading = true;
         this.message = "";
-        user["id"] = this.$store.state.auth.user.username;
+        user["phoneNumber"] = this.phoneNumber
         VCardService.verifyConfirmationPhoneNumber(user).then(
             () => {
-                this.$router.back();
+                this.$router.push({name: 'login'});
             },
             (error) => {
             this.loading = false;
@@ -118,25 +138,7 @@ export default {
         );
     },
     close(){
-      this.$router.back();
-    },
-    beforeDestroy() {
-      let user = {};
-      user["id"] = this.$store.state.auth.user.username;
-      VCardService.closeConfirmationPhoneNumber(user).then(
-          (e) => {
-            console.log(e);
-          },
-          (error) => {
-          this.loading = false;
-          this.message =
-              (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-              error.message ||
-              error.toString();
-          }
-      );
+      this.$router.push({name: 'login'});
     },
   },
 

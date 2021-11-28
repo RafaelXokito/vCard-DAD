@@ -38,9 +38,9 @@ class TransactionPolicy
         return false;
     }
 
-    public function store(User $user, Transaction $transaction)
+    public function store(User $user)
     {
-        if ($transaction->vcard == $user->vcard_ref->phone_number) {
+        if ($user->user_type == 'V') {
             return true;
         }
         return false;

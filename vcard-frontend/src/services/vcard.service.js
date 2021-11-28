@@ -12,23 +12,27 @@ class VCardService {
     return promise; 
   }
   async makeConfirmationPhoneNumber(user){
-    let promise = await axios.get('vards/'+ user.username +'/makeConfirmationPhoneNumber', { headers: authHeader() })
+    let promise = await axios.get('vards/'+ user.phoneNumber +'/makeConfirmationPhoneNumber', { headers: authHeader() })
       .then(() => {
         return promise; 
       });
       return user; 
   }
   async verifyConfirmationPhoneNumber(user){
-    console.log(user.code);
-    let promise = await axios.post('vards/'+ user.username +'/verifyConfirmationPhoneNumber',{"code": user.code}, { headers: authHeader() })
+    let promise = await axios.post('vards/'+ user.phoneNumber +'/verifyConfirmationPhoneNumber',{"code": user.code}, { headers: authHeader() })
       .then(() => {
         return promise; 
       });
       return user; 
   }
 
+  async delete(user) {
+    return await axios.delete(`vcards/${user.username}/delete`,{ headers: authHeader(), data: user });
+    //return await axios.delete(`vcards/${user.username}/delete`, { headers: authHeader() }, {data: user});
+  }
+
   async closeConfirmationPhoneNumber(user){
-    let promise = await axios.get('vards/'+ user.username +'/closeConfirmationPhoneNumber', { headers: authHeader() })
+    let promise = await axios.get('vards/'+ user.phoneNumber +'/closeConfirmationPhoneNumber', { headers: authHeader() })
       .then(() => {
         return promise; 
       });
@@ -36,7 +40,7 @@ class VCardService {
   }
 
   async checkConfirmationPhoneNumber(user){
-    let promise = await axios.get('vards/'+ user.username +'/checkConfirmationPhoneNumber', { headers: authHeader() })
+    let promise = await axios.get('vards/'+ user.phoneNumber +'/checkConfirmationPhoneNumber', { headers: authHeader() })
       .then(() => {
         return promise; 
       });

@@ -1,77 +1,89 @@
 <template>
   <div class="container">
-    <body v-if="isUserVisible">
-        <section class="section about-section gray-bg" id="about">
+      <div v-if="isUserVisible">
+          <section class="section about-section gray-bg" id="about">
             <div class="container">
-                <div class="row align-items-center flex-row-reverse">
-                    <div class="col-lg-6">
-                        <div class="about-text go-to">
-                            <h3 class="dark-color"> {{ user.name }}</h3>
-                            <h6 class="theme-color lead">Email: {{ user.email }}</h6>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="about-avatar text-center">
-                            <img class="w-50 rounded-circle" :src="this.baseURL + user.photo_url" :title="currentUser.username+'Photo'" alt="">
-                        </div>
-                    </div>
-                </div>
-                <div class="counter mt-3">
-                    <div v-if="user.user_type == 'V'" class="row">
-                        <div class="col-6 col-lg-4">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="500" data-speed="500">{{ user.balance }} €</h6>
-                                <p class="m-0px font-w-600">Balance</p>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-4">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="150" data-speed="150">{{ user.max_debit }} €</h6>
-                                <p class="m-0px font-w-600">Max Debit</p>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-4">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="850" data-speed="850">{{ user.count_transactions }}</h6>
-                                <p class="m-0px font-w-600">Total Transactions</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-else class="row">
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="500" data-speed="500">{{ user.count_today_transactions }}</h6>
-                                <p class="m-0px font-w-600">Transactions Today</p>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="150" data-speed="150">{{ user.count_month_transactions }}</h6>
-                                <p class="m-0px font-w-600">Transactions Last Month</p>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="850" data-speed="850">{{ user.count_transactions }}</h6>
-                                <p class="m-0px font-w-600">Total Transactions</p>
-                            </div>
-                        </div>
-                        <div class="col-6 col-lg-3">
-                            <div class="count-data text-center">
-                                <h6 class="count h2" data-to="850" data-speed="850">{{ user.count_vcards }}</h6>
-                                <p class="m-0px font-w-600">Total vCards</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              <div class="row align-items-center flex-row-reverse">
+                  <div class="col-lg-6">
+                      <div class="about-text go-to">
+                          <h3 class="dark-color"> {{ user.name }}</h3>
+                          <h6 class="theme-color lead">Email: {{ user.email }}</h6>
+                      </div>
+                  </div>
+                  <div class="col-lg-6">
+                      <div class="about-avatar text-center">
+                          <img class="w-50 rounded-circle" :src="this.baseURL + user.photo_url" :title="user.username+'Photo'" alt="">
+                      </div>
+                  </div>
+              </div>
+              <div class="counter mt-3">
+                  <div v-if="user.user_type == 'V'" class="row">
+                      <div class="col-6 col-lg-4">
+                          <div class="count-data text-center">
+                              <h6 class="count h2" data-to="500" data-speed="500">{{ user.balance }} €</h6>
+                              <p class="m-0px font-w-600">Balance</p>
+                          </div>
+                      </div>
+                      <div class="col-6 col-lg-4">
+                          <div class="count-data text-center">
+                              <h6 class="count h2" data-to="150" data-speed="150">{{ user.max_debit }} €</h6>
+                              <p class="m-0px font-w-600">Max Debit</p>
+                          </div>
+                      </div>
+                      <div class="col-6 col-lg-4">
+                          <div class="count-data text-center">
+                              <h6 class="count h2" data-to="850" data-speed="850">{{ user.count_transactions }}</h6>
+                              <p class="m-0px font-w-600">Total Transactions</p>
+                          </div>
+                      </div>
+                  </div>
+                  <div v-else class="row">
+                      <div class="col-6 col-lg-3">
+                          <div class="count-data text-center">
+                              <h6 class="count h2" data-to="500" data-speed="500">{{ user.count_today_transactions }}</h6>
+                              <p class="m-0px font-w-600">Transactions Today</p>
+                          </div>
+                      </div>
+                      <div class="col-6 col-lg-3">
+                          <div class="count-data text-center">
+                              <h6 class="count h2" data-to="150" data-speed="150">{{ user.count_month_transactions }}</h6>
+                              <p class="m-0px font-w-600">Transactions Last Month</p>
+                          </div>
+                      </div>
+                      <div class="col-6 col-lg-3">
+                          <div class="count-data text-center">
+                              <h6 class="count h2" data-to="850" data-speed="850">{{ user.count_transactions }}</h6>
+                              <p class="m-0px font-w-600">Total Transactions</p>
+                          </div>
+                      </div>
+                      <div class="col-6 col-lg-3">
+                          <div class="count-data text-center">
+                              <h6 class="count h2" data-to="850" data-speed="850">{{ user.count_vcards }}</h6>
+                              <p class="m-0px font-w-600">Total vCards</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row align-items-end flex-row-reverse pt-5">
+                  <div class="about-text go-to col-md-4 col-lg-3">
+                      <router-link class="btn btn-primary btn-block w-100" :to="{name:'editProfile'}">Editar perfil</router-link>
+                  </div>
+                  <div class="about-text go-to col-md-4 col-lg-3" v-if="user.user_type == 'V'">
+                      <router-link class="btn btn-danger btn-block w-100" :to="{name: 'deleteProfile'}">Apagar perfil</router-link>
+                  </div>
+              </div>
             </div>
-        </section>
-    </body>
+          </section>
+      </div>
+      <div class="d-flex justify-content-center p-5" v-else>
+          <div class="spinner-grow text-info" style="width: 3rem; height: 3rem;" role="status">
+              <span class="sr-only">Loading...</span>
+          </div>
+      </div>
   </div>
 </template>
 
 <script>
-import UserService from "../../services/user.service";
 
 export default {
   name: "Profile",
@@ -81,29 +93,14 @@ export default {
       isUserVisible: false,
     };
   },
-  computed: {
-    currentUser() {
-      return this.$store.state.auth.user;
-    },
-  },
   async mounted() {
-    if (!this.currentUser) {
-      this.$router.push("/login");
-    } else {
-      if (this.currentUser.username) {
-        this.user = await UserService.getUser(this.currentuser.username);
-        this.user = this.user.data.data;
-        this.isUserVisible = true;
-      }
-    }
+    this.user = await this.$store.dispatch('auth/getMe');
+    this.isUserVisible = true;
   },
 };
 </script>
 
-<style scoped>body{
-    color: #6F8BA4;
-    margin-top:20px;
-}
+<style scoped>
 .section {
     padding: 100px 0;
     position: relative;
@@ -223,5 +220,4 @@ mark {
 .dark-color {
     color: #20247b;
 }
-
 </style>

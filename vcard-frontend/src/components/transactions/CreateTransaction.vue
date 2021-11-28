@@ -1,7 +1,7 @@
 <template>
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class=" col-lg-6 col-md-8" >
+        <div class=" col-lg-6 col-md-8 pt-5" >
             <div class="card p-3" v-show="(!loadingDependencies && !showConfirmationCode)">
                 <div class="row justify-content-center">
                     <div class="col-12">
@@ -38,7 +38,7 @@
                     <div class="row justify-content-center">
                         <div class="col-12">
                             <div class="input-group"> 
-                                <Field type="text" name="payment_reference" placeholder="9XX XXX XXX" title="Payment Reference" /> <label>Payment Reference</label>
+                                <Field type="text" class="card" name="payment_reference" placeholder="9XX XXX XXX" title="Payment Reference" /> <label>Payment Reference</label>
                                 <ErrorMessage name="payment_reference" class="error-feedback" />
                             </div>
                         </div>
@@ -51,19 +51,19 @@
                     <div class="row justify-content-center">
                         <div class="col-12">
                             <div class="input-group"> 
-                                <Field as="select" name="category" title="Category"> 
+                                <select name="category" title="Category" style="border-radius: 10px !important;"> 
                                     <option value="" selected>None</option>
                                     <option v-for="category in categories" v-bind:key="category.id" :value="category.id"><span class="text-capitalize">{{ titleCase(category.name) }}</span></option>
-                                </Field>
+                                </select>
                                 <label>Category</label>
-                                <ErrorMessage name="category" class="error-feedback" />
                             </div>
                         </div>
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-12">
-                            <div class="input-group"> 
-                                <Field type="number" name="value" placeholder="0.00" min="0.00" value="0.00" step="0.01" title="Currency" pattern="^\d*(\.\d{0,2})?$" /> <label>Value (€)</label> 
+                            <div class="input-group">
+                                <Field class="card" v-model="value" type="number" name="value" placeholder="0.00" min="0.00" value="0.00" step="0.01" title="Currency" pattern="^\d*(\.\d{0,2})?$" /> 
+                                <label class="mx-auto">Value (€) {{balance}} €</label> 
                                 <ErrorMessage name="value" class="error-feedback" />
                             </div>
                         </div>
@@ -71,7 +71,7 @@
                     <div class="row justify-content-center">
                         <div class="col-12">
                             <div class="input-group"> 
-                                <Field type="text" name="description" placeholder="Vacations Hotel" title="Description" /> <label>Description</label>
+                                <Field class="card" type="text" name="description" placeholder="Vacations Hotel" title="Description" /> <label>Description</label>
                                 <ErrorMessage name="description" class="error-feedback" />
                             </div>
                         </div>
@@ -130,28 +130,24 @@ export default {
             categories: [],
             payment_type: "",
             transaction: {},
+            balance: this.$store.state.auth.user["balance"],
+            value: 0
         };
     },
     methods: {
         handleConfirmationCode(user){
             this.messageCreate = "";
             if (user.confirmationCode === true) {
-                this.showConfirmationCode = false;
                 this.loadingDependencies = true;
+                this.showConfirmationCode = false;
                 TransactionService.postTransaction(this.transaction).then(
                     () => {
-                        this.$store.dispatch("auth/updateVCardBalance", this.$store.state.auth.user).then(
+                        this.$store.dispatch("auth/getMe").then(
                         () => {
-                            this.$router.push("/");
+                            this.$router.push("/transactions");
                         },
-                        (error) => {
-                            this.loadingDependencies = false;
-                            this.messageCreate =
-                                (error.response &&
-                                error.response.data &&
-                                error.response.data.message) ||
-                                error.message ||
-                                error.toString();
+                        () => {
+                            this.$router.push("/logout");
                         })
                     },
                     (error) => {
@@ -214,6 +210,11 @@ export default {
         );
         this.loadingDependencies = false;
     },
+    watch: {
+        value(newVal){
+            this.balance = this.$store.state.auth.user["balance"] - newVal;
+        }
+    }
 }
 </script>
 
@@ -227,11 +228,7 @@ export default {
 }
 
 .card {
-    background-color: #2C3E50;
-    color: #ffffff;
     border-radius: 10px !important;
-    margin-top: 60px;
-    margin-bottom: 60px
 }
 
 .form-card {
@@ -289,7 +286,8 @@ export default {
     padding-left: 25px
 }
 
-.input-group label {
+.input-group div,
+.input-group label  {
     position: absolute;
     height: 24px;
     background: none;

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class VCardPost extends FormRequest
+class VcardDelete extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class VCardPost extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::check() && Auth::user()->user_type == 'V';
     }
 
     /**
@@ -25,13 +25,6 @@ class VCardPost extends FormRequest
     public function rules()
     {
         return [
-            'phone_number'             => ['required','bail' ,'unique:App\Models\User,username', function ($attribute, $value, $fail) {
-                if (!preg_match("/^([9][1236])[0-9]*?$/", $value)) {
-                    $fail('The phone number need to follow the portuguese number.');
-                }
-            }],
-            'name'              => ['required', 'string'],
-            'email'             => ['required', 'email', 'unique:App\Models\User,email'],
             'password'          => ['required', 'string'],
             'confirmation_code' => ['required', 'digits:4']
         ];

@@ -1,6 +1,5 @@
 import AuthService from '../services/auth.service';
 import UserService from '../services/user.service';
-import VCardService from '../services/vcard.service';
 
 const user = JSON.parse(localStorage.getItem('user'));
 const initialState = user
@@ -37,37 +36,15 @@ export const auth = {
     },
     register({ commit }, user) {
       return AuthService.register(user).then(
-        user => {
-          commit('registerSuccess',user);
-          return Promise.resolve(user);
+        result => {
+          commit('registerSuccess');
+          return Promise.resolve(result);
         },
         error => {
           commit('registerFailure');
           return Promise.reject(error);
         }
       );
-    },
-    confirmationCode({ commit }, user) {
-      return AuthService.confirmationCode(user).then(
-        () => {
-          commit('confirmationCodeSuccess');
-          return Promise.resolve();
-        },
-        error => {
-          return Promise.reject(error);
-        }
-      );
-    },
-    updateVCardBalance({ commit }, user) {
-      return VCardService.getVCard(user["id"],`vcards/${user["id"]}?balance=true`).then(
-        user => {
-          commit('updateBalance',user);
-          return Promise.resolve();
-        },
-        error => {
-          return Promise.reject(error);
-        }
-      )
     },
   },
   mutations: {
@@ -89,20 +66,14 @@ export const auth = {
       state.user = null;
       
     },
-    registerSuccess(state, user) {
-      state.status.loggedIn = true;
-      state.user = user;
+    registerSuccess(state) {
+      state.status.loggedIn = false;
+      state.user = null;
       
     },
     registerFailure(state) {
       state.status.loggedIn = false;
       state.user = null;
     },
-    confirmationCodeSuccess(state) {
-      state.status.loggedIn;
-    },
-    updateBalance(state, user) {
-      state.user = user;
-    }
   }
 };

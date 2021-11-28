@@ -40,9 +40,6 @@ class AuthService {
   async confirmationCode(user) {
     let promise = await axios.post('vards/'+ user.username +'/confirmationCode', {"confirmationCode": user.confirmationCode}, { headers: authHeader() })
       .then(() => {
-        user = JSON.parse(localStorage.getItem('user'));
-        user['confirmationCode'] = true;
-        localStorage.setItem('user', JSON.stringify(user));
         return promise; 
       });
       return user; 

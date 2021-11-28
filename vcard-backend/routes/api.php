@@ -73,21 +73,31 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\VCard'])->group(func
 	
 	Route::patch('users/{user}/password', [UserController::class, 'update_password'])->middleware('can:updatePassword,user');
 
+    Route::patch('users/{user}', [UserController::class, 'patchUser'])->middleware('can:update,user');
+
+    Route::post('users/{user}/updateUserPhoto', [UserController::class, 'postUserPhoto'])->middleware('can:update,user');
+
+    Route::patch('users/{user}/updatePassword', [UserController::class, 'patchPasswordUser'])->middleware('can:update,user');
+
+    Route::patch('users/{user}/updateConfirmationCode', [UserController::class, 'patchConfirmationCodeUser'])->middleware('can:update,user');
+
+    Route::delete('vcards/{vcard}/delete', [VCardController::class, 'remove'])->middleware('can:delete,vcard');
+
     Route::get('users', [UserController::class, 'getUsers'])->middleware('can:viewAny,App\Models\User');
 
     Route::post('vards/{vcard}/confirmationCode', [AuthController::class, 'confirmationCode'])->middleware('can:view,vcard');
 
-    Route::get('vards/{vcard}/makeConfirmationPhoneNumber', [AuthController::class, 'makeConfirmationPhoneNumber']);//->middleware('can:view,vcard');
-
-    Route::post('vards/{vcard}/verifyConfirmationPhoneNumber', [AuthController::class, 'verifyConfirmationPhoneNumber']);//->middleware('can:view,vcard');
-
-    Route::get('vards/{vcard}/closeConfirmationPhoneNumber', [AuthController::class, 'cancelConfirmationPhoneNumber']);//->middleware('can:view,vcard');
-
-    Route::get('vards/{vcard}/checkConfirmationPhoneNumber', [AuthController::class, 'checkConfirmationPhoneNumber']);//->middleware('can:view,vcard');
 });
 
 Route::post('registerVCard', [AuthController::class, 'registerVCard']);
 
+Route::get('vards/{vcard}/makeConfirmationPhoneNumber', [AuthController::class, 'makeConfirmationPhoneNumber']);//->middleware('can:view,vcard');
+
+Route::post('vards/{vcard}/verifyConfirmationPhoneNumber', [AuthController::class, 'verifyConfirmationPhoneNumber']);//->middleware('can:view,vcard');
+
+Route::get('vards/{vcard}/closeConfirmationPhoneNumber', [AuthController::class, 'cancelConfirmationPhoneNumber']);//->middleware('can:view,vcard');
+
+Route::get('vards/{vcard}/checkConfirmationPhoneNumber', [AuthController::class, 'checkConfirmationPhoneNumber']);//->middleware('can:view,vcard');
 //USER
 
 Route::post('signin', [AuthController::class, 'signin'])->name('login');

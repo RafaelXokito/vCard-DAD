@@ -50,7 +50,7 @@ class AuthController extends Controller
 
         if ($errorCode == '200') {
             if (Auth::attempt(['username' => $validator["username"], 'password' => $validator["password"]])) {
-                if (Auth::user()->vcard_ref != null && (Auth::user()->vcard_ref->custom_data == null || Auth::user()->vcard_ref->custom_data["phonenumber_confirmed"] != true)) {
+                if (Auth::user()->vcard_ref != null && (Auth::user()->vcard_ref->custom_data == null ||  json_decode((string) Auth::user()->vcard_ref->custom_data, true)["phonenumber_confirmed"] != true)) {
                     return response()->json(
                         ["message" => "The phone number was not confirmed.", "errors" => ["auth" => ["The phone number was not confirmed."]]],
                         303 //303 See Other
@@ -59,7 +59,7 @@ class AuthController extends Controller
                 $auxResponse = json_decode((string) $response->content(), true);
                 /*$auxResponse["username"] = Auth::user()->username;
                 $auxResponse["user_type"] = Auth::user()->user_type;
-                $auxResponse["photo_url"] = Auth::user()->photo_url != null ? "storage/fotos/" . Auth::user()->photo_url : "storage/fotos/default_image.png";
+                $auxResponse["photo_url"] = Auth::user()->photo_url != null ? "storage/fotos/" . Auth::user()->photo_url : "storage/fotos/avatar.png";
                 $auxResponse["id"] = Auth::user()->id;*/
             } else {
                 $auxResponse = json_decode((string) $response->content(), true);
@@ -92,6 +92,8 @@ class AuthController extends Controller
         DB::beginTransaction();
 
         try {
+
+            //SET VCARD PROPRIETIES
             $vcard->phone_number = $validator["phone_number"];
             $vcard->name = $validator["name"];
             $vcard->email = $validator["email"];
@@ -101,28 +103,37 @@ class AuthController extends Controller
             $vcard->password = bcrypt($validator["password"]);
             $vcard->confirmation_code = bcrypt($validator["confirmation_code"]);
 
-            $vcard->custom_data = json_encode(["phonenumber_confirmed" => "false"]);
+            $vcard->custom_data = '{"phonenumber_confirmed": false}';
 
             $vcard->blocked = false;
 
+            $vcard->save();
+
+            //CREATE DEFAULT CATEGORIES IN VCARD
             $defaultCategories = DefaultCategory::all();
 
             foreach ($defaultCategories as $defaultCategory) {
                 $newCategory = new Category();
-                $newCategory->vcard = $vcard;
+                $newCategory->vcard = $vcard->phone_number;
 
                 $newCategory->type = $defaultCategory->type;
                 $newCategory->name = $defaultCategory->name;
                 $newCategory->save();
             }
 
-            $vcard->save();
+
             DB::commit();
 
+            return response()->json(array(
+                'code'      =>  200,
+                'message'   =>  "vCard Created With Sucess"
+            ), 200);
 
+            /*BECAUSE OF VALIDATION PHONE NUMBER STRING EQUALS FALSE CANT LOGIN YET
             $requestSignin = new SigninPost(['username' => $validator["phone_number"], 'password' => $validator["password"]]);
 
             return $this->signin($requestSignin, false);
+            */
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
@@ -155,9 +166,10 @@ class AuthController extends Controller
         }
     }
 
-    public function makeConfirmationPhoneNumber()
+    public function makeConfirmationPhoneNumber(Request $request, VCard $vcard)
     {
-        $vcard = Auth::user()->vcard_ref;
+        //PARA FAZZER A VALIZAÇÃO DO TELEMÓVEL DEVE DESCOMENTAR ESTAS LINHAS A BAIXO
+        /*
         $custom_data = $vcard->custom_data;
         $custom_data = json_decode((string) $custom_data, true);
 
@@ -165,7 +177,7 @@ class AuthController extends Controller
         $custom_data["phonenumber_confirmed"] = $response->getRequestId();
 
         $vcard->custom_data = json_encode($custom_data);
-        $vcard->save();
+        $vcard->save();*/
         return response()->json(
             [
                 'code'      =>  200,
@@ -173,15 +185,30 @@ class AuthController extends Controller
             ],
             200
         );
-        //return NotificationController::makeVerification();
     }
 
-    public function verifyConfirmationPhoneNumber(Request $request)
+    public function verifyConfirmationPhoneNumber(Request $request, VCard $vcard)
     {
-        $vcard = Auth::user()->vcard_ref;
         $custom_data = $vcard->custom_data;
         $custom_data = json_decode((string) $custom_data, true);
 
+        //PARA FAZER A VERIFICAÇÃO DO TELEMÓVEL DEVE RETIRAR ESTE CÓDIGO
+        //INICIO
+        $custom_data["phonenumber_confirmed"] = true;
+        $vcard->custom_data = json_encode($custom_data);
+        $vcard->save();
+
+        return response()->json(
+            [
+                'code'      =>  200,
+                'message'   =>  "Confirmation Phone Code matched!"
+            ],
+            200
+        );
+        //FIM
+
+
+        /*PARA FAZER A VERIFICAÇÃO DO NÚMERO DE TELEFONE DEVE DESCOMENTAR O CÓDIGO A BAIXO
         $result = NotificationController::verifyVerification($custom_data["phonenumber_confirmed"], $request->code);
         if ($result->getRequestData()["status"] == 0) {
             $custom_data["phonenumber_confirmed"] = true;
@@ -211,22 +238,32 @@ class AuthController extends Controller
                 'message'   =>  $result->getResponseData()
             ],
             500
-        );
+        );*/
     }
 
     public function cancelConfirmationPhoneNumber()
     {
+        //PARA FAZER O CANCELAMENTO DO PEDIDO DE CONFIMAÇÃO DE NÚMERO DE TELEFÓNE DEVE COMENTAR ESTE CÓDIGO A BAIXO
+        //INÍCIO
+        return response()->json(
+            [
+                'code'      =>  200,
+                'message'   =>  "Confirmation Phone Code Canceled!"
+            ],
+            200
+        );
+        //FIM
 
+        /*PARA FAZER O CANCELAMENTO DO PEDIDO DE CONFIRMAÇÃO DO NÚMERO DE TELEFÓNE DEVE DESCOMENTAR ESTE CÓDIGO A BAIXO
         $vcard = Auth::user()->vcard_ref;
         $custom_data = $vcard->custom_data;
         $custom_data = json_decode((string) $custom_data, true);
 
-        return NotificationController::cancelVerification($custom_data["phonenumber_confirmed"]);
+        return NotificationController::cancelVerification($custom_data["phonenumber_confirmed"]);*/
     }
 
-    public function checkConfirmationPhoneNumber()
+    public function checkConfirmationPhoneNumber(Request $request, VCard $vcard)
     {
-        $vcard = Auth::user()->vcard_ref;
         $custom_data = $vcard->custom_data;
         $custom_data = json_decode((string) $custom_data, true);
 

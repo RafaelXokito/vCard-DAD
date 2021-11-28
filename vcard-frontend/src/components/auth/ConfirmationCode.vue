@@ -48,6 +48,8 @@
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
+import AuthService from "../../services/auth.service";
+
 export default {
   name: "ConfirmationCode",
   components: {
@@ -87,13 +89,13 @@ export default {
     'success',
   ],
   methods: {
-    handleConfirmationCode(user) {
+    async handleConfirmationCode(user) {
         this.loading = true;
         this.message = "";
-        user["id"] = this.$store.state.auth.user.username;
-        this.$store.dispatch("auth/confirmationCode", user).then(
+        user["username"] = this.$store.state.auth.user.username;
+        await AuthService.confirmationCode(user).then(
             () => {
-                this.$store.dispatch("auth/updateVCardBalance", user).then(() => {
+                this.$store.dispatch("auth/getMe").then(() => {
                   this.loading = false;
                   this.close(true);
                 },

@@ -91,17 +91,23 @@ export default {
       if (user != null)
       this.$store.dispatch("auth/login", user).then(
         () => {
+            this.$store.dispatch('auth/getMe');
             this.$router.push("/");
         },
         (error) => {
           this.loading = false;
           this.errors = error.response.data.errors;
+
           this.message =
             (error.response &&
               error.response.data &&
               error.response.data.message) ||
             error.message ||
             error.toString();
+          
+          if (this.message === "The phone number was not confirmed.") {
+            this.$router.push({name: "confirmationPhoneNumber", params: {phoneNumber: user["username"] }});
+          }
         }
       );
     },

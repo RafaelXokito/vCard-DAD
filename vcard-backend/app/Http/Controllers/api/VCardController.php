@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\VcardDelete;
 use App\Http\Requests\VCardPost;
 use App\Http\Resources\VCardResource;
 use App\Models\VCard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -80,9 +82,24 @@ class VCardController extends Controller
         }
     }
 
-    public function remove(Request $request)
+    public function remove(VcardDelete $request, VCard $vcard)
     {
-        $vcard = Auth::user()->vcard_ref;
+        $validated_data = $request->validated();
+
+        if (!Hash::check($validated_data["password"], $vcard->password)) {
+            return response()->json(array(
+                'code'      =>  422,
+                'message'   =>  "Password does not match!"
+            ), 422);
+        }
+
+        if (!Hash::check($validated_data["confirmation_code"], $vcard->confirmation_code)) {
+            return response()->json(array(
+                'code'      =>  422,
+                'message'   =>  "Confirmation Code does not match!"
+            ), 422);
+        }
+
         $oldName = $vcard->name;
         $oldPhoneNumber = $vcard->phone_number;
         if ($vcard->balance != 0) {
@@ -93,8 +110,17 @@ class VCardController extends Controller
         }
 
         if ($vcard->transactions->count() == 0) {
-            $vcard->force_delete();
+            foreach ($vcard->categories as $categorie) {
+                $categorie->forceDelete();
+            }
+            $vcard->forceDelete();
         }else {
+            foreach ($vcard->categories as $categorie) {
+                $categorie->softDeletes();
+            }
+            foreach ($vcard->transactions as $transaction) {
+                $transaction->softDeletes();
+            }
             $vcard->softDeletes();
         }
 
@@ -104,5 +130,4 @@ class VCardController extends Controller
         ), 200);
 
     }
-
 }

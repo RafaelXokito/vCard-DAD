@@ -185,8 +185,8 @@
                   <li>
                     <router-link
                       class="dropdown-item"
-                      :class="{active: $route.name == 'profile'}"
-                      :to="{name: 'profile'}"
+                      :class="{active: $route.name.includes('Profile')}"
+                      :to="{name: 'showProfile'}"
                     ><font-awesome-icon :icon="['fas', 'address-card']" size="lg" /> Profile
                     </router-link>
                   </li>
@@ -233,7 +233,10 @@ export default {
   name: 'RootComponent',
   computed: {
     contentShow(){
-      return this.$store.state.auth.user && this.$store.state.auth.user.username;
+      if (this.$store.state.auth.user) {
+        return this.$store.state.auth.user && this.$store.state.auth.user.username;        
+      }
+      return true;
     },
     currentUser() {
       return this.$store.state.auth.user;
@@ -252,7 +255,9 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('auth/getMe');
+    if (this.currentUser) {
+      this.$store.dispatch('auth/getMe');
+    }
   },
 };
 </script>
