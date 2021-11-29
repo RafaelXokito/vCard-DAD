@@ -66,10 +66,10 @@
               </div>
               <div class="row align-items-end flex-row-reverse pt-5">
                   <div class="about-text go-to col-md-4 col-lg-3">
-                      <router-link class="btn btn-primary btn-block w-100" :to="{name:'editProfile'}">Editar perfil</router-link>
+                      <router-link class="btn btn-primary btn-block w-100" :to="{name:'editProfile'}">Edit profile</router-link>
                   </div>
                   <div class="about-text go-to col-md-4 col-lg-3" v-if="user.user_type == 'V'">
-                      <router-link class="btn btn-danger btn-block w-100" :to="{name: 'deleteProfile'}">Apagar perfil</router-link>
+                      <router-link class="btn btn-danger btn-block w-100" :to="{name: 'deleteProfile'}">Delete profile</router-link>
                   </div>
               </div>
             </div>

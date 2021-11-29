@@ -51,7 +51,7 @@
                     <div class="row justify-content-center">
                         <div class="col-12">
                             <div class="input-group"> 
-                                <select name="category" title="Category" style="border-radius: 10px !important;"> 
+                                <select v-model="transaction.category" name="category" title="Category" style="border-radius: 10px !important;"> 
                                     <option value="" selected>None</option>
                                     <option v-for="category in categories" v-bind:key="category.id" :value="category.id"><span class="text-capitalize">{{ titleCase(category.name) }}</span></option>
                                 </select>
@@ -128,6 +128,7 @@ export default {
             schema,
             paymentTypes: [],
             categories: [],
+            category: '',
             payment_type: "",
             transaction: {},
             balance: this.$store.state.auth.user["balance"],
@@ -166,8 +167,8 @@ export default {
             }
         },
         handleCreate(transaction) {
-
             this.showConfirmationCode = true;
+            transaction.category = this.transaction.category;
             this.transaction = transaction;
             
         },
@@ -198,6 +199,7 @@ export default {
         await CategoryService.getCategoryBoard(this.$store.state.auth.user.username,`vcards/${this.$store.state.auth.user.username}/categories?type=D`).then(
             ({data}) => {
                 this.categories = data.data;
+                this.transaction.category = "";
             },
             (error) => {
                 this.messageCreate =
@@ -213,7 +215,7 @@ export default {
     watch: {
         value(newVal){
             this.balance = this.$store.state.auth.user["balance"] - newVal;
-        }
+        },
     }
 }
 </script>

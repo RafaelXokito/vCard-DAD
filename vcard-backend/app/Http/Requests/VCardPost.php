@@ -32,6 +32,7 @@ class VCardPost extends FormRequest
             }],
             'name'              => ['required', 'string'],
             'email'             => ['required', 'email', 'unique:App\Models\User,email'],
+            'photo_url'         => ['required', 'mimes:jpeg,jpg,png', 'max:8192'],
             'password'          => ['required', 'string'],
             'confirmation_code' => ['required', 'digits:4']
         ];

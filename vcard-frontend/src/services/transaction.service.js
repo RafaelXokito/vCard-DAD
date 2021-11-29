@@ -19,6 +19,10 @@ class TransactionService {
     return axios.post('transactions',transaction, { headers: authHeader() })
   }
 
+  patchTransaction(transaction){
+    return axios.patch(`transactions/${transaction.id}`,transaction, { headers: authHeader() })
+  }
+
   getAdminBoard() {
     //return axios.get(API_URL + 'administrators', { headers: authHeader() });
   }

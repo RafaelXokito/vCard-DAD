@@ -34,8 +34,8 @@ export const auth = {
       AuthService.logout();
       commit('logout');
     },
-    register({ commit }, user) {
-      return AuthService.register(user).then(
+    register({ commit }, form_data) {
+      return AuthService.register(form_data).then(
         result => {
           commit('registerSuccess');
           return Promise.resolve(result);

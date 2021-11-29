@@ -9,7 +9,9 @@
         >#</th>
         <th class="align-middle">Name</th>
         <th class="align-middle">Type</th>
-        <th>
+        <th style="width: 50px" v-if="showEdit">
+        </th>
+        <th style="width: 50px">
         </th>
       </tr>
     </thead>
@@ -25,12 +27,21 @@
         >{{ category.id }}</td>
         <td class="align-middle">{{ category.name.charAt(0).toUpperCase() + category.name.slice(1) }}</td>
         <td class="align-middle">{{ category.type }}</td>
+        <td v-if="showEdit"
+          class="text-end align-middle"
+        >
+          <div class="d-flex justify-content-end" >
+            <button class="btn btn-xs btn-warning" @click="editClick(category)">
+              <font-awesome-icon :icon="['fas', 'pen']" size="xs" />
+            </button>
+          </div>
+        </td>
         <td
           class="text-end align-middle"
         >
           <div class="d-flex justify-content-end">
-            <button class="btn btn-xs btn-warning" @click="editClick(transaction)">
-              <font-awesome-icon :icon="['fas', 'pen']" size="xs" />
+            <button class="btn btn-xs btn-danger" @click="deleteClick(category)">
+              <font-awesome-icon :icon="['fas', 'trash']" size="xs" />
             </button>
           </div>
         </td>
@@ -45,7 +56,6 @@
 
 <script>
 import Pagination from '../global/Pagination.vue'
-import CategoryService from "../../services/category.service";
 
 export default {
   name: "categoriesTable",
@@ -57,39 +67,36 @@ export default {
       type: Boolean,
       default: false,
     },
+    showEdit: {
+      type: Boolean,
+      default: false,
+    },
+    categories: {
+      type: Object,
+    },
   },
   emits: [
     'edit',
-    'list'
+    'list',
+    'delete'
   ],
   data() {
       return {
           isTableVisible: false,
-          categories: {}
       }
   },
   mounted() {
-    console.log("mount");
     this.list()
   },
   methods: {
     editClick (category) {
       this.$emit('edit', category)
     },
+    deleteClick(category) {
+      this.$emit('delete', category)
+    },
     list(link){
-      CategoryService.getCategoryBoard(this.$store.state.auth.user.username, link).then(
-          ({data}) => {
-              this.categories = data;
-          },
-          (error) => {
-              this.content =
-              (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-              error.message ||
-              error.toString();
-          }
-      );
+      this.$emit('list', link)
     },
   },
   watch:{

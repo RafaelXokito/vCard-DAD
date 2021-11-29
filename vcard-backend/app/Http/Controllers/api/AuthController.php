@@ -98,7 +98,7 @@ class AuthController extends Controller
             $vcard->name = $validator["name"];
             $vcard->email = $validator["email"];
             if ($request->hasFile('photo_url')) {
-                $vcard->photo_url = basename(Storage::disk('local')->putFileAs('vcard_photos\\', $validator['photo_url'], $vcard->phone_number . "_" . Str::random(6) . '.jpg'));
+                $vcard->photo_url = basename(Storage::disk('public')->putFileAs('fotos\\', $request->photo_url, $vcard->phone_number . "_" . Str::random(6) . '.jpg'));
             }
             $vcard->password = bcrypt($validator["password"]);
             $vcard->confirmation_code = bcrypt($validator["confirmation_code"]);

@@ -20,15 +20,8 @@ class AuthService {
     localStorage.removeItem('user');
   }
 
-  register(user) {
-    return axios.post('registerVCard', {
-      phone_number: user.phone_number,
-      name: user.name,
-      email: user.email,
-      photo_url: user.photo_url,
-      password: user.password,
-      confirmation_code: user.confirmation_code,
-    })
+  register(form_data) {
+    return axios.post('registerVCard', form_data)
     .then(response => {
       if (response.data.user) {
         localStorage.setItem('user', JSON.stringify(response.data.user));

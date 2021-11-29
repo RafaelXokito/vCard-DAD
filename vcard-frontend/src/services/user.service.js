@@ -22,8 +22,11 @@ class UserService {
     return await axios.patch(`users/${user.username}`,user, { headers: authHeader() });
   }
 
+  async blockUser(user){
+    return await axios.patch(`users/${user.username}/block`,{}, { headers: authHeader() });
+  }
+
   async updateUserPhoto(form){
-    console.log(form);
     return await axios.post(`users/${form.get("username")}/updateUserPhoto`,form, { headers: authHeader(`multipart/form-data; charset=utf-8;`) });
   }
 

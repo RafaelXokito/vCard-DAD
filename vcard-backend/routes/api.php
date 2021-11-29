@@ -50,7 +50,7 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\VCard'])->group(func
 
     Route::post('transactions', [TransactionController::class, 'postTransaction'])->middleware('can:store,App\Models\Transaction');
 
-    Route::patch('transactions/{transaction}', [TransactionController::class, 'putTransaction']);
+    Route::patch('transactions/{transaction}', [TransactionController::class, 'patchTransaction']);
 
     //Route::delete('transactions/{transaction}', [TransactionController::class, 'deleteTransaction']);
 
@@ -70,10 +70,12 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\VCard'])->group(func
     Route::get('users/me', [UserController::class, 'getMe']);
 
     Route::get('users/{user}', [UserController::class, 'getUser'])->middleware('can:view,user');
-	
+
 	Route::patch('users/{user}/password', [UserController::class, 'update_password'])->middleware('can:updatePassword,user');
 
     Route::patch('users/{user}', [UserController::class, 'patchUser'])->middleware('can:update,user');
+
+    Route::patch('users/{user}/block', [UserController::class, 'blockUser'])->middleware('can:block,App\Models\User');
 
     Route::post('users/{user}/updateUserPhoto', [UserController::class, 'postUserPhoto'])->middleware('can:update,user');
 

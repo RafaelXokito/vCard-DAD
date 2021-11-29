@@ -130,6 +130,7 @@ const routes = [
       {
         path: "",
         name: "categoriesTable",
+        props: true,
         // lazy-loaded
         component: CategoriesTable,
       },

@@ -121,20 +121,47 @@ class CategoryController extends Controller
     {
         try {
             if ($category->transactions->count() && $request->type != $category->type) {
-                return "You can't change a category type that already have transactions.";
+                return response()->json(array(
+                    'code'      =>  422,
+                    'message'   =>  "You can't change a category type that already have transactions."
+                ), 422);
             }
-            if ($request->type != 'C' && $request->type != 'D') {
-                return "Type of category should be 'C' (Credit) or 'D' (Debit)";
+
+            if ($request->has("type")) {
+                $category->type = $request->type;
             }
-            $category->type = $request->type;
-            $category->name = $request->name;
+            if ($request->has("name")) {
+                $category->name = $request->name;
+            }
             $category->save();
             return new CategoryResource($category);
         } catch (\Throwable $th) {
+            //Category already exist error (1062)
+            if ($th->errorInfo[1] == 1062) {
+                $category = Category::query()
+                                    ->where('vcard', '=', $category->vcard)
+                                    ->where('type', '=', $category->type)
+                                    ->where('name', '=', strtolower($category->name))->withTrashed()->get()->first();
+                if ($category->trashed()) {
+                    try {
+                        $category->restore();
+                        return new CategoryResource($category);
+                    } catch (\Throwable $th_restore) {
+                        return response()->json(array(
+                            'code'      =>  400,
+                            'message'   =>  $th_restore->getMessage()
+                            ), 400);
+                    }
+                }else
+                    return response()->json(array(
+                        'code'      =>  400,
+                        'message'   =>  "This category already exists."
+                        ), 400);
+            }
             return response()->json(array(
-                'code'      =>  400,
-                'message'   =>  $th->getMessage()
-            ), 400);
+                    'code'      =>  400,
+                    'message'   =>  $th->getMessage()
+                    ), 400);
         }
     }
 
@@ -144,12 +171,12 @@ class CategoryController extends Controller
         $oldCategoryID = $category->id;
         try {
             if ($category->transactions->count()) {
-                $category->delete();
+                $category->softDelete();
             }else {
                 $category->forceDelete();
-            }
 
-            Category::destroy($oldCategoryID);
+                Category::destroy($oldCategoryID);
+            }
 
             return "Category ".$oldName." was deleted.";
         } catch (\Throwable $th) {

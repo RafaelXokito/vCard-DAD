@@ -18,22 +18,22 @@ class UserPolicy
 
     public function viewAny(User $user)
     {
-        return $user->type == "A";
+        return $user->user_type == "A";
     }
 
     public function view(User $user, User $model)
     {
-        return $user->type == "A" || $user->id == $model->id;
+        return $user->user_type == "A" || $user->id == $model->id;
     }
 
     public function edit(User $user, User $model)
     {
-        return $user->type == "A" || $user->id == $model->id;
+        return $user->user_type == "A" || $user->id == $model->id;
     }
 
     public function update(User $user, User $model)
     {
-        return $user->type == "A" || $user->id == $model->id;
+        return $user->user_type == "A" || $user->id == $model->id;
     }
 
     public function updatePassword(User $user, User $model)
@@ -46,7 +46,7 @@ class UserPolicy
         return $user->id == $model->id;
     }
 
-    
+
     public function create(User $user)
     {
         return true;
@@ -70,5 +70,10 @@ class UserPolicy
     public function forceDelete(User $user)
     {
         return false;
+    }
+
+    public function block(User $user)
+    {
+        return $user->user_type == "A";
     }
 }

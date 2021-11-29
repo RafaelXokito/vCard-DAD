@@ -51,7 +51,8 @@ class UserResource extends JsonResource
                     'name' => $this->name,
                     'email' => $this->email,
                     'photo_url' => $this->photo_url != null ? "storage/fotos/" . $this->photo_url : "storage/fotos/avatar.jpg",
-                    'user_type' => $this->user_type
+                    'user_type' => $this->user_type,
+                    'blocked'   => $this->blocked
                 ];
         }
     }

@@ -2,12 +2,13 @@
     <div class="container">
         <div v-if="isUserVisible">
             <section class="section about-section gray-bg" id="about">
+                <h3 class="text-center pt-3">Edit Profile</h3>
                 <div class="container pt-5">
                     <Form @submit="handleSave" :validation-schema="schema" class="w-75 mx-auto" method="PATCH" enctype="multipart/form-data">
                     <div v-if="!successful">
                         <div class="form-group image-upload text-center">
                             <label for="file-input">
-                            <img class="rounded-circle" :src="img_src">
+                            <img class="rounded-circle" :src="img_src" :title="user.username+'Photo'">
                             </label>
                             <Field name="photo_url" id="file-input" @change="onFileChange" type="file" />
                         </div>
@@ -88,6 +89,7 @@ export default {
     },
     async mounted() {
         this.user = await this.$store.dispatch('auth/getMe');
+        this.img_src = this.baseURL + this.user.photo_url;
         this.isUserVisible = true;
     },
     methods: {

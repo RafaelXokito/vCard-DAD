@@ -2,6 +2,7 @@
     <div class="container">
         <div v-if="isUserVisible">
             <section class="section about-section gray-bg" id="about">
+                <h3 class="text-center pt-3">Change Password</h3>
                 <div class="container pt-5">
                     <Form @submit="handleSave" :validation-schema="schema" class="w-75 mx-auto" method="PATCH" enctype="multipart/form-data">
                     <div v-if="!successful">

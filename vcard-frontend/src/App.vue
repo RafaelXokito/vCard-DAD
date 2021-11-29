@@ -66,6 +66,7 @@
               </li>
               <li>
                 <router-link
+                  v-if="currentUser.user_type === 'V'"
                   class="dropdown-item"
                   :class="{active: $route.name === 'changeConfirmationCode'}"
                   to="/changeConfirmationCode"
@@ -82,7 +83,7 @@
                   href="#"
                   @click.prevent="logOut"
                 >
-                  <i class="bi bi-arrow-right"></i>Logout
+                  <font-awesome-icon :icon="['fas', 'arrow-right']" size="lg" /> Logout
                 </a></li>
             </ul>
           </li>
@@ -139,7 +140,7 @@
               ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />
               </router-link>
             </li>
-            <li class="nav-item d-flex justify-content-between align-items-center pe-3">
+            <li v-if="currentUser.user_type === 'V'" class="nav-item d-flex justify-content-between align-items-center pe-3">
               <router-link
                 class="nav-link w-100 me-3 py-3"
                 :class="{active: $route.name.includes('categories')}"
@@ -156,7 +157,6 @@
               </router-link>
             </li>
           </ul>
-
           <div class="d-block d-md-none">
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
               <span>User</span>
@@ -197,7 +197,7 @@
                       :to="{name: 'changePassword'}"
                     ><font-awesome-icon :icon="['fas', 'key']" size="lg" /> Change password</router-link>
                   </li>
-                  <li>
+                  <li v-if="currentUser.user_type === 'V'">
                     <router-link
                       class="dropdown-item"
                       :class="{active: $route.name === 'changeConfirmationCode'}"
@@ -211,7 +211,7 @@
                       class="dropdown-item"
                       href="#"
                       @click.prevent="logOut"
-                    ><i class="bi bi-arrow-right"></i>Logout</a></li>
+                    ><font-awesome-icon :icon="['fas', 'arrow-right']" size="lg" />Logout</a></li>
                 </ul>
               </li>
             </ul>
@@ -225,6 +225,11 @@
 
     </div>
   </div>
+</div>
+<div class="d-flex justify-content-center big p-5" v-else>
+    <div class="row justify-content-center text-center">
+      <p> <img :src="logoImageURL" alt="" width="90" height="44" class="d-inline-block align-text-top imgLoad"> </p>
+    </div>
 </div>
 </template>
 
@@ -261,8 +266,31 @@ export default {
   },
 };
 </script>
-
 <style lang="css" scoped>
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+.imgLoad {
+    animation: blink 1s;
+    animation-iteration-count: infinite;
+}
+.imgLoad {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 @import "./assets/css/dashboard.css";
 
 .avatar-img {

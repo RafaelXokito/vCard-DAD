@@ -1,4 +1,5 @@
 <template>
+<div>
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">Users</h1>
   </div>
@@ -25,8 +26,10 @@
     :showId="false"
     @edit="editUser"
     @list="list"
+    @block="blockUser"
   ></user-table>
   </div>
+</div>
 </template>
 
 <script>
@@ -55,10 +58,22 @@ export default {
     editUser(user){
       console.log(user);
     },
+    async blockUser(userIndex){
+      let user = this.users.data[userIndex];
+
+      let blockedState = user.blocked;
+      this.users.data[userIndex].blocked = 'loading'
+
+      let message = `Do you really want to ${blockedState ? 'UNBLOCK' : 'BLOCK'} the ${user.user_type === 'A' ? 'admin' : 'vCard'} ${user.name} [${user.username}]`
+      if (confirm(message)) {
+        await UserService.blockUser(user).then(()=>{
+          this.users.data[userIndex].blocked = !blockedState
+        })
+      }
+    },
     list(link){
         UserService.getUserBoard(link).then(
             ({data}) => {
-              console.log(data);
               this.users = data;
             },
             (error) => {

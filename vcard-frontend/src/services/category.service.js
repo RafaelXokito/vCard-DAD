@@ -15,7 +15,15 @@ class CategoryService {
   }
 
   postCategory(category){
-    return axios.post('categories',category,     { headers: authHeader() });
+    return axios.post('categories',category, { headers: authHeader() });
+  }
+
+  patchCategory(category){
+    return axios.patch(`categories/${category.id}`,category, { headers: authHeader() });
+  }
+
+  deleteCategory(category){
+    return axios.delete(`categories/${category.id}`, { headers: authHeader() });
   }
 
   getAdminBoard() {

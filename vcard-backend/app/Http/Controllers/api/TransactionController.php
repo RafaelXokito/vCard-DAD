@@ -146,14 +146,15 @@ class TransactionController extends Controller
         }
     }
 
-    public function putTransaction(Request $request, Transaction $transaction)
+    public function patchTransaction(Request $request, Transaction $transaction)
     {
         $data = $request->all();
+        
         if ($request->has("description")) {
             $transaction->description = $data["description"];
         }
-        if ($request->has("category_id") && $data["category_id"] != null) {
-            $transaction->category_id = Category::findOrFail($data["category_id"])->id;
+        if ($request->has("category") && $data["category"] != null) {
+            $transaction->category_id = Category::findOrFail($data["category"])->id;
         }else{
             $transaction->category_id = null;
         }

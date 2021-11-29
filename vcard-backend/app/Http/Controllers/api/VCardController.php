@@ -63,8 +63,9 @@ class VCardController extends Controller
         try {
             $vcard->name = $validated_data["name"];
             $vcard->email = $validated_data["email"];
-            if ($request->hasFile('imagem_url')) {
-                $vcard->photo_url = basename(Storage::disk('local')->putFileAs('vcard_photos\\', $validated_data['photo_url'], $vcard->phone_number . "_" . Str::random(6) . '.jpg'));
+            if ($request->hasFile('photo_url')) {
+                Storage::disk('public')->delete('estampas_privadas/'.$vcard->photo_url);
+                $vcard->photo_url = basename(Storage::disk('public')->putFileAs('vcard_photos\\', $validated_data['photo_url'], $vcard->phone_number . "_" . Str::random(6) . '.jpg'));
             }
             $vcard->password = bcrypt($validated_data["password"]);
             $vcard->confirmation_code = bcrypt($validated_data["confirmation_code"]);

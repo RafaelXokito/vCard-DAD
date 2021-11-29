@@ -115,7 +115,8 @@ export default {
       message: "",
       schema,
       img_src: this.defaultImageProfileURL,
-      errors: {}
+      errors: {},
+      photo_url: ""
     };
   },
   computed: {
@@ -133,9 +134,19 @@ export default {
       this.message = "";
       this.successful = false;
       this.loading = true;
-      this.$store.dispatch("auth/register", user).then(
+
+      user["photo_url"] = this.photo_url
+      user["username"] = user["phone_number"]
+
+      var form_data = new FormData();
+
+      for ( var key in user ) {
+          form_data.append(key, user[key]);
+      }
+
+      this.$store.dispatch("auth/register", form_data).then(
         () => {
-          this.$router.push({name: "confirmationPhoneNumber", params: {phoneNumber: user["phone_number"] }});
+            this.$router.push({name: "confirmationPhoneNumber", params: {phoneNumber: user["phone_number"] }});
         },
         (error) => {
           this.loading = false;
@@ -152,6 +163,11 @@ export default {
       );
     },
     onFileChange(e) {
+      var files = e.target.files;
+      if (!files.length){
+          return;
+      }
+      this.photo_url = files[0];
       const file = e.target.files[0];
       this.img_src = URL.createObjectURL(file);
     },

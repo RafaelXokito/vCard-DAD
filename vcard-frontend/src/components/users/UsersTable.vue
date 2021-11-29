@@ -16,14 +16,14 @@
             v-if="showEmail"
             class="align-middle"
           >Email</th>
-          <th>
-
+          <th class="align-middle" v-if="showBlock">
+            Blocked
           </th>
         </tr>
       </thead>
       <tbody>
         <tr
-          v-for="user in users.data"
+          v-for="(user, index) in users.data"
           :key="user.username"
           :class="user.user_type == 'A' ? 'table-success' : ''"
         >
@@ -48,18 +48,18 @@
           <td
             class="text-end align-middle"
           >
-            <div class="d-flex justify-content-end">
-              <button
-                class="btn btn-xs btn-light"
-                @click="editClick(user)"
-              > <i class="bi bi-xs bi-pencil"></i>e
+          <div class="d-flex justify-content-start">
+              <button class="btn btn-xs" :class="users.data[index].blocked ? 'btn-success' : 'btn-danger'" @click.prevent="changeBlockUser(index)">
+                <font-awesome-icon v-if="users.data[index].blocked && (users.data[index].blocked == '0' || users.data[index].blocked == '1')" :icon="['fas', 'check-circle']" />
+                <font-awesome-icon v-else-if="!users.data[index].blocked && (users.data[index].blocked == '0' || users.data[index].blocked == '1')" :icon="['fas', 'times-circle']" />
+                <span v-else class="spinner-border spinner-border-sm"></span>
               </button>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
-    <div class="row">
+    <div class="d-flex justify-content-center">
         <pagination class="mx-auto" align="center" :data="users" @pagination-change-page="list"></pagination>
     </div>
   </div>
@@ -76,7 +76,8 @@ export default {
   },
   data() {
     return {
-      isTableVisible: false,
+      isTableVisible: false,  
+      loading: [],    
     }
   },
   props: {
@@ -89,6 +90,10 @@ export default {
       default: true,
     },
     showEmail: {
+      type: Boolean,
+      default: true,
+    },
+    showBlock: {
       type: Boolean,
       default: true,
     },
@@ -111,7 +116,8 @@ export default {
   },
   emits: [
     'edit',
-    'list'
+    'list',
+    'block'
   ],
   methods: {
     editClick (user) {
@@ -120,6 +126,12 @@ export default {
     async list(link){
         await this.$emit('list', link)
     },
+    async changeBlockUser(userIndex){
+      await this.$emit('block', userIndex);
+    }
+  },
+  mounted() {
+    this.loading = new Array(10).fill(0)
   },
   watch:{
     users(newVal){
@@ -127,7 +139,7 @@ export default {
         this.isTableVisible = true;
       }
     }
-  }
+  },
 }
 </script>
 

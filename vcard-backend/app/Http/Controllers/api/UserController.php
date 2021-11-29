@@ -10,7 +10,6 @@ use App\Http\Requests\UserPhotoPost;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -62,8 +61,8 @@ class UserController extends Controller
             $userAux = $user->vcard_ref;
         }
         try {
-
             if ($request->has("photo_url")) {
+                Storage::disk('public')->delete('fotos\\'.$userAux->photo_url);
                 $userAux->photo_url = basename(Storage::disk('public')->putFileAs('fotos\\', $request->photo_url, $user->username . "_" . Str::random(6) . '.jpg'));
             }
             $userAux->save();
@@ -104,6 +103,23 @@ class UserController extends Controller
                 'message'   =>  $th->getMessage()
             ), 400);
         }
+    }
+
+    public function blockUser(User $user)
+    {
+        if ($user->user_type == 'A') {
+            UserResource::$format = 'detailedAdmin';
+            $userAux = $user->admin_ref;
+        }else if ($user->user_type == 'V') {
+            UserResource::$format = 'detailedVCard';
+            $userAux = $user->vcard_ref;
+        }
+
+        $userAux->blocked = !$userAux->blocked;
+
+        $userAux->save();
+
+        return new UserResource($user);
     }
 
     public function patchPasswordUser(UserPasswordPatch $request, User $user)
