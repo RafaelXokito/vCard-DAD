@@ -33,4 +33,21 @@ class AdministratorController extends Controller
                 ), 400);
         }
     }
+
+    public static function removeAdmin(Administrator $admin)
+    {
+        $oldName = $admin->name;
+        if (Administrator::all()->count() > 1) {
+            $admin->delete();
+        }else {
+            return response()->json(array(
+                'code'      =>  422,
+                'message'   =>  "Admin ". $oldName ." cannot be removed, you cant delete last admin!"
+            ), 422);
+        }
+        return response()->json(array(
+            'code'      =>  200,
+            'message'   =>  "Admin ". $oldName ." was removed!"
+        ), 200);
+    }
 }

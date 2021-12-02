@@ -39,14 +39,9 @@ class VCardService {
     //return await axios.delete(`vcards/${user.username}/delete`, { headers: authHeader() }, {data: user});
   }
 
-  async deleteVCard(user) {
-    return await axios.delete(`vcards/${user.username}/deletevcard`,{ headers: authHeader(), data: user });
-  }
-
   async restoreVCard(user) {
     return await axios.post(`vcards/${user.username}/restorevcard`,user,{ headers: authHeader() });
   }
-
 
   async closeConfirmationPhoneNumber(user){
     let promise = await axios.get('vards/'+ user.phoneNumber +'/closeConfirmationPhoneNumber', { headers: authHeader() })

@@ -70,6 +70,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function admin_ref()
     {
-        return $this->belongsTo(Administrator::class, 'id', 'id')->withTrashed();
+        return $this->belongsTo(Administrator::class, 'id', 'id');
     }
 }

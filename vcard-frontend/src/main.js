@@ -14,6 +14,7 @@ import axios from 'axios'
 import Toaster from "@meforma/vue-toaster"
 import ConfirmationService from 'primevue/confirmationservice';
 import PrimeVue from 'primevue/config';
+import VueSocketIO from 'vue-3-socket.io'
 
 import FieldErrorMessage from "./components/global/FieldErrorMessage.vue"
 import ConfirmationDialog from "./components/global/ConfirmationDialog.vue"
@@ -24,16 +25,25 @@ let toastOptions = {
     pauseOnHover: true
 }
 
+const socketIO = new VueSocketIO({
+  debug: true,
+  connection: 'http://localhost:8080',
+ })
+
+
 const app = createApp(App)
   .use(router)
   .use(store)
   .use(PrimeVue)
   .use(ConfirmationService)
   .use(Toaster, toastOptions)
+  .use(socketIO)
   .component("font-awesome-icon", FontAwesomeIcon)
   .component('field-error-message', FieldErrorMessage)
   .component('confirmation-dialog', ConfirmationDialog)
 
+
+store.$socket = socketIO.io
 
 router.beforeEach((to, from, next) => {
   let auth = store.state.auth;

@@ -114,8 +114,8 @@
             class="text-end align-middle"
             v-if="showDelete"
           >
-          <div class="d-flex justify-content-start" v-if="user.user_type === 'V'">
-              <button class="btn btn-xs" :class="users.data[index].deleted ? 'btn-success' : 'btn-danger'" @click.prevent="changeDeleteVCard(index)">
+          <div class="d-flex justify-content-start">
+              <button class="btn btn-xs" :class="users.data[index].deleted ? 'btn-success' : 'btn-danger'" @click.prevent="changedelete(index)">
                 <font-awesome-icon v-if="users.data[index].deleted && (users.data[index].deleted == '0' || users.data[index].deleted == '1')" :icon="['fas', 'trash-restore']" />
                 <font-awesome-icon v-else-if="!users.data[index].deleted && (users.data[index].deleted == '0' || users.data[index].deleted == '1')" :icon="['fas', 'trash-alt']" />
                 <span v-else class="spinner-border spinner-border-sm"></span>
@@ -207,7 +207,7 @@ export default {
     async changeMaxDebitVCard(userIndex){
       await this.$emit('maxDebit', userIndex);
     },
-    async changeDeleteVCard(userIndex){
+    async changedelete(userIndex){
       await this.$emit('delete', userIndex);
     }
   },

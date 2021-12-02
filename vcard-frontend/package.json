@@ -21,6 +21,7 @@
     "v-pagination-3": "^0.1.7",
     "vee-validate": "^4.5.5",
     "vue": "^3.2.21",
+    "vue-3-socket.io": "^1.0.4",
     "vue-cookies": "^1.7.4",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2",

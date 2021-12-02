@@ -142,7 +142,8 @@ export default {
                 this.loadingDependencies = true;
                 this.showConfirmationCode = false;
                 TransactionService.postTransaction(this.transaction).then(
-                    () => {
+                    (transaction) => {
+                        this.$socket.emit('newTransaction', transaction)
                         this.$store.dispatch("auth/getMe").then(
                         () => {
                             this.$router.push("/transactions");

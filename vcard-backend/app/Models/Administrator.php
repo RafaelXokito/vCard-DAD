@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Administrator extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable;
 
     protected $table = 'users';
 

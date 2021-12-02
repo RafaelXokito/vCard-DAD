@@ -18,6 +18,7 @@ class DefaultCategoryResource extends JsonResource
             'id'    => $this->id,
 			'type' => $this->type,
 			'name' => $this->name,
+            'deleted' => $this->deleted_at != null ? 1 : 0,
 		];
     }
 }

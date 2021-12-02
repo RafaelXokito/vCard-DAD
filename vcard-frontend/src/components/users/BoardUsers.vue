@@ -11,7 +11,7 @@
     @list="list"
     @block="blockVcard"
     @maxDebit="maxDebitVcard"
-    @delete="deleteVCard"
+    @delete="deleteUser"
   ></user-table>
   </div>
   <confirm-dialog></confirm-dialog>
@@ -121,7 +121,7 @@ export default {
           }
       });
     },
-    async deleteVCard(userIndex){
+    async deleteUser(userIndex){
       let user = this.users.data[userIndex];
 
       let deletedState = user.deleted;
@@ -134,7 +134,7 @@ export default {
           accept: async () => {
               this.users.data[userIndex].deleted = 'loading'
               if (deletedState === 0) {
-                await VCardService.deleteVCard(user).then(()=>{
+                await UserService.delete(user).then(()=>{
                   this.users.data[userIndex].deleted = !deletedState
                   this.$toast.success(`VCard ${user.name} deleted successful.`, {autoHideDelay: 2000, appendToast: true}) 
                   this.list(this.lastLinkedUsed)

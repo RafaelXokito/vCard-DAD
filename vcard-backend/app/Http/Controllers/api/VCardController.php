@@ -121,10 +121,10 @@ class VCardController extends Controller
             ), 422);
         }
 
-        return $this->removeVcard($vcard);
+        return self::removeVcard($vcard);
     }
 
-    public function removeVcard(VCard $vcard)
+    public static function removeVcard(VCard $vcard)
     {
         $oldName = $vcard->name;
         $oldPhoneNumber = $vcard->phone_number;

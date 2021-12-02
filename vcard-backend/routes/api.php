@@ -104,9 +104,9 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(funct
 
     Route::delete('vcards/{vcard}/delete', [VCardController::class, 'remove'])->middleware('can:delete,vcard');
 
-    Route::delete('vcards/{vcard}/deletevcard', [VCardController::class, 'removeVcard'])->middleware('can:delete,vcard');
+    Route::delete('users/{user}/delete', [UserController::class, 'remove'])->middleware('can:delete,user');
 
-    Route::post('vcards/{phone_number}/restorevcard', [VCardController::class, 'restoreVcard']); //middleware executado no método 'restoreVcard'
+    Route::post('vcards/{phone_number}/restore', [VCardController::class, 'restoreVCard']); //middleware executado no método 'restoreVcard'
 
     Route::patch('vcards/{vcard}/block', [VCardController::class, 'blockVCard'])->middleware('can:block,App\Models\VCard');
 

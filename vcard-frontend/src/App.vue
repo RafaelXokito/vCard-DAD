@@ -278,7 +278,8 @@ export default {
   computed: {
     contentShow(){
       if (this.$store.state.auth.user) {
-        return this.$store.state.auth.user && this.$store.state.auth.user.username;        
+        this.$socket.emit('logged_in', this.$store.state.auth.user)
+        return this.$store.state.auth.user && this.$store.state.auth.user.username; 
       }
       return true;
     },
@@ -301,6 +302,11 @@ export default {
   created() {
     if (this.currentUser) {
       this.$store.dispatch('auth/getMe');
+    }
+  },
+  sockets: {
+    newTransaction (transaction) {
+      this.$toast.show(`You recieved a new transation from ${transaction.payment_reference} of ${transaction.value} €`)
     }
   },
 };

@@ -190,4 +190,13 @@ class UserController extends Controller
         }
     }
 
+    public function remove(User $user)
+    {
+        if ($user->user_type == 'A') {
+            AdministratorController::removeAdmin($user->admin_ref);
+        }else if ($user->type == 'V') {
+            VCardController::removeVcard($user->vcard_ref);
+        }
+    }
+
 }

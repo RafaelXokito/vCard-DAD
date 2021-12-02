@@ -57,7 +57,7 @@ class UserPolicy
 
     public function delete(User $user)
     {
-        return false;
+        return $user->user_type == "A";
     }
 
     public function restore(User $user)

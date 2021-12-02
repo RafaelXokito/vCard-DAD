@@ -62,6 +62,7 @@ export const auth = {
       
     },
     logout(state) {
+      this.$socket.emit('logged_out', state.user)
       state.status.loggedIn = false;
       state.user = null;
       

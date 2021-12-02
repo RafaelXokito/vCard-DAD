@@ -33,6 +33,10 @@ class UserService {
   async updateConfirmationCodeUser(user) {
     return await axios.patch(`users/${user.username}/updateConfirmationCode`,user, { headers: authHeader() });
   }
+
+  async delete(user) {
+    return await axios.delete(`users/${user.id}/delete`,{ headers: authHeader(), data: user });
+  }
   
 
   getAdminBoard() {
