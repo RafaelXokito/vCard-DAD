@@ -21,8 +21,30 @@ class VCardResource extends JsonResource
                     'balance' => $this->balance,
                 ];
                 break;
+            case 'detailed':
+                return [
+                    'id' => $this->id,
+                    'username' => $this->username,
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'photo_url' => $this->photo_url != null ? "storage/fotos/" . $this->photo_url : "storage/fotos/avatar.jpg",
+                    'user_type' => $this->user_type,
+                    'balance' => $this->balance,
+                    'max_debit' => $this->max_debit,
+                    'count_transactions' => $this->transactions()->count()
+                ];
+                break;
             default:
-                return parent::toArray($request);
+                return [
+                    'id' => $this->id,
+                    'username' => $this->username,
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'photo_url' => $this->photo_url != null ? "storage/fotos/" . $this->photo_url : "storage/fotos/avatar.jpg",
+                    'user_type' => $this->user_type,
+                    'max_debit' => $this->max_debit,
+                    'blocked'   => $this->blocked
+                ];
         }
     }
 }

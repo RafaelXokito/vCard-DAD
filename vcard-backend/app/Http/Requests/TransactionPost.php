@@ -46,7 +46,8 @@ class TransactionPost extends FormRequest
             'category'       => ['nullable','exists:categories,id'],
             'payment_type'      => ['required','bail','exists:payment_types,code'],
             'payment_reference' => ['required',function($attribute, $value, $fail) {
-                                            if (!preg_match("/^".PaymentType::findOrFail($this->request->all()["payment_type"])->validation_rules["regex"]."?$/", $value)) {
+                                            if (PaymentType::findOrFail($this->request->all()["payment_type"])->validation_rules != null &&
+                                                !preg_match("/^".PaymentType::findOrFail($this->request->all()["payment_type"])->validation_rules["regex"]."?$/", $value)) {
                                                 $fail('Invalid Payment Reference format.');
                                             }
                                         }],

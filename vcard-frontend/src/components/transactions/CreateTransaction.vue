@@ -182,7 +182,7 @@ export default {
     },
     async mounted() {
         this.loadingDependencies = true;
-        await PaymentTypeService.getPaymentTypeBoard().then(
+        await PaymentTypeService.getPaymentType().then(
             ({data}) => {
                 this.paymentTypes = data.data;
                 this.payment_type = "VCARD";

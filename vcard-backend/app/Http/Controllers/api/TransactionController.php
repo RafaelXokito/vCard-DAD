@@ -22,7 +22,25 @@ class TransactionController extends Controller
 
     public function getTransactions(Request $request)
     {
-        $transactions = Auth::user()->user_type == 'A' ? Transaction::orderByDesc('created_at')->paginate(10) : Auth::user()->vcard_ref->transactions()->orderByDesc('created_at')->paginate(10);
+        $transactions = Auth::user()->user_type == 'A' ? DB::table('transactions') : Auth::user()->vcard_ref->transactions();
+
+        if ($request->has("type")) {
+            $transactions = $transactions->where("type", $request->type);
+        }
+
+        if ($request->has("start_date")) {
+            $transactions = $transactions->whereDate("date", '>=' ,$request->start_date.' 00:00:00');
+        }
+
+        if ($request->has("end_date")) {
+            $transactions = $transactions->where('date', '<=', $request->end_date.' 00:00:00');
+        }
+
+        if ($request->has("payment_type")) {
+            $transactions = $transactions->where("payment_type", $request->payment_type);
+        }
+
+        $transactions = Auth::user()->user_type == 'A' ? $transactions->orderByDesc('created_at')->paginate(10) : $transactions->orderByDesc('created_at')->paginate(10);
         return TransactionResource::collection($transactions);
     }
 
@@ -117,10 +135,6 @@ class TransactionController extends Controller
                         $pair_transaction->custom_data = $validated_data["custom_data"];
                     $pair_transaction->save();
 
-                    $vcard = $transaction->vcard_ref;
-                    $vcard->balance = $transaction->new_balance;
-                    $vcard->save();
-
                     $pairVcard = $pair_transaction->vcard_ref;
                     $pairVcard->balance = $pair_transaction->new_balance;
                     $pairVcard->save();
@@ -134,6 +148,10 @@ class TransactionController extends Controller
                     $pair_transaction->save();
                     break;
             }
+
+            $vcard = $transaction->vcard_ref;
+            $vcard->balance = $transaction->new_balance;
+            $vcard->save();
 
             DB::commit();
             return new TransactionResource($transaction);
@@ -149,7 +167,7 @@ class TransactionController extends Controller
     public function patchTransaction(Request $request, Transaction $transaction)
     {
         $data = $request->all();
-        
+
         if ($request->has("description")) {
             $transaction->description = $data["description"];
         }

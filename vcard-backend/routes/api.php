@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\api\AdministratorController;
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\CategoryController;
+use App\Http\Controllers\api\DefaultCategoryController;
 use App\Http\Controllers\api\PaymentTypeController;
 use App\Http\Controllers\api\TransactionController;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\VCardController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +22,8 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::middleware(['auth:api','can:accessCritial,App\Models\VCard'])->group(function () {
+Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(function () {
+
     //CATEGORIES
     Route::get('categories', [CategoryController::class, 'getCategories'])->middleware('can:viewAny,App\Models\Category');
 
@@ -34,6 +38,17 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\VCard'])->group(func
     Route::patch('categories/{category}', [CategoryController::class, 'patchCategory'])->middleware('can:update,category');
 
     Route::delete('categories/{category}', [CategoryController::class, 'deleteCategory'])->middleware('can:viewAny,category');
+
+    //DEFAULTCATEGORIES
+    Route::get('defaultcategories', [DefaultCategoryController::class, 'getDefaultCategories'])->middleware('can:viewAny,App\Models\DefaultCategory');
+
+    Route::get('defaultcategories/{defaultcategory}', [DefaultCategoryController::class, 'getDefaultCategory'])->middleware('can:view,defaultcategory');;
+
+    Route::post('defaultcategories', [DefaultCategoryController::class, 'postDefaultCategory'])->middleware('can:store,App\Models\DefaultCategory');;
+
+    Route::patch('defaultcategories/{defaultcategory}', [DefaultCategoryController::class, 'patchDefaultCategory'])->middleware('can:update,defaultcategory');
+
+    Route::delete('defaultcategories/{defaultcategory}', [DefaultCategoryController::class, 'deleteDefaultCategory'])->middleware('can:viewAny,defaultcategory');
 
     //TRANSACTIONS
     Route::get('transactions', [TransactionController::class, 'getTransactions'])->middleware('can:viewAny,App\Models\Transaction');
@@ -59,23 +74,27 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\VCard'])->group(func
 
     Route::get('payment_types/{payment_type}', [PaymentTypeController::class, 'getPaymentType'])->middleware('can:view,App\Models\PaymentType');
 
-    Route::get('transactions/{transaction}/payment_type', [PaymentTypeController::class, 'getPaymentTypeByTransaction']);
+    Route::get('transactions/{transaction}/payment_type', [PaymentTypeController::class, 'getPaymentTypeByTransaction'])->middleware('can:viewPaymentType,App\Models\PaymentType');
+
+    Route::post('payment_types', [PaymentTypeController::class, 'postPaymentType'])->middleware('can:store,App\Models\PaymentType');;
+
+    Route::patch('payment_types/{payment_type}', [PaymentTypeController::class, 'patchPaymentType'])->middleware('can:update,payment_type');
+
+    Route::delete('payment_types/{payment_type}', [PaymentTypeController::class, 'deletePaymentType'])->middleware('can:delete,payment_type');
 
     //VCARD
-    Route::get('vcards', [VCardController::class, 'getVcards']);
+    Route::get('vcards', [VCardController::class, 'getVcards'])->middleware('can:viewAny,App\Models\VCard');
 
-    Route::get('vcards/{vcard}', [VCardController::class, 'getVcard']);
+    Route::get('vcards/{vcard}', [VCardController::class, 'getVcard'])->middleware('can:view,vcard');
 
     //USERS
     Route::get('users/me', [UserController::class, 'getMe']);
 
     Route::get('users/{user}', [UserController::class, 'getUser'])->middleware('can:view,user');
 
-	Route::patch('users/{user}/password', [UserController::class, 'update_password'])->middleware('can:updatePassword,user');
+    Route::patch('users/{user}/password', [UserController::class, 'update_password'])->middleware('can:updatePassword,user');
 
     Route::patch('users/{user}', [UserController::class, 'patchUser'])->middleware('can:update,user');
-
-    Route::patch('users/{user}/block', [UserController::class, 'blockUser'])->middleware('can:block,App\Models\User');
 
     Route::post('users/{user}/updateUserPhoto', [UserController::class, 'postUserPhoto'])->middleware('can:update,user');
 
@@ -85,9 +104,23 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\VCard'])->group(func
 
     Route::delete('vcards/{vcard}/delete', [VCardController::class, 'remove'])->middleware('can:delete,vcard');
 
+    Route::delete('vcards/{vcard}/deletevcard', [VCardController::class, 'removeVcard'])->middleware('can:delete,vcard');
+
+    Route::post('vcards/{phone_number}/restorevcard', [VCardController::class, 'restoreVcard']); //middleware executado no método 'restoreVcard'
+
+    Route::patch('vcards/{vcard}/block', [VCardController::class, 'blockVCard'])->middleware('can:block,App\Models\VCard');
+
+    Route::patch('vcards/{vcard}/changeMaxDebit', [VCardController::class, 'changeMaxDebit'])->middleware('can:updateMaxDebit,App\Models\VCard');
+
     Route::get('users', [UserController::class, 'getUsers'])->middleware('can:viewAny,App\Models\User');
 
     Route::post('vards/{vcard}/confirmationCode', [AuthController::class, 'confirmationCode'])->middleware('can:view,vcard');
+
+    Route::post('admin', [AdministratorController::class, 'postAdmin'])->middleware('can:store,App\Models\Administrator');
+
+    Route::get('email/verify/{id}', [AuthController::class, 'verify'])->name('verification.verify'); // Make sure to keep this as your route name
+
+    Route::get('email/resend', [AuthController::class, 'resend'])->name('verification.resend');
 
 });
 
@@ -105,4 +138,3 @@ Route::get('vards/{vcard}/checkConfirmationPhoneNumber', [AuthController::class,
 Route::post('signin', [AuthController::class, 'signin'])->name('login');
 
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api');
-

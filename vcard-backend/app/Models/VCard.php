@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 
 class VCard extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Notifiable;
 
     protected $table = 'vcards';
 
@@ -23,6 +24,12 @@ class VCard extends Model
     protected $casts = [
         'custom_data' => 'json',
         'custom_options' => 'json',
+        'email_verified_at' => 'datetime',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     public function transactions()
@@ -38,6 +45,11 @@ class VCard extends Model
     public function categories()
     {
         return $this->hasMany(Category::class, 'vcard', 'phone_number');
+    }
+
+    public function user_ref()
+    {
+        return $this->hasMany(User::class, 'id', 'phone_number');
     }
 
 }

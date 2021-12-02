@@ -22,6 +22,7 @@ class UserResource extends JsonResource
         switch (UserResource::$format) {
             case 'detailedVCard':
                 return [
+                    'id' => $this->id,
                     'username' => $this->username,
                     'name' => $this->name,
                     'email' => $this->email,
@@ -34,6 +35,7 @@ class UserResource extends JsonResource
                 break;
             case 'detailedAdmin':
                     return [
+                        'id' => $this->id,
                         'username' => $this->username,
                         'name' => $this->name,
                         'email' => $this->email,
@@ -45,8 +47,34 @@ class UserResource extends JsonResource
                         'count_vcards' => VCard::all()->count(),
                     ];
                 break;
+            case 'vCardAdminList':
+                if ($this->user_type == "A") {
+                    return [
+                        'id' => $this->id,
+                        'username' => $this->username,
+                        'name' => $this->name,
+                        'email' => $this->email,
+                        'photo_url' => $this->photo_url != null ? "storage/fotos/" . $this->photo_url : "storage/fotos/avatar.jpg",
+                        'user_type' => $this->user_type,
+                        'deleted' => $this->deleted_at != null ? 1 : 0,
+                    ];
+                }else {
+                    return [
+                        'id' => $this->id,
+                        'username' => $this->username,
+                        'name' => $this->name,
+                        'email' => $this->email,
+                        'photo_url' => $this->photo_url != null ? "storage/fotos/" . $this->photo_url : "storage/fotos/avatar.jpg",
+                        'user_type' => $this->user_type,
+                        'blocked'   => $this->blocked,
+                        'max_debit' => $this->max_debit ?? -1,
+                        'deleted' => $this->deleted_at != null ? 1 : 0,
+                    ];
+                }
+                break;
             default:
                 return [
+                    'id' => $this->id,
                     'username' => $this->username,
                     'name' => $this->name,
                     'email' => $this->email,

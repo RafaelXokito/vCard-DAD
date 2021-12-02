@@ -31,10 +31,11 @@
       </select>
     </div>
     <div class="mx-2 mt-2">
-      <router-link
+      <a
         class="btn btn-success px-4 btn-addtask"
-        to="/transactions/create"
-      ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />&nbsp; Create Category</router-link>
+        href="#"
+        @click.prevent="showCreate"
+      ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />&nbsp; Create Default Category</a>
     </div>
   </div>
   <div v-if="isTableVisible">
@@ -122,7 +123,8 @@ export default {
   emits: [
     'edit',
     'list',
-    'delete'
+    'delete',
+    'showCreate'
   ],
   data() {
       return {
@@ -143,6 +145,9 @@ export default {
     },
     list(link){
       this.$emit('list', link)
+    },
+    showCreate(){
+      this.$emit('showCreate')
     },
     highlightTypeMatches(text) {
       let filter = this.filterByType != "" ? (this.filterByType == 'C' ? 'Credit' : 'Debit') : ""

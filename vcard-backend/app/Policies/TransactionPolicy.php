@@ -10,13 +10,6 @@ class TransactionPolicy
 {
     use HandlesAuthorization;
 
-    // If user is admin, authorization check always return true
-    // Admin user is granted all previleges over "Disciplina" entity
-    public function before($user, $ability)
-    {
-        //return false;
-    }
-
     public function viewAny(User $user)
     {
         return true;
@@ -32,9 +25,9 @@ class TransactionPolicy
 
     public function viewPair(User $user)
     {
-        if ($user->user_type == 'A') {
-            return true;
-        }
+        // if ($user->user_type == 'A') {
+        //     return true;
+        // }
         return false;
     }
 
@@ -57,6 +50,17 @@ class TransactionPolicy
     public function update(User $user, Transaction $transaction)
     {
         if ($transaction->vcard == $user->vcard_ref->phone_number) {
+            return true;
+        }
+        return false;
+    }
+
+    public function viewPaymentType(User $user, Transaction $transaction)
+    {
+        if ($transaction->vcard == $user->vcard_ref->phone_number) {
+            return true;
+        }
+        if ($user->user_type == 'A') {
             return true;
         }
         return false;

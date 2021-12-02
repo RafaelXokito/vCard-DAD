@@ -10,8 +10,6 @@ class PaymentTypePolicy
 {
     use HandlesAuthorization;
 
-    // If user is admin, authorization check always return true
-    // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
         //

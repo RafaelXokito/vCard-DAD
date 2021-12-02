@@ -9,8 +9,6 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    // If user is admin, authorization check always return true
-    // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
         //
@@ -23,17 +21,17 @@ class UserPolicy
 
     public function view(User $user, User $model)
     {
-        return $user->user_type == "A" || $user->id == $model->id;
+        return $user->user_type == "A"/* || $user->id == $model->id*/;
     }
 
     public function edit(User $user, User $model)
     {
-        return $user->user_type == "A" || $user->id == $model->id;
+        return $user->user_type == "A"/* || $user->id == $model->id*/;
     }
 
     public function update(User $user, User $model)
     {
-        return $user->user_type == "A" || $user->id == $model->id;
+        return $user->id == $model->id;
     }
 
     public function updatePassword(User $user, User $model)
@@ -72,8 +70,19 @@ class UserPolicy
         return false;
     }
 
-    public function block(User $user)
+    public function accessCritial(User $user)
     {
-        return $user->user_type == "A";
+        if ($user->user_type == 'A') {
+            return true;
+        }
+        $vcard = $user->vcard_ref;
+        if (!$vcard->custom_data) {
+            return false;
+        }
+        $custom_data = json_decode((string) $vcard->custom_data, true);
+
+        if ($custom_data["phonenumber_confirmed"] == "true")
+            return true;
+        return false;
     }
 }

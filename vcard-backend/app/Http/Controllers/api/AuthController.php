@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
 use App\Models\Category;
 use App\Models\DefaultCategory;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class AuthController extends Controller
 {
@@ -50,6 +52,11 @@ class AuthController extends Controller
 
         if ($errorCode == '200') {
             if (Auth::attempt(['username' => $validator["username"], 'password' => $validator["password"]])) {
+
+                // if (Auth::user()->user_type == "A") {
+                //     $this->resend();
+                // }
+
                 if (Auth::user()->vcard_ref != null && (Auth::user()->vcard_ref->custom_data == null ||  json_decode((string) Auth::user()->vcard_ref->custom_data, true)["phonenumber_confirmed"] != true)) {
                     return response()->json(
                         ["message" => "The phone number was not confirmed.", "errors" => ["auth" => ["The phone number was not confirmed."]]],
@@ -66,7 +73,8 @@ class AuthController extends Controller
             }
 
             return response()->json(
-                ["user" => $auxResponse], $errorCode
+                ["user" => $auxResponse],
+                $errorCode
             );
         } else {
             return response()->json(
@@ -108,6 +116,7 @@ class AuthController extends Controller
             $vcard->blocked = false;
 
             $vcard->save();
+            //$vcard->user_ref->sendEmailVerificationNotification();
 
             //CREATE DEFAULT CATEGORIES IN VCARD
             $defaultCategories = DefaultCategory::all();
@@ -144,10 +153,10 @@ class AuthController extends Controller
         }
     }
 
-    public function confirmationCode(ConfirmationCodePost $request, User $vcard)
+    public function confirmationCode(ConfirmationCodePost $request, VCard $vcard)
     {
         $validator = $request->validated();
-        if (Hash::check($validator["confirmationCode"], $vcard->vcard_ref->confirmation_code)) {
+        if (Hash::check($validator["confirmationCode"], $vcard->confirmation_code)) {
             return response()->json(
                 [
                     'code'      =>  200,
@@ -283,5 +292,31 @@ class AuthController extends Controller
             ],
             200
         );
+    }
+
+    public function verify($user_id, Request $request)
+    {
+        if (!$request->hasValidSignature()) {
+            return response()->json(["msg" => "Invalid/Expired url provided."], 401);
+        }
+
+        $user = User::findOrFail($user_id);
+
+        if (!$user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+        }
+
+        return redirect()->to('/');
+    }
+
+    public function resend()
+    {
+        if (Auth::user()->hasVerifiedEmail()) {
+            return response()->json(["msg" => "Email already verified."], 400);
+        }
+
+        Auth::user()->sendEmailVerificationNotification();
+
+        return response()->json(["msg" => "Email verification link sent on your email id"]);
     }
 }

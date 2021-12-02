@@ -6,17 +6,23 @@ import ConfirmationCode from "./components/auth/ConfirmationCode.vue"
 import ConfirmationPhoneNumber from "./components/auth/ConfirmationPhoneNumber.vue"
 import CreateTransaction from "./components/transactions/CreateTransaction.vue"
 import CreateCategory from "./components/categories/CreateCategory.vue"
+import CreateEditDefaultCategory from "./components/default_categories/CreateEditDefaultCategories.vue"
+//import CreateEditPaymentType from "./components/payment_types/CreateEditPaymentTypes.vue"
 import ChangeConfirmationCode from "./components/profile/ChangeConfirmationCode.vue"
 import ChangePassword from "./components/profile/ChangePassword.vue"
 import DeleteProfile from "./components/profile/DeleteProfile.vue"
 // lazy-loaded
 const Profile = () => import("./components/profile/Profile.vue")
 const EditProfile = () => import("./components/profile/EditProfile.vue")
+const CreateAdmin = () => import("./components/admin/CreateAdmin.vue")
 const BoardAdmin = () => import("./components/admin/BoardAdmin.vue")
 const BoardUsers = () => import("./components/users/BoardUsers.vue")
 const BoardProfile = () => import("./components/profile/BoardProfile.vue")
 const BoardTransactions = () => import("./components/transactions/BoardTransactions.vue")
 const BoardCategories = () => import("./components/categories/BoardCategories.vue")
+const BoardDefaultCategories = () => import("./components/default_categories/BoardDefaultCategories.vue")
+//const BoardPaymentType = () => import("./components/payment_types/BoardPaymentTypes.vue")
+const DefaultCategoriesTable = () => import("./components/default_categories/DefaultCategoriesTable.vue")
 const CategoriesTable = () => import("./components/categories/CategoriesTable.vue")
 
 const routes = [
@@ -111,6 +117,11 @@ const routes = [
     component: BoardUsers,
   },
   {
+    path: "/createAdmin",
+    name: "createAdmin",
+    component: CreateAdmin
+  },
+  {
     path: "/transactions",
     name: "transactions",
     // lazy-loaded
@@ -142,6 +153,41 @@ const routes = [
       },
     ]
   },
+  {
+    path: "/defaultCategories",
+    name: "defaultCategories",
+    // lazy-loaded
+    component: BoardDefaultCategories,
+    children: [
+      {
+        path: "",
+        name: "defaultCategoriesTable",
+        props: true,
+        // lazy-loaded
+        component: DefaultCategoriesTable,
+      },
+      {
+        path: "createEdit",
+        name: "createEditDefaultCategory",
+        // lazy-loaded
+        component: CreateEditDefaultCategory,
+      },
+    ]
+  },
+  /*{
+    path: "/paymentType",
+    name: "paymentType",
+    // lazy-loaded
+    component: BoardPaymentType,
+    children: [
+      {
+        path: "createEdit",
+        name: "createEditPaymentType",
+        // lazy-loaded
+        component: CreateEditPaymentType,
+      },
+    ]
+  },*/
   {
     path: "/admin",
     name: "admin",

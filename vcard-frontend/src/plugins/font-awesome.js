@@ -19,9 +19,12 @@ import {
   faArrowLeft,
   faArrowRight,
   faTimesCircle,
-  faCheckCircle
+  faCheckCircle,
+  faCreditCard,
+  faTrashRestore,
+  faTrashAlt
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faTimesCircle,faCheckCircle,faArrowRight, faArrowLeft, faTrash, faPen, faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faEuroSign, faAddressCard, faKey, faFingerprint, faUsers, faMoneyBillWave, faLayerGroup, faPlusCircle);
+library.add(faTrashAlt, faTrashRestore, faCreditCard,faTimesCircle,faCheckCircle,faArrowRight, faArrowLeft, faTrash, faPen, faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faEuroSign, faAddressCard, faKey, faFingerprint, faUsers, faMoneyBillWave, faLayerGroup, faPlusCircle);
 
 export { FontAwesomeIcon };

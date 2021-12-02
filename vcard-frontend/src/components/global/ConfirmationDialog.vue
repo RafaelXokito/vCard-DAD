@@ -1,4 +1,5 @@
 <template>
+<div>
   <!-- Button trigger to Show modal - HIDDEN -->
   <button
     ref="hiddenButtonToShowDialog"
@@ -58,6 +59,7 @@
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>

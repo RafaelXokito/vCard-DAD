@@ -1,3 +1,7 @@
+import "primevue/resources/themes/saga-blue/theme.css"       //theme
+import "primevue/resources/primevue.min.css"                 //core css
+import "primeicons/primeicons.css"                           //icons
+
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
 
@@ -7,8 +11,9 @@ import router from "./router"
 import store from "./store"
 import { FontAwesomeIcon } from './plugins/font-awesome'
 import axios from 'axios'
-import Pagination from 'v-pagination-3'
 import Toaster from "@meforma/vue-toaster"
+import ConfirmationService from 'primevue/confirmationservice';
+import PrimeVue from 'primevue/config';
 
 import FieldErrorMessage from "./components/global/FieldErrorMessage.vue"
 import ConfirmationDialog from "./components/global/ConfirmationDialog.vue"
@@ -22,8 +27,9 @@ let toastOptions = {
 const app = createApp(App)
   .use(router)
   .use(store)
+  .use(PrimeVue)
+  .use(ConfirmationService)
   .use(Toaster, toastOptions)
-  .component('pagination', Pagination)
   .component("font-awesome-icon", FontAwesomeIcon)
   .component('field-error-message', FieldErrorMessage)
   .component('confirmation-dialog', ConfirmationDialog)

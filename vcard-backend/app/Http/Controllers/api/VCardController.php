@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VcardDelete;
+use App\Http\Requests\VCardMaxDebitPatch;
 use App\Http\Requests\VCardPost;
 use App\Http\Resources\VCardResource;
 use App\Models\VCard;
@@ -25,6 +26,25 @@ class VCardController extends Controller
         if ($request->has("balance") && $request->balance == true) {
             VCardResource::$format = "balance";
         }
+
+        return new VCardResource($vcard);
+    }
+
+    public function blockVCard(VCard $vcard)
+    {
+        $vcard->blocked = !$vcard->blocked;
+
+        $vcard->save();
+
+        return new VCardResource($vcard);
+    }
+
+    public function changeMaxDebit(VCardMaxDebitPatch $request, VCard $vcard)
+    {
+        $validated_data = $request->validated();
+        $vcard->max_debit = $validated_data["max_debit"];
+
+        $vcard->save();
 
         return new VCardResource($vcard);
     }
@@ -101,6 +121,11 @@ class VCardController extends Controller
             ), 422);
         }
 
+        return $this->removeVcard($vcard);
+    }
+
+    public function removeVcard(VCard $vcard)
+    {
         $oldName = $vcard->name;
         $oldPhoneNumber = $vcard->phone_number;
         if ($vcard->balance != 0) {
@@ -117,18 +142,33 @@ class VCardController extends Controller
             $vcard->forceDelete();
         }else {
             foreach ($vcard->categories as $categorie) {
-                $categorie->softDeletes();
+                $categorie->delete();
             }
             foreach ($vcard->transactions as $transaction) {
-                $transaction->softDeletes();
+                $transaction->delete();
             }
-            $vcard->softDeletes();
+            $vcard->delete();
         }
 
         return response()->json(array(
             'code'      =>  200,
             'message'   =>  "vCard was removed [". $oldPhoneNumber ."]:". $oldName ."!"
         ), 200);
+    }
 
+    public function restoreVcard($phone_number)
+    {
+        $vcard = VCard::withTrashed()->findOrFail($phone_number);
+        $this->authorize('restore', $vcard);
+        try {
+            $vcard->restore();
+        } catch (\Throwable $th) {
+            return response()->json(array(
+                'code'      =>  200,
+                'message'   =>  $th->getMessage()
+            ), 200);
+        }
+
+        return new VCardResource($vcard);
     }
 }

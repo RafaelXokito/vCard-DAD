@@ -2,25 +2,29 @@
     <div class="container">
         <div v-if="isUserVisible">
             <section class="section about-section gray-bg" id="about">
-                <h3 class="text-center pt-3">Edit Profile</h3>
+                <h3 class="text-center pt-3">Create Administrator</h3>
                 <div class="container pt-5">
                     <Form @submit="handleSave" :validation-schema="schema" class="w-75 mx-auto" method="PATCH" enctype="multipart/form-data">
                     <div v-if="!successful">
-                        <div class="form-group image-upload text-center">
-                            <label for="file-input">
-                            <img class="rounded-circle" :src="img_src" :title="user.username+'Photo'">
-                            </label>
-                            <Field name="photo_url" id="file-input" @change="onFileChange" type="file" />
-                        </div>
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <Field name="name" type="text" :value="user['name']" class="form-control" />
+                            <Field name="name" type="text" class="form-control" />
                             <ErrorMessage name="name" class="error-feedback" />
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <Field name="email" type="email" :value="user['email']" class="form-control" />
+                            <Field name="email" type="email" class="form-control" />
                             <ErrorMessage name="email" class="error-feedback" />
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <Field name="password" type="password" class="form-control" />
+                            <ErrorMessage name="password" class="error-feedback" />
+                        </div>
+                        <div class="form-group">
+                            <label for="passwordConfirmation">Confirm Password</label>
+                            <Field name="passwordConfirmation" type="password" class="form-control" />
+                            <ErrorMessage name="passwordConfirmation" class="error-feedback" />
                         </div>
                         <div class="form-group text-center">
                             <button class="btn btn-primary btn-block mx-auto" :disabled="loading">
@@ -52,10 +56,10 @@
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
-import UserService from "../../services/user.service"
+import AdminService from "../../services/admin.service"
 
 export default {
-    name: "EditProfile",
+    name: "CreateAdmin",
     components: {
         Form,
         Field,
@@ -73,6 +77,13 @@ export default {
             .required("Email is required!")
             .email("Email is invalid!")
             .max(50, "Must be maximum 50 characters!"),
+        password: yup
+            .string()
+            .required("Password is required!")
+            .min(4, "Password must be at least 4 characters!")
+            .max(40, "Password must be maximum 40 characters!"),
+        passwordConfirmation: yup.string()
+            .oneOf([yup.ref('password'), null], 'Passwords must match')
         });
 
         return {
@@ -80,16 +91,12 @@ export default {
             loading: false,
             message: "",
             schema,
-            img_src: this.defaultImageProfileURL,
             errors: {},
             isUserVisible: false,
-            user: {},
             photo_url: "",
         };
     },
     async mounted() {
-        this.user = await this.$store.dispatch('auth/getMe');
-        this.img_src = this.baseURL + this.user.photo_url;
         this.isUserVisible = true;
     },
     methods: {
@@ -98,38 +105,9 @@ export default {
             this.successful = false;
             this.loading = true;
 
-            user["photo_url"] = this.photo_url
-            user["username"] = this.user["id"] ?? this.user["username"]
-
-            console.log(user["photo_url"])
-
-            var form_data = new FormData();
-
-            for ( var key in user ) {
-                form_data.append(key, user[key]);
-            }
-
-            UserService.updateUser(user).then(
+            AdminService.postAdmin(user).then(
                 () => {
-                    if (user["photo_url"]){
-                        UserService.updateUserPhoto(form_data).then(
-                            () => { 
-                                this.$router.push({name: 'showProfile'})
-                            },
-                            (error) => {
-                                this.errors = error.response.data.errors;
-                                this.message =
-                                    (error.response &&
-                                    error.response.data &&
-                                    error.response.data) ||
-                                    error.message ||
-                                    error.toString();
-                                this.successful = false;
-                                this.loading = false;
-                        })
-                    }else {
-                        this.$router.push({name: 'showProfile'})
-                    }
+                    this.$router.push({name: 'users'})                
                 },
                 (error) => {
                     this.loading = false;
@@ -145,20 +123,14 @@ export default {
                 }
             );
         },
-        onFileChange(e) {
-            var files = e.target.files;
-            if (!files.length){
-                return;
-            }
-            this.photo_url = files[0];
-            const file = e.target.files[0];
-            this.img_src = URL.createObjectURL(file);
-        },
     },
 }
 </script>
 
 <style scoped>
+.form-group{
+    padding-top: 0.5rem;
+}
 .gray-bg {
     background-color: #f5f5f5;
 }   

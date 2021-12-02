@@ -4,6 +4,7 @@
     <div v-if="currentUser != null" class="container-fluid">
       <a
         class="navbar-brand col-md-3 col-lg-2 me-0 px-3"
+        style="background-color: transparent; box-shadow: unset;"
         href="#"
       ><img
           :src="logoImageURL"
@@ -41,7 +42,7 @@
                 class="rounded-circle z-depth-0 avatar-img"
                 alt="avatar image"
               >
-              <span class="avatar-text">{{currentUser.username}}</span>
+              <span class="avatar-text">{{currentUser.name.split(' ')[0] + ' ' + currentUser.name.split(' ').slice(-1).join(' ')}}</span>
             </a>
             <ul
               class="dropdown-menu dropdown-menu-dark dropdown-menu-end"
@@ -112,7 +113,7 @@
             </li>
 
             <!-- Admin -->
-            <li v-if="currentUser.user_type == 'A'" class="nav-item">
+            <li v-if="currentUser.user_type === 'A'" class="nav-item d-flex justify-content-between align-items-center pe-3 ">
               <router-link
                 class="nav-link w-100 me-3 py-3"
                 :class="{active: $route.name === ('users')}"
@@ -121,7 +122,45 @@
                 <font-awesome-icon :icon="['fas', 'users']" size="lg" />
                 . Users
               </router-link>
+              <router-link
+                class="link-secondary"
+                :to="{name: 'createAdmin'}"
+                aria-label="Create Administrator"
+              ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />
+              </router-link>
             </li>
+            <li v-if="currentUser.user_type === 'A'" class="nav-item d-flex justify-content-between align-items-center pe-3">
+              <router-link
+                class="nav-link w-100 me-3 py-3"
+                :class="{active: $route.name === 'defaultCategoriesTable'}"
+                :to="{name: 'defaultCategoriesTable'}"
+              >
+                <font-awesome-icon :icon="['fas', 'layer-group']" size="lg" />
+                . Default Categories
+              </router-link>
+              <router-link
+                class="link-secondary"
+                :to="{name: 'createEditDefaultCategory'}"
+                aria-label="Create Default Category"
+              ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />
+              </router-link>
+            </li>
+            <!--<li v-if="currentUser.user_type === 'A'" class="nav-item d-flex justify-content-between align-items-center pe-3">
+              <router-link
+                class="nav-link w-100 me-3 py-3"
+                :class="{active: $route.name === 'paymentType'}"
+                :to="{name: 'paymentType'}"
+              >
+                <font-awesome-icon :icon="['fas', 'layer-group']" size="lg" />
+                . Payment Types
+              </router-link>
+              <router-link
+                class="link-secondary"
+                :to="{name: 'createEditPaymentType'}"
+                aria-label="Create Payment Type"
+              ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />
+              </router-link>
+            </li>-->
 
             <!-- All -->
             <li class="nav-item d-flex justify-content-between align-items-center pe-3">
@@ -185,7 +224,7 @@
                   <li>
                     <router-link
                       class="dropdown-item"
-                      :class="{active: $route.name.includes('Profile')}"
+                      :class="{active: $route.name ? $route.name === 'profile': false}"
                       :to="{name: 'showProfile'}"
                     ><font-awesome-icon :icon="['fas', 'address-card']" size="lg" /> Profile
                     </router-link>

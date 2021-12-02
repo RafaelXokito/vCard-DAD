@@ -15,6 +15,7 @@ class DefaultCategoryResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id'    => $this->id,
 			'type' => $this->type,
 			'name' => $this->name,
 		];

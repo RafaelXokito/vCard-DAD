@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
 class Administrator extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $table = 'users';
 
@@ -16,7 +17,6 @@ class Administrator extends Model
         'name',
         'email',
         'password',
-        'blocked'
     ];
 
     /**
@@ -37,4 +37,9 @@ class Administrator extends Model
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function user_ref()
+    {
+        return $this->hasMany(User::class, 'id', 'id');
+    }
 }

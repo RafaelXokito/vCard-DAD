@@ -10,15 +10,6 @@ class VCardPolicy
 {
     use HandlesAuthorization;
 
-    // If user is admin, authorization check always return true
-    // Admin user is granted all previleges over "Disciplina" entity
-    public function before($user, $ability)
-    {
-        if ($user->user_type == 'A') {
-            return true;
-        }
-    }
-
     public function viewAny(User $user)
     {
         return false;
@@ -26,23 +17,14 @@ class VCardPolicy
 
     public function view(User $user, VCard $vcard)
     {
-        if ($user->id == $vcard->phone_number) {
-            return true;
-        }
-        return false;
-    }
-
-    public function create(User $user)
-    {
         return true;
-    }
-
-    public function store(User $user)
-    {
+        if ($user->id == $vcard->phone_number) {
+            return true;
+        }
         return false;
     }
 
-    public function edit(User $user, User $vcard)
+    public function edit(User $user, VCard $vcard)
     {
         if ($user->id == $vcard->phone_number) {
             return true;
@@ -50,7 +32,7 @@ class VCardPolicy
         return false;
     }
 
-    public function update(User $user, User $vcard)
+    public function update(User $user, VCard $vcard)
     {
         if ($user->id == $vcard->phone_number) {
             return true;
@@ -60,7 +42,7 @@ class VCardPolicy
 
     public function delete(User $user, VCard $vcard)
     {
-        if ($user->id == $vcard->phone_number) {
+        if ($user->user_type == "A" || $user->id == $vcard->phone_number) {
             return true;
         }
         return false;
@@ -68,27 +50,24 @@ class VCardPolicy
 
     public function restore(User $user)
     {
-        return false;
-    }
-
-    public function accessCritial(User $user)
-    {
-        /*if ($user->user_type == 'A') {
+        if ($user->user_type == "A") {
             return true;
-        }*/
-        $vcard = $user->vcard_ref;
-        if (!$vcard->custom_data) {
-            return false;
         }
-        $custom_data = json_decode((string) $vcard->custom_data, true);
-
-        if ($custom_data["phonenumber_confirmed"] == "true")
-            return true;
         return false;
     }
 
     public function forceDelete(User $user)
     {
         return false;
+    }
+
+    public function block(User $user)
+    {
+        return $user->user_type == "A";
+    }
+
+    public function updateMaxDebit(User $user)
+    {
+        return $user->user_type == "A";
     }
 }

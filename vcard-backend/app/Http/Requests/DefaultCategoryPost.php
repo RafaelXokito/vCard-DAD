@@ -4,8 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class AdministratorPost extends FormRequest
+class DefaultCategoryPost extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +26,8 @@ class AdministratorPost extends FormRequest
     public function rules()
     {
         return [
-            'name'              => ['required', 'string'],
-            'email'             => ['required', 'email', 'unique:App\Models\User,email'],
-            'password'          => ['required', 'string'],
+            'name' => ['required', 'string'],
+            'type' => ['required', Rule::in(['D', 'C'])]
         ];
     }
 }

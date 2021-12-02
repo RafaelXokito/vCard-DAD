@@ -42,6 +42,9 @@ class CategoryController extends Controller
         if ($request->has("type")) {
             $categories = $categories->where("type", $request->type);
         }
+        if ($request->has("name")) {
+            $categories = $categories->where("name",'LIKE', "%".$request->name."%");
+        }
         if ($request->has("page")) {
             $categories = $categories->orderBy('created_at', 'desc')->paginate(15);
         }else {
@@ -171,7 +174,7 @@ class CategoryController extends Controller
         $oldCategoryID = $category->id;
         try {
             if ($category->transactions->count()) {
-                $category->softDelete();
+                $category->delete();
             }else {
                 $category->forceDelete();
 

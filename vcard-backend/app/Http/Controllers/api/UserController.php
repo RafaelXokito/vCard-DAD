@@ -8,8 +8,11 @@ use App\Http\Requests\UserPasswordPatch;
 use App\Http\Requests\UserPatch;
 use App\Http\Requests\UserPhotoPost;
 use App\Http\Resources\UserResource;
+use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\VCard;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -37,9 +40,25 @@ class UserController extends Controller
         return new UserResource(Auth::user());
     }
 
-    public function getUsers()
+    public function getUsers(Request $request)
     {
-        return UserResource::collection(User::paginate(10));
+        UserResource::$format = 'vCardAdminList';
+        $users = DB::table('view_auth_users')
+            ->select('view_auth_users.*',DB::Raw('`vcards`.`max_debit` AS `max_debit`'),DB::Raw('IFNULL( `users`.`created_at` , `vcards`.`created_at`) AS `created_at`'))
+            ->leftJoin('users', 'view_auth_users.id', '=', 'users.id')
+            ->leftJoin('vcards', 'view_auth_users.id', '=', 'vcards.phone_number');
+        if ($request->has("type")) {
+            $users = $users->where("view_auth_users.user_type", $request->type);
+        }
+        if ($request->has("name")) {
+            $users = $users->where("view_auth_users.name",'LIKE', "%".$request->name."%");
+        }
+        if ($request->has("page")) {
+            $users = $users->orderBy('created_at', 'desc')->paginate(15);
+        }else {
+            $users = $users->orderBy('created_at', 'desc')->get();
+        }
+        return UserResource::collection($users);
     }
     /*
 	public function update_password(PasswordPost $request, User $user)
@@ -103,23 +122,6 @@ class UserController extends Controller
                 'message'   =>  $th->getMessage()
             ), 400);
         }
-    }
-
-    public function blockUser(User $user)
-    {
-        if ($user->user_type == 'A') {
-            UserResource::$format = 'detailedAdmin';
-            $userAux = $user->admin_ref;
-        }else if ($user->user_type == 'V') {
-            UserResource::$format = 'detailedVCard';
-            $userAux = $user->vcard_ref;
-        }
-
-        $userAux->blocked = !$userAux->blocked;
-
-        $userAux->save();
-
-        return new UserResource($user);
     }
 
     public function patchPasswordUser(UserPasswordPatch $request, User $user)

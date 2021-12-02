@@ -10,8 +10,6 @@ class DefaultCategoryPolicy
 {
     use HandlesAuthorization;
 
-    // If user is admin, authorization check always return true
-    // Admin user is granted all previleges over "Disciplina" entity
     public function before($user, $ability)
     {
         if ($user->user_type == 'A') {
@@ -39,12 +37,12 @@ class DefaultCategoryPolicy
         return false;
     }
 
-    public function edit(User $user)
+    public function edit(User $user, DefaultCategory $defaultCategory)
     {
         return false;
     }
 
-    public function update(User $user)
+    public function update(User $user, DefaultCategory $defaultCategory)
     {
         return false;
     }
