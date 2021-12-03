@@ -48,7 +48,7 @@
                             <div class="input-group"> <Field type="text" id="cr_no" name="card-no" placeholder="0000 0000 0000 0000" minlength="19" maxlength="19" /> <label>Card Number</label> </div>
                         </div>
                     </div>-->
-                    <div class="row justify-content-center" v-if="this.$store.state.auth.user.user_type === 'V'">
+                    <div class="row justify-content-center" v-if="currentUser.user_type === 'V'">
                         <div class="col-12">
                             <div class="input-group"> 
                                 <select v-model="transaction.category" name="category" title="Category" style="border-radius: 10px !important;"> 
@@ -63,12 +63,12 @@
                         <div class="col-12">
                             <div class="input-group">
                                 <Field class="card" v-model="value" type="number" name="value" placeholder="0.00" min="0.00" value="0.00" step="0.01" title="Currency" pattern="^\d*(\.\d{0,2})?$" /> 
-                                <label class="mx-auto">Value (€) {{this.$store.state.auth.user.user_type === 'V' ? balance + ' €' : ''}}</label> 
+                                <label class="mx-auto">Value (€) {{currentUser.user_type === 'V' ? balance + ' €' : ''}}</label> 
                                 <ErrorMessage name="value" class="error-feedback" />
                             </div>
                         </div>
                     </div>
-                    <div class="row justify-content-center" v-if="this.$store.state.auth.user.user_type === 'V'">
+                    <div class="row justify-content-center" v-if="currentUser.user_type === 'V'">
                         <div class="col-12">
                             <div class="input-group"> 
                                 <Field class="card" type="text" name="description" placeholder="Vacations Hotel" title="Description" /> <label>Description</label>
@@ -131,16 +131,19 @@ export default {
             category: '',
             payment_type: "",
             transaction: {},
-            balance: this.$store.state.auth.user["balance"],
+            balance: 0,
             value: 0
         };
     },
     computed: {
         contentShow(){
-            if (this.$store.state.auth.user) {
-                return this.$store.state.auth.user && this.$store.state.auth.user.username; 
+            if (this.currentUser) {
+                return this.currentUser && this.currentUser.username; 
             }
             return true;
+        },
+        currentUser() {
+            return this.$store.state.user.data;
         },
     },
     methods: {
@@ -159,8 +162,8 @@ export default {
                 (transaction) => {
                     this.$socket.emit('newTransaction', transaction.data.data)
                     this.$toast.success(`Transaction done with success.`, {autoHideDelay: 2000, appendToast: true})
-                    this.$store.dispatch("auth/setBalance", transaction.data.data.balance) 
-                    // this.$store.dispatch("auth/getMe", '?balance=true').then(
+                    this.$store.dispatch("user/setBalance", transaction.data.data.balance) 
+                    // this.$store.dispatch("user/getMe", '?balance=true').then(
                     // () => {
                     //     this.$router.push("/transactions");
                     // },
@@ -185,7 +188,7 @@ export default {
         handleCreate(transaction) {
             transaction.category = this.transaction.category;
             this.transaction = transaction;
-            if (this.$store.state.auth.user.user_type === 'V') {
+            if (this.currentUser.user_type === 'V') {
                 this.showConfirmationCode = true;
             } else {
                 this.postTransaction()
@@ -201,9 +204,10 @@ export default {
     },
     async mounted() {
         this.loadingDependencies = true;
+        this.balance = this.currentUser.balance
         await PaymentTypeService.getPaymentType().then(
             ({data}) => {
-                if (this.$store.state.auth.user.user_type === 'V') {
+                if (this.currentUser.user_type === 'V') {
                     this.paymentTypes = data.data;
                 }else {
                     this.paymentTypes = data.data.filter((e)=>e.code==='VCARD');
@@ -219,8 +223,8 @@ export default {
                 error.toString();
             }
         );
-        if (this.$store.state.auth.user.user_type === 'V')
-        await CategoryService.getCategoryBoard(this.$store.state.auth.user.username,`vcards/${this.$store.state.auth.user.username}/categories?type=D`).then(
+        if (this.currentUser.user_type === 'V')
+        await CategoryService.getCategoryBoard(this.currentUser.username,`vcards/${this.currentUser.username}/categories?type=D`).then(
             ({data}) => {
                 this.categories = data.data;
                 this.transaction.category = "";
@@ -238,7 +242,7 @@ export default {
     },
     watch: {
         value(newVal){
-            this.balance = this.$store.state.auth.user["balance"] - newVal;
+            this.balance = this.currentUser["balance"] - newVal;
         },
     }
 }

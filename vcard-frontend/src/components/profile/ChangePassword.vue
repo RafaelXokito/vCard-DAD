@@ -82,7 +82,7 @@ export default {
         };
     },
     async mounted() {
-        this.user = await this.$store.dispatch('auth/getMe');
+        this.user = await this.$store.dispatch('user/getMe');
         this.isUserVisible = true;
     },
     methods: {

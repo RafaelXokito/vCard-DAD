@@ -80,7 +80,7 @@ export default {
         };
     },
     async mounted() {
-        this.user = await this.$store.dispatch('auth/getMe');
+        this.user = await this.$store.dispatch('user/getMe');
         if (this.user.user_type === 'A') {
             this.$router.push({name: 'profile'})
         }

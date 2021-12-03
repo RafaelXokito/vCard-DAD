@@ -129,7 +129,7 @@ export default {
         };
     },
     async mounted() {
-        let username = this.$store.state.auth.user.username;
+        let username = this.$store.state.user.data.username;
         await PaymentTypeService.getPaymentType().then(
             ({data}) => {
                 this.paymentTypes = data.data;

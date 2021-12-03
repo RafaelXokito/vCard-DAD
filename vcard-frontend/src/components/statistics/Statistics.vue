@@ -42,7 +42,7 @@ export default {
     },
     computed: {
         currentUser() {
-            return this.$store.state.auth.user;
+            return this.$store.state.user.data;
         },
     },
     data() {
@@ -77,7 +77,7 @@ export default {
             },
             graphicFinancialCollapsed: true,
             itemsFinantialSizeSelected: 6,
-            itemsFinantialTemporalSelected: 'month',
+            itemsFinantialTemporalSelected: {name: 'Month', code: 'month'},
             items: [
 				{
 					label: 'Select a temporal',
@@ -134,6 +134,7 @@ export default {
                 optionsfilter += '&labelSize='+this.itemsFinantialSizeSelected
             }
             this.list(optionsfilter)
+            this.graphicFinancialCollapsed = false
         },
         itemsFinantialTemporalSelected(){
             let optionsfilter = '?'

@@ -1,5 +1,4 @@
 import AuthService from '../services/auth.service';
-import UserService from '../services/user.service';
 
 const user = JSON.parse(localStorage.getItem('user'));
 const initialState = user
@@ -23,17 +22,6 @@ export const auth = {
         }
       );
     },
-    async getMe({ commit }){
-      return await UserService.getMe().then(
-        result => {
-          commit('getMeSucess', result.data.data);
-          return Promise.resolve(result.data.data);
-        }
-      )
-    },
-    setBalance({ commit }, balance) {
-      commit('setBalance', balance);
-    },
     logout({ commit }) {
       AuthService.logout();
       commit('logout');
@@ -52,12 +40,6 @@ export const auth = {
     },
   },
   mutations: {
-    getMeSucess(state, user){
-      Object.assign(state.user,user);
-    },
-    setBalance(state, balance){
-      state.user.balance = balance;
-    },
     loginSuccess(state, user) {
       state.status.loggedIn = true;
       state.user = user;

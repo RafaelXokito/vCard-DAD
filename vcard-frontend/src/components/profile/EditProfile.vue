@@ -88,7 +88,7 @@ export default {
         };
     },
     async mounted() {
-        this.user = await this.$store.dispatch('auth/getMe');
+        this.user = await this.$store.dispatch('user/getMe');
         this.img_src = this.baseURL + this.user.photo_url;
         this.isUserVisible = true;
     },

@@ -91,7 +91,7 @@ export default {
       if (user != null)
       this.$store.dispatch("auth/login", user).then(
         () => {
-            this.$store.dispatch('auth/getMe');
+            this.$store.dispatch('user/getMe');
             this.$router.push("/");
         },
         (error) => {

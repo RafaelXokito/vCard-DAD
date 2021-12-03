@@ -71,7 +71,7 @@ export default {
       this.categoryToEditShow = false;
     },
     list(link){
-        CategoryService.getCategoryBoard(this.$store.state.auth.user.username, link).then(
+        CategoryService.getCategoryBoard(this.$store.state.user.data.username, link).then(
           ({data}) => {
               this.categories = data;
           },

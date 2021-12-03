@@ -277,17 +277,17 @@ export default {
   name: 'RootComponent',
   computed: {
     contentShow(){
-      if (this.$store.state.auth.user) {
-        this.$socket.emit('logged_in', this.$store.state.auth.user)
-        this.$socket.on(this.$store.state.auth.user.id, (data) => {
+      if (this.$store.state.user.data) {
+        this.$socket.emit('logged_in', this.$store.state.user.data)
+        this.$socket.on(this.$store.state.user.data.id, (data) => {
             console.log(data)
         });
-        return this.$store.state.auth.user && this.$store.state.auth.user.username; 
+        return this.$store.state.user.data && this.$store.state.user.data.username; 
       }
       return true;
     },
     currentUser() {
-      return this.$store.state.auth.user;
+      return this.$store.state.user.data;
     },
     showAdminBoard() {
       if (this.currentUser && this.currentUser['user_type']) {
@@ -304,7 +304,7 @@ export default {
   },
   created() {
     if (this.currentUser) {
-      this.$store.dispatch('auth/getMe');
+      //this.$store.dispatch('user/getMe');
       this.$store.dispatch('user/getMe');
     }
   },

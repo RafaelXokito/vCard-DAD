@@ -82,7 +82,7 @@ export default {
   },
   computed: {
     confirmationCode() {
-      return this.forceConfirmationCode ? '' : this.$store.state.auth.user.confirmationCode ?? this.$store.state.auth.user.user_type == 'A';
+      return this.forceConfirmationCode ? '' : this.$store.state.user.data.confirmationCode ?? this.$store.state.user.data.user_type == 'A';
     },
   },
   emits: [
@@ -92,10 +92,10 @@ export default {
     async handleConfirmationCode(user) {
         this.loading = true;
         this.message = "";
-        user["username"] = this.$store.state.auth.user.username;
+        user["username"] = this.$store.state.user.data.username;
         await AuthService.confirmationCode(user).then(
             () => {
-                this.$store.dispatch("auth/getMe").then(() => {
+                this.$store.dispatch("user/getMe").then(() => {
                   this.loading = false;
                   this.close(true);
                 },

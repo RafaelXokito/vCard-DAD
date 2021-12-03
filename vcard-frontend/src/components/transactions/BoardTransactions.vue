@@ -40,7 +40,7 @@ export default {
   },
   computed: {
     currentUser (){
-      return this.$store.state.auth.user ?? {}
+      return this.$store.state.user.data ?? {}
     },
     totalTransactions () {
       return this.transactions.meta && this.transactions.meta.total ? this.transactions.meta.total : 0
