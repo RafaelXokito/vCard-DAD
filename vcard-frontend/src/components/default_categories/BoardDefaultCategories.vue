@@ -5,12 +5,13 @@
   </div>
   <div class="container">
     <div v-if="!defaultcategoryToCreateEditShow">
-      <router-view @edit="editDefaultCategory" @delete="deleteDefaultCategory" :categories="categories" @list="list" :showEdit="true" @showCreate="showCreate"></router-view>
+      <router-view @edit="editDefaultCategory" @delete="deleteDefaultCategory" @restoreClick="restoreDefaultCategory" :categories="categories" @list="list" :showEdit="true" @showCreate="showCreate"></router-view>
     </div>
     <div v-else-if="defaultcategoryToCreateEditShow">
         <create-edit-categories :defaultcategory="defaultcategoryToCreateEdit" @close="closeDefaultCategoryCreateEdit" :isCreate="isCreate"></create-edit-categories>
     </div>
   </div>
+  <confirm-dialog></confirm-dialog>
 </div>
 </template>
 
@@ -18,8 +19,10 @@
 import DefaultCategoryService from "../../services/default-category.service";
 import CreateEditCategories from './CreateEditDefaultCategories.vue';
 
+import ConfirmDialog from 'primevue/confirmdialog';
+
 export default {
-  components: { CreateEditCategories },
+  components: { CreateEditCategories, ConfirmDialog },
   name: "Categories",
   data() {
     return {
@@ -46,24 +49,75 @@ export default {
       this.defaultcategoryToCreateEditShow = true;
     },
     deleteDefaultCategory(defaultcategory){
-      if(confirm(`Do you really want to delete defaultcategory ${defaultcategory.name}?`)){
-        DefaultCategoryService.deleteDefaultCategory(defaultcategory).then(
-            () => {
-              alert("DefaultCategory Deleted")
-              this.list();
-            },
-            (error) => {
-                this.messageEdit =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-              alert(this.messageEdit)
 
-            }
-        );
-      }
+      let deletedState = defaultcategory.deleted;
+
+      let message = `Do you really want to delete default category ${defaultcategory.name}?`;
+
+      this.$confirm.require({
+          message: message,
+          header: 'Confirmation',
+          icon: 'pi pi-exclamation-triangle',
+          accept: async () => {
+              defaultcategory.deleted = 'loading'
+              await DefaultCategoryService.deleteDefaultCategory(defaultcategory).then(
+                  () => {
+                    //alert("DefaultCategory Deleted")
+                    defaultcategory.deleted = !defaultcategory.deleted
+                    this.$toast.success(`Default Category ${defaultcategory.name} deleted successful.`, {autoHideDelay: 2000, appendToast: true}) 
+                    this.list();
+                  },
+                  (error) => {
+                      this.messageEdit =
+                      (error.response &&
+                          error.response.data &&
+                          error.response.data.message) ||
+                      error.message ||
+                      error.toString();
+                      this.$toast.error(`During deleting ${defaultcategory.name} ${this.content}.`, {autoHideDelay: 2000, appendToast: true}) 
+                      defaultcategory.deleted = deletedState;
+                  }
+              );
+          },
+          reject: () => {
+            defaultcategory.deleted = deletedState
+          }
+      });
+    },
+    restoreDefaultCategory(defaultcategory){
+      let deletedState = defaultcategory.deleted;
+
+      let message = `Do you really want to restore default category ${defaultcategory.name}?`;
+
+      this.$confirm.require({
+          message: message,
+          header: 'Confirmation',
+          icon: 'pi pi-exclamation-triangle',
+          accept: async () => {
+              defaultcategory.deleted = 'loading'
+              await DefaultCategoryService.restoreDefaultCategory(defaultcategory).then(
+                  () => {
+                    //alert("DefaultCategory Deleted")
+                    defaultcategory.deleted = !defaultcategory.deleted
+                    this.$toast.success(`Default category ${defaultcategory.name} restore successful.`, {autoHideDelay: 2000, appendToast: true}) 
+                    this.list();
+                  },
+                  (error) => {
+                      this.content =
+                      (error.response &&
+                          error.response.data &&
+                          error.response.data.message) ||
+                      error.message ||
+                      error.toString();
+                      this.$toast.error(`During restoring ${defaultcategory.name} ${this.content}.`, {autoHideDelay: 2000, appendToast: true}) 
+                      defaultcategory.deleted = deletedState;
+                  }
+              );
+          },
+          reject: () => {
+            defaultcategory.deleted = deletedState
+          }
+      });
     },
     closeDefaultCategoryCreateEdit(){
       this.defaultcategoryToCreateEditShow = false;

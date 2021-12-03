@@ -94,6 +94,7 @@ export default {
 
             UserService.updateConfirmationCodeUser(user).then(
                 () => {
+                    this.$toast.success(`Confirmation code updated successful.`, {autoHideDelay: 2000, appendToast: true}) 
                     this.$router.push({name: 'showProfile'})
                 },
                 (error) => {
@@ -105,6 +106,7 @@ export default {
                         error.response.data) ||
                         error.message ||
                         error.toString();
+                    this.$toast.error(`Confirmation code was not updated. ${this.message}`, {autoHideDelay: 2000, appendToast: true}) 
                     this.successful = false;
                     this.loading = false;
                 }

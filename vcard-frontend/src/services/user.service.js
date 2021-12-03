@@ -22,8 +22,8 @@ class UserService {
     return await axios.patch(`users/${user.username}`,user, { headers: authHeader() });
   }
 
-  async updateUserPhoto(form){
-    return await axios.post(`users/${form.get("username")}/updateUserPhoto`,form, { headers: authHeader(`multipart/form-data; charset=utf-8;`) });
+  async updateVCardPhoto(form){
+    return await axios.post(`vcards/${form.get("username")}/updateVCardPhoto`,form, { headers: authHeader(`multipart/form-data; charset=utf-8;`) });
   }
 
   async updatePasswordUser(user) {

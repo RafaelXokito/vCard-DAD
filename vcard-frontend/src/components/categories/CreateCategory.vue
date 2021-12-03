@@ -20,8 +20,8 @@
             </div>
         </div>
         <div class="form-group">
-            <div v-if="messageCreate" class="alert alert-danger" role="alert">
-                {{ messageCreate }}
+            <div v-if="content" class="alert alert-danger" role="alert">
+                {{ content }}
             </div>
         </div>
         <div class="form-group">
@@ -58,7 +58,7 @@ export default {
         return {
             loading: false,
             schema,
-            messageCreate: ""
+            content: ""
         };
     },
     emits: [
@@ -73,15 +73,17 @@ export default {
     createCategory(category){
         CategoryService.postCategory(category).then(
             () => {
+                this.$toast.success(`Category ${category.name} created successful.`, {autoHideDelay: 2000, appendToast: true}) 
                 this.$router.push({name: 'categoriesTable'});
             },
             (error) => {
-                this.messageCreate =
+                this.content =
                 (error.response &&
                     error.response.data &&
                     error.response.data.message) ||
                 error.message ||
                 error.toString();
+                this.$toast.error(`Category was not ${category.name} created. ${this.content}`, {autoHideDelay: 2000, appendToast: true}) 
             }
         );
     },

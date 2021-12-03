@@ -95,6 +95,7 @@ export default {
 
             UserService.updatePasswordUser(user).then(
                 () => {
+                    this.$toast.success(`Password updated successful.`, {autoHideDelay: 2000, appendToast: true}) 
                     this.$router.push({name: 'showProfile'})
                 },
                 (error) => {
@@ -106,6 +107,7 @@ export default {
                         error.response.data) ||
                         error.message ||
                         error.toString();
+                    this.$toast.error(`Password was not updated. ${this.message}`, {autoHideDelay: 2000, appendToast: true}) 
                     this.successful = false;
                     this.loading = false;
                 }

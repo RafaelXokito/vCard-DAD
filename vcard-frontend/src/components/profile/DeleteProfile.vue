@@ -97,6 +97,7 @@ export default {
             VcardService.delete(user).then(
                 () => {
                     this.$store.dispatch('auth/logout');
+                    this.$toast.success(`Profile was deleted successful.`, {autoHideDelay: 2000, appendToast: true}) 
                     this.$router.push('/login');
                 },
                 (error) => {
@@ -108,6 +109,7 @@ export default {
                         error.response.data) ||
                         error.message ||
                         error.toString();
+                    this.$toast.error(`Profile was not deleted. ${this.message}`, {autoHideDelay: 2000, appendToast: true}) 
                     this.successful = false;
                     this.loading = false;
                 }

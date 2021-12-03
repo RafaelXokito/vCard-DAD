@@ -33,10 +33,7 @@ class TransactionPolicy
 
     public function store(User $user)
     {
-        if ($user->user_type == 'V') {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     public function edit(User $user, Transaction $transaction)

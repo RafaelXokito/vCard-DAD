@@ -113,10 +113,7 @@ export default {
     },
     data() {
         const schema = yup.object().shape({
-            category: yup
-                .string(),
-            description: yup
-                .string(),
+            category: yup.string(),
         });
         return {
             loadingDependencies: true,
@@ -169,6 +166,7 @@ export default {
             transaction["category"] = this.category;
             await TransactionService.patchTransaction(transaction).then(
                 () => {
+                    this.$toast.success(`Transaction saved with success.`, {autoHideDelay: 2000, appendToast: true}) 
                     this.back();
                 },
                 (error) => {
@@ -180,6 +178,7 @@ export default {
                         error.response.data.errors["value"][0]) ||
                     error.message ||
                     error.toString();
+                    this.$toast.error(`Transaction was not saved. ${this.messageCreate}`, {autoHideDelay: 2000, appendToast: true}) 
                 }
             );
         },

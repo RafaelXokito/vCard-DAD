@@ -279,6 +279,9 @@ export default {
     contentShow(){
       if (this.$store.state.auth.user) {
         this.$socket.emit('logged_in', this.$store.state.auth.user)
+        this.$socket.on(this.$store.state.auth.user.id, (data) => {
+            console.log(data)
+        });
         return this.$store.state.auth.user && this.$store.state.auth.user.username; 
       }
       return true;
@@ -302,11 +305,15 @@ export default {
   created() {
     if (this.currentUser) {
       this.$store.dispatch('auth/getMe');
+      this.$store.dispatch('user/getMe');
     }
   },
   sockets: {
-    newTransaction (transaction) {
-      this.$toast.show(`You recieved a new transation from ${transaction.payment_reference} of ${transaction.value} €`)
+    newTransaction (message,transaction) {
+      if (this.currentUser.user_type === 'V') {
+        this.$store.dispatch('user/setBalance', transaction)
+      }
+      this.$toast.show(message)
     }
   },
 };

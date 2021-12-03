@@ -66,7 +66,7 @@
           >{{ category.id }}</td>
           <td class="align-middle" v-html="highlightNameMatches(category.name.charAt(0).toUpperCase() + category.name.slice(1))"></td>
           <td class="align-middle" v-html="highlightTypeMatches(category.type === 'C' ? 'Credit' : 'Debit')"></td>
-          <td v-if="showEdit"
+          <td v-if="showEdit && category.deleted === 0" 
             class="text-end align-middle"
           >
             <div class="d-flex justify-content-end" >
@@ -79,8 +79,14 @@
             class="text-end align-middle"
           >
             <div class="d-flex justify-content-end">
-              <button class="btn btn-xs btn-danger" @click="deleteClick(category)">
+              <button class="btn btn-xs btn-danger" @click="deleteClick(category)" v-if="category.deleted === 0">
                 <font-awesome-icon :icon="['fas', 'trash']" size="xs" />
+              </button>
+              <button class="btn btn-xs btn-success" @click="restoreClick(category)" v-else-if="category.deleted === 1">
+                <font-awesome-icon :icon="['fas', 'trash-restore']" size="xs" />
+              </button>
+              <button class="btn btn-xs btn-warning" v-else>
+                  <span class="spinner-border spinner-border-sm"></span>
               </button>
             </div>
           </td>
@@ -128,13 +134,14 @@ export default {
   ],
   data() {
       return {
-          isTableVisible: false,
           filterByName: "",
           filterByType: "",
       }
   },
-  mounted() {
-    this.list()
+  computed: {
+    isTableVisible(){
+      return this.categories != null && this.categories.links != null
+    }
   },
   methods: {
     editClick (category) {
@@ -143,7 +150,10 @@ export default {
     deleteClick(category) {
       this.$emit('delete', category)
     },
-    list(link){
+    restoreClick(category) {
+      this.$emit('restoreClick', category)
+    },
+    async list(link){
       this.$emit('list', link)
     },
     showCreate(){
@@ -167,14 +177,9 @@ export default {
 
       const re = new RegExp(this.filterByName, "ig");
       return text.replace(re, matchedText => `<strong>${matchedText}</strong>`);
-    }
+    },
   },
   watch:{
-    categories(newVal){
-      if (newVal) {
-        this.isTableVisible = true;
-      }
-    },
     async filterByName(newVal){
       this.isTableVisible = false
       let link = this.categories.links.first

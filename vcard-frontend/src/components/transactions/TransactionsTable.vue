@@ -295,11 +295,11 @@ export default {
       await this.$emit('list', this.transactions.links.first + this.optionsfilter)
       this.isTableVisible = true
     },
-    sockets: {
-      newTransaction () {
-        this.$emit('list', this.transactions.links.first + this.optionsfilter)
-      }
-    },
+  },
+  sockets: {
+    newTransaction () {
+      this.$emit('list', this.transactions.links.first + this.optionsfilter)
+    }
   },
 }
 </script>

@@ -14,6 +14,32 @@
           v-model.lazy="filterByName"
         />
       </div>
+      <div class="mx-2 mt-2 flex-grow-1 filter-div">
+        <label
+          for="email"
+          class="form-label"
+        >Filter by email:</label>
+        <input
+          class="form-control"
+          id="email"
+          name="email"
+          placeholder="JohnDoe@email.com"
+          v-model.lazy="filterByEmail"
+        />
+      </div>
+      <div class="mx-2 mt-2 flex-grow-1 filter-div">
+        <label
+          for="email"
+          class="form-label"
+        >Filter by phone number:</label>
+        <input
+          class="form-control"
+          id="phone_number"
+          name="phone_number"
+          placeholder="9XXXXXXXXX"
+          v-model.lazy="filterByPhoneNumber"
+        />
+      </div>
       <div class="mx-2 mt-2 filter-div">
         <label
           for="userType"
@@ -146,6 +172,8 @@ export default {
       loading: [],   
       filterByType: '',
       filterByName: '',
+      filterByEmail: '',
+      filterByPhoneNumber: '',
       optionsfilter: ''
     }
   },
@@ -229,6 +257,12 @@ export default {
       if (this.filterByName) {
         this.optionsfilter += '&name='+this.filterByName
       }
+      if (this.filterByEmail) {
+        this.optionsfilter += '&email='+this.filterByEmail
+      }
+      if (this.filterByPhoneNumber) {
+        this.optionsfilter += '&phone_number='+this.filterByPhoneNumber
+      }
       await this.$emit('list', this.users.links.first + this.optionsfilter)
       this.isTableVisible = true
     },
@@ -240,6 +274,53 @@ export default {
       }
       if (this.filterByType) {
         this.optionsfilter += '&type='+this.filterByType
+      }
+      if (this.filterByEmail) {
+        this.optionsfilter += '&email='+this.filterByEmail
+      }
+      if (this.filterByPhoneNumber) {
+        this.optionsfilter += '&phone_number='+this.filterByPhoneNumber
+      }
+      await this.$emit('list', this.users.links.first + this.optionsfilter)
+      this.isTableVisible = true
+    },
+    async filterByEmail(newVal){
+      this.isTableVisible = false
+      this.optionsfilter = ""
+      if (this.filterByName) {
+        this.optionsfilter += '&name='+this.filterByName
+      }
+      if (this.filterByType) {
+        this.optionsfilter += '&type='+this.filterByType
+      }
+      if (this.filterByPhoneNumber) {
+        this.optionsfilter += '&phone_number='+this.filterByPhoneNumber
+      }
+      if (newVal) {
+        this.optionsfilter += '&email='+newVal
+      }
+      await this.$emit('list', this.users.links.first + this.optionsfilter)
+      this.isTableVisible = true
+    },
+    async filterByPhoneNumber(newVal){
+      if (newVal !== '') {
+        this.filterByType = 'V'
+      } else {
+        this.filterByType = ''
+      }
+      this.isTableVisible = false
+      this.optionsfilter = ""
+      if (this.filterByName) {
+        this.optionsfilter += '&name='+this.filterByName
+      }
+      if (this.filterByType) {
+        this.optionsfilter += '&type='+this.filterByType
+      }
+      if (this.filterByEmail) {
+        this.optionsfilter += '&email='+this.filterByEmail
+      }
+      if (newVal) {
+        this.optionsfilter += '&phone_number='+newVal
       }
       await this.$emit('list', this.users.links.first + this.optionsfilter)
       this.isTableVisible = true

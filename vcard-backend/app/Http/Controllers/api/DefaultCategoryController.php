@@ -146,6 +146,21 @@ class DefaultCategoryController extends Controller
                         'message'   =>  "Default Category ".$oldName." was NOT deleted"
                     ), 400);
         }
+    }
 
+    public function restore($id)
+    {
+        $defaultcategory = DefaultCategory::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $defaultcategory);
+        try {
+            $defaultcategory->restore();
+        } catch (\Throwable $th) {
+            return response()->json(array(
+                'code'      =>  200,
+                'message'   =>  $th->getMessage()
+            ), 200);
+        }
+
+        return new DefaultCategoryResource($defaultcategory);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VcardDelete;
 use App\Http\Requests\VCardMaxDebitPatch;
+use App\Http\Requests\VCardPhotoPost;
 use App\Http\Requests\VCardPost;
 use App\Http\Resources\VCardResource;
 use App\Models\VCard;
@@ -171,4 +172,28 @@ class VCardController extends Controller
 
         return new VCardResource($vcard);
     }
+
+
+    public function postVCardPhoto(VCardPhotoPost $request, VCard $user)
+    {
+        //return $request;
+        $validated_data = $request->validated();
+        try {
+            if ($request->has("photo_url")) {
+                Storage::disk('public')->delete('fotos\\'.$user->photo_url);
+                $user->photo_url = basename(Storage::disk('public')->putFileAs('fotos\\', $request->photo_url, $user->username . "_" . Str::random(6) . '.jpg'));
+            }
+            $user->save();
+            return response()->json(array(
+                'code'      => 200,
+                'photo_url'   => $user->photo_url
+            ), 200);
+        } catch (\Throwable $th) {
+            return response()->json(array(
+                'code'      =>  400,
+                'message'   =>  $th->getMessage()
+            ), 400);
+        }
+    }
+
 }

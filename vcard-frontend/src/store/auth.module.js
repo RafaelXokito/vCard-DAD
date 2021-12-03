@@ -6,6 +6,7 @@ const initialState = user
   ? { status: { loggedIn: true }, user}
   : { status: { loggedIn: false }, user: null};
 
+
 export const auth = {
   namespaced: true,
   state: initialState,
@@ -30,6 +31,9 @@ export const auth = {
         }
       )
     },
+    setBalance({ commit }, balance) {
+      commit('setBalance', balance);
+    },
     logout({ commit }) {
       AuthService.logout();
       commit('logout');
@@ -51,10 +55,12 @@ export const auth = {
     getMeSucess(state, user){
       Object.assign(state.user,user);
     },
+    setBalance(state, balance){
+      state.user.balance = balance;
+    },
     loginSuccess(state, user) {
       state.status.loggedIn = true;
       state.user = user;
-      
     },
     loginFailure(state) {
       state.status.loggedIn = false;

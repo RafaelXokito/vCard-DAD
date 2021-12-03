@@ -6,7 +6,7 @@
                 <div class="container pt-5">
                     <Form @submit="handleSave" :validation-schema="schema" class="w-75 mx-auto" method="PATCH" enctype="multipart/form-data">
                     <div v-if="!successful">
-                        <div class="form-group image-upload text-center">
+                        <div class="form-group image-upload text-center" v-if="user.user_type === 'V'">
                             <label for="file-input">
                             <img class="rounded-circle" :src="img_src" :title="user.username+'Photo'">
                             </label>
@@ -111,9 +111,10 @@ export default {
 
             UserService.updateUser(user).then(
                 () => {
-                    if (user["photo_url"]){
-                        UserService.updateUserPhoto(form_data).then(
+                    if (user["photo_url"] && user.user_type === 'V'){
+                        UserService.updateVCardPhoto(form_data).then(
                             () => { 
+                                this.$toast.success(`Profile was updated successful.`, {autoHideDelay: 2000, appendToast: true}) 
                                 this.$router.push({name: 'showProfile'})
                             },
                             (error) => {
@@ -125,9 +126,11 @@ export default {
                                     error.message ||
                                     error.toString();
                                 this.successful = false;
+                                this.$toast.error(`Profile was not updated.`, {autoHideDelay: 2000, appendToast: true}) 
                                 this.loading = false;
                         })
                     }else {
+                        this.$toast.success(`Profile was updated successful.`, {autoHideDelay: 2000, appendToast: true}) 
                         this.$router.push({name: 'showProfile'})
                     }
                 },

@@ -28,8 +28,8 @@
             </div>
         </div>
         <div class="form-group">
-            <div v-if="messageEdit" class="alert alert-danger" role="alert">
-                {{ messageEdit }}
+            <div v-if="content" class="alert alert-danger" role="alert">
+                {{ content }}
             </div>
         </div>
         <div class="form-group text-center pt-3">
@@ -63,7 +63,7 @@ export default {
         return {
             loading: false,
             schema,
-            messageEdit: "",
+            content: "",
             categoryType: ''
         };
     },
@@ -89,15 +89,17 @@ export default {
             category["id"] = this.category.id
             CategoryService.patchCategory(category).then(
                 () => {
+                    this.$toast.success(`Category ${category.name} updated successful.`, {autoHideDelay: 2000, appendToast: true}) 
                     this.back();
                 },
                 (error) => {
-                    this.messageEdit =
+                    this.content =
                     (error.response &&
                         error.response.data &&
                         error.response.data.message) ||
                     error.message ||
                     error.toString();
+                    this.$toast.error(`Category was not ${category.name} created. ${this.content}`, {autoHideDelay: 2000, appendToast: true}) 
                 }
             );
         },

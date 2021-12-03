@@ -5,6 +5,7 @@ use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\CategoryController;
 use App\Http\Controllers\api\DefaultCategoryController;
 use App\Http\Controllers\api\PaymentTypeController;
+use App\Http\Controllers\api\StatisticsController;
 use App\Http\Controllers\api\TransactionController;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\VCardController;
@@ -50,6 +51,8 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(funct
 
     Route::delete('defaultcategories/{defaultcategory}', [DefaultCategoryController::class, 'deleteDefaultCategory'])->middleware('can:viewAny,defaultcategory');
 
+    Route::post('defaultcategories/{id}/restore', [DefaultCategoryController::class, 'restore']); //middleware executado no método 'restore'
+
     //TRANSACTIONS
     Route::get('transactions', [TransactionController::class, 'getTransactions'])->middleware('can:viewAny,App\Models\Transaction');
 
@@ -87,6 +90,8 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(funct
 
     Route::get('vcards/{vcard}', [VCardController::class, 'getVcard'])->middleware('can:view,vcard');
 
+    Route::post('vcards/{user}/updateVCardPhoto', [VCardController::class, 'postVCardPhoto'])->middleware('can:update,user');
+
     //USERS
     Route::get('users/me', [UserController::class, 'getMe']);
 
@@ -95,8 +100,6 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(funct
     Route::patch('users/{user}/password', [UserController::class, 'update_password'])->middleware('can:updatePassword,user');
 
     Route::patch('users/{user}', [UserController::class, 'patchUser'])->middleware('can:update,user');
-
-    Route::post('users/{user}/updateUserPhoto', [UserController::class, 'postUserPhoto'])->middleware('can:update,user');
 
     Route::patch('users/{user}/updatePassword', [UserController::class, 'patchPasswordUser'])->middleware('can:update,user');
 
@@ -117,6 +120,9 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(funct
     Route::post('vards/{vcard}/confirmationCode', [AuthController::class, 'confirmationCode'])->middleware('can:view,vcard');
 
     Route::post('admin', [AdministratorController::class, 'postAdmin'])->middleware('can:store,App\Models\Administrator');
+
+    //STATISTICS
+    Route::get('statistics/financial', [StatisticsController::class, 'getFinancial']);
 
     Route::get('email/verify/{id}', [AuthController::class, 'verify'])->name('verification.verify'); // Make sure to keep this as your route name
 

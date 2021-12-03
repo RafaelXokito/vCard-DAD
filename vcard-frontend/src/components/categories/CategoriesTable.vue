@@ -33,7 +33,7 @@
     <div class="mx-2 mt-2">
       <router-link
         class="btn btn-success px-4 btn-addtask"
-        to="/transactions/create"
+        :to="{name:'createCategory'}"
       ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />&nbsp; Create Category</router-link>
     </div>
   </div>

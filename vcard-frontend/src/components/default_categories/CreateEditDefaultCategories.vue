@@ -98,6 +98,7 @@ export default {
             defaultcategory["id"] = this.defaultcategory.id
             CategoryService.patchDefaultCategory(defaultcategory).then(
                 () => {
+                    this.$toast.success(`Default category ${defaultcategory.name} edited successful.`, {autoHideDelay: 2000, appendToast: true}) 
                     this.back();
                 },
                 (error) => {
@@ -107,6 +108,7 @@ export default {
                         error.response.data.message) ||
                     error.message ||
                     error.toString();
+                    this.$toast.success(`Default category ${defaultcategory.name} was not edited.`, {autoHideDelay: 2000, appendToast: true}) 
                 }
             );
         },
@@ -114,6 +116,7 @@ export default {
             defaultcategory["id"] = this.defaultcategory.id
             CategoryService.postDefaultCategory(defaultcategory).then(
                 () => {
+                    this.$toast.success(`Default category ${defaultcategory.name} created successful.`, {autoHideDelay: 2000, appendToast: true}) 
                     this.back();
                 },
                 (error) => {
@@ -123,6 +126,7 @@ export default {
                         error.response.data.message) ||
                     error.message ||
                     error.toString();
+                    this.$toast.error(`Default category ${defaultcategory.name} was not created. ${this.messageEdit}`, {autoHideDelay: 2000, appendToast: true}) 
                 }
             );
         },

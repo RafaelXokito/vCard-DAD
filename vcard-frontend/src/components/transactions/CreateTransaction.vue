@@ -48,7 +48,7 @@
                             <div class="input-group"> <Field type="text" id="cr_no" name="card-no" placeholder="0000 0000 0000 0000" minlength="19" maxlength="19" /> <label>Card Number</label> </div>
                         </div>
                     </div>-->
-                    <div class="row justify-content-center">
+                    <div class="row justify-content-center" v-if="this.$store.state.auth.user.user_type === 'V'">
                         <div class="col-12">
                             <div class="input-group"> 
                                 <select v-model="transaction.category" name="category" title="Category" style="border-radius: 10px !important;"> 
@@ -63,12 +63,12 @@
                         <div class="col-12">
                             <div class="input-group">
                                 <Field class="card" v-model="value" type="number" name="value" placeholder="0.00" min="0.00" value="0.00" step="0.01" title="Currency" pattern="^\d*(\.\d{0,2})?$" /> 
-                                <label class="mx-auto">Value (€) {{balance}} €</label> 
+                                <label class="mx-auto">Value (€) {{this.$store.state.auth.user.user_type === 'V' ? balance + ' €' : ''}}</label> 
                                 <ErrorMessage name="value" class="error-feedback" />
                             </div>
                         </div>
                     </div>
-                    <div class="row justify-content-center">
+                    <div class="row justify-content-center" v-if="this.$store.state.auth.user.user_type === 'V'">
                         <div class="col-12">
                             <div class="input-group"> 
                                 <Field class="card" type="text" name="description" placeholder="Vacations Hotel" title="Description" /> <label>Description</label>
@@ -135,43 +135,61 @@ export default {
             value: 0
         };
     },
+    computed: {
+        contentShow(){
+            if (this.$store.state.auth.user) {
+                return this.$store.state.auth.user && this.$store.state.auth.user.username; 
+            }
+            return true;
+        },
+    },
     methods: {
         handleConfirmationCode(user){
             this.messageCreate = "";
             if (user.confirmationCode === true) {
                 this.loadingDependencies = true;
                 this.showConfirmationCode = false;
-                TransactionService.postTransaction(this.transaction).then(
-                    (transaction) => {
-                        this.$socket.emit('newTransaction', transaction)
-                        this.$store.dispatch("auth/getMe").then(
-                        () => {
-                            this.$router.push("/transactions");
-                        },
-                        () => {
-                            this.$router.push("/logout");
-                        })
-                    },
-                    (error) => {
-                        this.loadingDependencies = false;
-                        this.errors = error.response.data.errors;
-                        this.messageCreate =
-                        (error.response &&
-                            error.response.data &&
-                            error.response.data.errors["value"][0]) ||
-                        error.message ||
-                        error.toString();
-                    }
-                );
+                this.postTransaction()
             }else{
                 this.showConfirmationCode = false;
             }
         },
+        postTransaction(){
+            TransactionService.postTransaction(this.transaction).then(
+                (transaction) => {
+                    this.$socket.emit('newTransaction', transaction.data.data)
+                    this.$toast.success(`Transaction done with success.`, {autoHideDelay: 2000, appendToast: true})
+                    this.$store.dispatch("auth/setBalance", transaction.data.data.balance) 
+                    // this.$store.dispatch("auth/getMe", '?balance=true').then(
+                    // () => {
+                    //     this.$router.push("/transactions");
+                    // },
+                    // () => {
+                    //     this.$router.push("/logout");
+                    // })
+                },
+                (error) => {
+                    this.loadingDependencies = false;
+                    this.errors = error.response.data.errors;
+                    this.messageCreate =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.errors["value"] &&
+                        error.response.data.errors["value"][0]) ||
+                    error.message ||
+                    error.toString();
+                    this.$toast.error(`Transaction done without success.`, {autoHideDelay: 2000, appendToast: true}) 
+                }
+            );
+        },
         handleCreate(transaction) {
-            this.showConfirmationCode = true;
             transaction.category = this.transaction.category;
             this.transaction = transaction;
-            
+            if (this.$store.state.auth.user.user_type === 'V') {
+                this.showConfirmationCode = true;
+            } else {
+                this.postTransaction()
+            }
         },
         getImage(json){
             let obj = JSON.parse(json);
@@ -185,7 +203,11 @@ export default {
         this.loadingDependencies = true;
         await PaymentTypeService.getPaymentType().then(
             ({data}) => {
-                this.paymentTypes = data.data;
+                if (this.$store.state.auth.user.user_type === 'V') {
+                    this.paymentTypes = data.data;
+                }else {
+                    this.paymentTypes = data.data.filter((e)=>e.code==='VCARD');
+                }
                 this.payment_type = "VCARD";
             },
             (error) => {
@@ -197,6 +219,7 @@ export default {
                 error.toString();
             }
         );
+        if (this.$store.state.auth.user.user_type === 'V')
         await CategoryService.getCategoryBoard(this.$store.state.auth.user.username,`vcards/${this.$store.state.auth.user.username}/categories?type=D`).then(
             ({data}) => {
                 this.categories = data.data;

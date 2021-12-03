@@ -11,7 +11,7 @@
         <edit-categories :category="categoryToEdit" @close="closeCategoryEdit"></edit-categories>
     </div>
   </div>
-  
+  <confirm-dialog></confirm-dialog>
 </div>
 </template>
 
@@ -19,8 +19,10 @@
 import CategoryService from "../../services/category.service";
 import EditCategories from './EditCategories.vue';
 
+import ConfirmDialog from 'primevue/confirmdialog';
+
 export default {
-  components: { EditCategories },
+  components: { EditCategories,ConfirmDialog },
   name: "Categories",
   data() {
     return {
@@ -42,24 +44,28 @@ export default {
       this.categoryToEdit = category;
     },
     deleteCategory(category){
-      if(confirm(`Do you really want to delete category ${category.name}?`)){
-        CategoryService.deleteCategory(category).then(
+      
+      this.$confirm.require({
+          message: `Do you really want to delete category ${category.name}?`,
+          header: 'Confirmation',
+          icon: 'pi pi-exclamation-triangle',
+          accept: async () => {
+              CategoryService.deleteCategory(category).then(
             () => {
-              alert("Category Deleted")
+              this.$toast.success(`Category ${category.name} deleted successful.`, {autoHideDelay: 2000, appendToast: true}) 
               this.list();
             },
             (error) => {
-                this.messageEdit =
+                this.content =
                 (error.response &&
                     error.response.data &&
                     error.response.data.message) ||
                 error.message ||
                 error.toString();
-              alert(this.messageEdit)
-
-            }
-        );
-      }
+              this.$toast.error(`During deleting ${category.name} ${this.content}.`, {autoHideDelay: 2000, appendToast: true}) 
+            });
+          },
+      });
     },
     closeCategoryEdit(){
       this.categoryToEditShow = false;

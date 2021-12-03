@@ -8,6 +8,7 @@
                       <div class="about-text go-to">
                           <h3 class="dark-color"> {{ user.name }}</h3>
                           <h6 class="theme-color lead">Email: {{ user.email }}</h6>
+                          <h6 class="dark-color" v-if="user.user_type === 'V'">Phone Number: {{ user.username }}</h6>
                       </div>
                   </div>
                   <div class="col-lg-6">
