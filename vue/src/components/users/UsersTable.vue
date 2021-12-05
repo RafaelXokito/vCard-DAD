@@ -79,10 +79,10 @@
             class="align-middle"
           >Email</th>
           <th class="align-middle" v-if="showBlock">
-            Blocked
+            Max Debit
           </th>
           <th class="align-middle" v-if="showMaxDebit">
-            Max Debit
+            Blocked
           </th>
           <th class="align-middle" v-if="showDelete">
             Delete
@@ -115,9 +115,9 @@
           >{{ user.email }}</td>
           <td
             class="text-end align-middle"
-            v-if="showMaxDebit && !(users.data[index].deleted)"
+            v-if="showMaxDebit"
           >
-          <div class="d-flex justify-content-start" v-if="user.user_type === 'V'">
+          <div class="d-flex justify-content-start" v-if="user.user_type === 'V' && !(users.data[index].deleted)">
               <button class="btn btn-xs btn-warning" @click.prevent="changeMaxDebitVCard(index)">
                 <font-awesome-icon v-if="!users.data[index].loading ?? true" :icon="['fas', 'credit-card']" />
                 <span v-else class="spinner-border spinner-border-sm"></span>
@@ -126,9 +126,9 @@
           </td>
           <td
             class="text-end align-middle"
-            v-if="showBlock && !(users.data[index].deleted)"
+            v-if="showBlock"
           >
-          <div class="d-flex justify-content-start" v-if="user.user_type === 'V'">
+          <div class="d-flex justify-content-start" v-if="user.user_type === 'V' && !(users.data[index].deleted)">
               <button class="btn btn-xs" :class="users.data[index].blocked ? 'btn-success' : 'btn-danger'" @click.prevent="changeBlockUser(index)">
                 <font-awesome-icon v-if="users.data[index].blocked && (users.data[index].blocked == '0' || users.data[index].blocked == '1')" :icon="['fas', 'check-circle']" />
                 <font-awesome-icon v-else-if="!users.data[index].blocked && (users.data[index].blocked == '0' || users.data[index].blocked == '1')" :icon="['fas', 'times-circle']" />
