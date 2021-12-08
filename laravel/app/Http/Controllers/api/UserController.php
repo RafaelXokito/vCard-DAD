@@ -59,12 +59,12 @@ class UserController extends Controller
         if ($request->has("phone_number")) {
             $users = $users->where("vcards.phone_number",'LIKE', "%".$request->phone_number."%");
         }
-        // if ($request->has("page")) {
-        //     $users = $users->orderBy('created_at', 'desc')->paginate(15);
-        // }else {
-        //     $users = $users->orderBy('created_at', 'desc')->get();
-        // }
-        return UserResource::collection($users->paginate(15));
+        if ($request->has("page")) {
+            $users = $users->orderBy('created_at', 'desc')->paginate(15);
+        }else {
+            $users = $users->orderBy('created_at', 'desc')->get();
+        }
+        return UserResource::collection($users);
     }
     /*
 	public function update_password(PasswordPost $request, User $user)
@@ -167,13 +167,22 @@ class UserController extends Controller
         }
     }
 
-    public function remove(User $user)
+    public function remove(Request $request, User $user)
     {
         if ($user->user_type == 'A') {
-            AdministratorController::removeAdmin($user->admin_ref);
-        }else if ($user->type == 'V') {
-            VCardController::removeVcard($user->vcard_ref);
+            return AdministratorController::removeAdmin($user->admin_ref);
+        }else if ($user->user_type == 'V') {
+            return VCardController::removeVcard($user->vcard_ref);
+        }else {
+            return response()->json(array(
+                'code'      =>  422,
+                'message'   =>  "Bad request, user_type invalid"
+            ), 422);
         }
+        return response()->json(array(
+            'code'      =>  200,
+            'message'   =>  "User deleted successful"
+        ), 200);
     }
 
 }

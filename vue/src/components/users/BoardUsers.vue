@@ -103,6 +103,9 @@ export default {
               this.users.data[userIndex].blocked = 'loading'
               await VCardService.blockVcard(user).then(()=>{
                 this.users.data[userIndex].blocked = !blockedState
+                if (this.users.data[userIndex].blocked == '1') {
+                  this.$socket.emit('vcardBlocked', {to: this.users.data[userIndex].id, from: this.$store.state.user.data.id})
+                }
                 this.$toast.success(`VCard ${user.name} was ${blockedState ? 'unblocked' : 'block'} successful.`, {autoHideDelay: 2000, appendToast: true}) 
               },
               (error) => {
@@ -137,6 +140,9 @@ export default {
                 await UserService.delete(user).then(()=>{
                   this.users.data[userIndex].deleted = !deletedState
                   this.$toast.success(`VCard ${user.name} deleted successful.`, {autoHideDelay: 2000, appendToast: true}) 
+                  if (this.users.data[userIndex].deleted == '1') {
+                    this.$socket.emit('userDeleted', {to: this.users.data[userIndex].id, from: this.$store.state.user.data.id})
+                  }
                   this.list(this.lastLinkedUsed)
                 },
                 (error) => {

@@ -133,7 +133,7 @@ class VCardController extends Controller
             return response()->json(array(
                 'code'      =>  406, //Not Acceptable
                 'message'   =>  "vCard balance may be 0 to remove account!"
-                ), 422); //Not Acceptable
+                ), 406); //Not Acceptable
         }
 
         if ($vcard->transactions->count() == 0) {

@@ -10,6 +10,10 @@ class TransactionService {
     return await axios.get(link, { headers: authHeader() });
   }
 
+  async getLastTransaction(link='lasttransaction') {
+    return await axios.get(link, { headers: authHeader() });
+  }
+
   getTransaction(id){
     return axios.get('transactions/' + id, { headers: authHeader() });
   }

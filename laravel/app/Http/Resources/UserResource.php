@@ -41,9 +41,9 @@ class UserResource extends JsonResource
                         'email' => $this->email,
                         'photo_url' => $this->photo_url != null ? "/storage/fotos/" . $this->photo_url : "/storage/fotos/avatar.jpg",
                         'user_type' => $this->user_type,
-                        'count_transactions' => Transaction::all()->count(),
-                        'count_today_transactions' => Transaction::whereDate('created_at', Carbon::today())->get()->count(),
-                        'count_month_transactions' => Transaction::whereDate('created_at', '>', \Carbon\Carbon::now()->subMonth())->get()->count(),
+                        'count_transactions' => Transaction::withTrashed()->get()->count(),
+                        'count_today_transactions' => Transaction::withTrashed()->whereDate('created_at', Carbon::today())->get()->count(),
+                        'count_month_transactions' => Transaction::withTrashed()->whereDate('created_at', '>', \Carbon\Carbon::now()->subMonth())->get()->count(),
                         'count_vcards' => VCard::all()->count(),
                     ];
                 break;

@@ -55,6 +55,7 @@
             v-if="showId"
             class="align-middle"
           >#</th>
+          <th class="align-middle">Date</th>
           <th class="align-middle">Old Balance</th>
           <th class="align-middle">New Balance</th>
           <th class="align-middle">Payment Type</th>
@@ -71,6 +72,7 @@
             v-if="showId"
             class="align-middle"
           >{{ transaction.id }}</td>
+          <td class="align-middle">{{ formatDate(transaction.datetime) }}</td>
           <td class="align-middle">{{ transaction.old_balance }}</td>
           <td class="align-middle">{{ transaction.new_balance }}</td>
           <td class="align-middle" v-html="highlightPaymentTypeMatches(transaction.payment_type)"></td>
@@ -214,6 +216,19 @@ export default {
 
       const re = new RegExp(filter, "ig");
       return text.replace(re, matchedText => `<strong>${matchedText}</strong>`);
+    },
+    formatDate(date) {
+      var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
+
+      if (month.length < 2) 
+          month = '0' + month;
+      if (day.length < 2) 
+          day = '0' + day;
+
+      return [year, month, day].join('-');
     }
   },
   watch:{

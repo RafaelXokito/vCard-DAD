@@ -35,7 +35,7 @@
         <div class="form-group text-center pt-3">
             <button class="btn btn-primary btn-block mx-auto" :disabled="loading">
                 <span v-show="loading" class="spinner-border spinner-border-sm"></span>
-                <span> Guardar</span>
+                <span> Save</span>
             </button>
         </div>
     </Form>

@@ -56,6 +56,8 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(funct
     //TRANSACTIONS
     Route::get('transactions', [TransactionController::class, 'getTransactions'])->middleware('can:viewAny,App\Models\Transaction');
 
+    Route::get('lasttransaction', [TransactionController::class, 'getLastTransaction'])->middleware('can:viewAny,App\Models\Transaction');
+
     Route::get('transactions/{transaction}', [TransactionController::class, 'getTransaction'])->middleware('can:view,transaction');
 
     Route::get('transactions/{transaction}/pair', [TransactionController::class, 'getPairTransaction'])->middleware('can:viewPair,App\Models\Transaction');
@@ -109,7 +111,7 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(funct
 
     Route::delete('users/{user}/delete', [UserController::class, 'remove'])->middleware('can:delete,user');
 
-    Route::post('vcards/{phone_number}/restore', [VCardController::class, 'restoreVCard']); //middleware executado no método 'restoreVcard'
+    Route::post('vcards/{phone_number}/restorevcard', [VCardController::class, 'restoreVCard']); //middleware executado no método 'restoreVcard'
 
     Route::patch('vcards/{vcard}/block', [VCardController::class, 'blockVCard'])->middleware('can:block,App\Models\VCard');
 
@@ -123,6 +125,12 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(funct
 
     //STATISTICS
     Route::get('statistics/financial', [StatisticsController::class, 'getFinancial']);
+
+    Route::get('statistics/balancepertime', [StatisticsController::class, 'getBalancePerTime']);
+
+    Route::get('statistics/totalspent', [StatisticsController::class, 'getTotalSpent']);
+
+    Route::get('statistics/totalrecieved', [StatisticsController::class, 'getTotalRecieved']);
 
     Route::get('email/verify/{id}', [AuthController::class, 'verify'])->name('verification.verify'); // Make sure to keep this as your route name
 

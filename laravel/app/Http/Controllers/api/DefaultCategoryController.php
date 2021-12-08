@@ -26,12 +26,12 @@ class DefaultCategoryController extends Controller
         if ($request->has("name")) {
             $defaultcategories = $defaultcategories->where("name",'LIKE', "%".$request->name."%");
         }
-        // if ($request->has("page")) {
-        //     $defaultcategories = $defaultcategories->orderBy('created_at', 'desc')->paginate(15);
-        // }else {
-        //     $defaultcategories = $defaultcategories->orderBy('created_at', 'desc')->get();
-        // }
-        return DefaultCategoryResource::collection($defaultcategories->paginate(15));
+        if ($request->has("page")) {
+            $defaultcategories = $defaultcategories->orderBy('created_at', 'desc')->paginate(15);
+        }else {
+            $defaultcategories = $defaultcategories->orderBy('created_at', 'desc')->get();
+        }
+        return DefaultCategoryResource::collection($defaultcategories);
     }
 
     public function postDefaultCategory(DefaultCategoryPost $request)

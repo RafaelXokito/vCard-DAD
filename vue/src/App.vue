@@ -260,9 +260,18 @@
       <main class="ms-sm-auto px-md-4" :class="{'col-md-12 col-lg-12': currentUser == null, 'col-md-9 col-lg-10': currentUser != null, }">
         <router-view></router-view>
       </main>
-
     </div>
   </div>
+  <footer class="text-center" style="height: 150px">
+    <div class="mt-5">
+      <p class="align-middle">vCard designed and developed for school propose</p>
+      <p class="align-middle">
+        <a href="https://www.linkedin.com/in/rafaelmendespereira/">Rafael Pereira</a>, 
+        <a href="https://www.linkedin.com/in/bruna-leit%C3%A3o-13891a217/">Bruna Leitão</a>, 
+        <a href="https://www.linkedin.com/in/danielcarreira/">Daniel Carreira</a>, 
+        Eduardo Silva</p>
+    </div>
+  </footer>
 </div>
 <div class="d-flex justify-content-center big p-5" v-else>
     <div class="row justify-content-center text-center">
@@ -298,8 +307,9 @@ export default {
   methods: {
     logOut() {
       this.$store.dispatch('auth/logout');
+      this.$store.dispatch('user/logout');
       this.$router.push('/login');
-    }
+    },
   },
   created() {
     if (this.currentUser && this.$store.state.auth.user != null) {
@@ -310,9 +320,20 @@ export default {
   sockets: {
     newTransaction (message) {
       if (this.currentUser.user_type === 'V') {
-        this.$store.dispatch('user/setBalance', message[1])
+        this.$store.dispatch('user/getMe')
+        this.$store.dispatch('user/incrementTransactions',1)
+        this.$toast.show(message)
+      }else {
+        this.$store.dispatch('user/incrementTransactions', message[1])
       }
-      this.$toast.show(message[0])
+    },
+    vcardBlocked (message) {
+      this.logOut();
+      this.$toast.show(message)
+    },
+    userDeleted (message) {
+      this.logOut();
+      this.$toast.show(message)
     }
   },
 };

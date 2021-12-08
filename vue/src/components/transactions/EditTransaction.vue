@@ -8,8 +8,9 @@
         <div class="row pt-5">
             <h1 class="text-center">Update Transaction</h1>
             <h4 class="text-center danger">
-                <p :style="transaction.type === 'D' ? 'color:red' : 'color:green'">Antes: {{transaction.old_balance + ' € '}}</p>
-                <p :style="transaction.type === 'D' ? 'color:red' : 'color:green'">Agora: {{transaction.new_balance + ' €'}}</p>
+                <p :style="transaction.type === 'D' ? 'color:red' : 'color:green'">Before: {{transaction.old_balance + ' € '}}</p>
+                <p :style="transaction.type === 'D' ? 'color:red' : 'color:green'">After: {{transaction.new_balance + ' €'}}</p>
+                <p>Date Time: {{getDate(transaction.datetime)}}</p>
             </h4>
         </div>
         <hr>
@@ -67,7 +68,7 @@
                         <div class="form-group text-center pt-3">
                             <button class="btn btn-primary btn-block mx-auto" :disabled="loading">
                                 <span v-show="loading" class="spinner-border spinner-border-sm"></span>
-                                <span> Guardar</span>
+                                <span> Save</span>
                             </button>
                         </div>
                         <div class="form-group" v-if="message">
@@ -90,6 +91,8 @@
     </div>
 </template>
 <script>
+import moment from "moment";
+
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
@@ -191,6 +194,9 @@ export default {
         },
         back(){
             this.$emit('close');
+        },
+        getDate : function (date) {
+            return moment(date, 'YYYY-MM-DD').format('LLL');
         }
     },
     emits: [

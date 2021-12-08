@@ -20,6 +20,15 @@ class TransactionController extends Controller
         return new TransactionResource($transaction);
     }
 
+    public function getLastTransaction()
+    {
+        $transactions = Auth::user()->user_type == 'A' ? DB::table('transactions') : Auth::user()->vcard_ref->transactions();
+        if (Auth::user()->user_type == 'V') {
+            TransactionResource::$format = 'detailed';
+        }
+        return new TransactionResource($transactions->orderByDesc('date')->first());
+    }
+
     public function getTransactions(Request $request)
     {
         $transactions = Auth::user()->user_type == 'A' ? DB::table('transactions') : Auth::user()->vcard_ref->transactions();
@@ -107,47 +116,45 @@ class TransactionController extends Controller
                 $transaction->save();
             }
 
-            switch ($validated_data["payment_type"]) {
-                case 'VCARD':
-                    ///set pair_transaction
-                    $pair_transaction = new Transaction();
-                    $pair_transaction->vcard = $validated_data["payment_reference"];
-                    $pair_transaction->date = date("Y-m-d");
-                    date_default_timezone_set('Europe/Lisbon');
-                    $pair_transaction->datetime = date('Y-m-d h:i:s', time());
-                    $pair_transaction->type = 'C';
-                    $pair_transaction->value = $validated_data["value"];
-                    $pair_transaction->old_balance = $pair_transaction->vcard_ref->balance;
-                    $pair_transaction->new_balance = $pair_transaction->vcard_ref->balance + $pair_transaction->value;
-                    //Credit part
-                    $pair_transaction->new_balance = $pair_transaction->vcard_ref->balance + $pair_transaction->value;
+            if ($validated_data["payment_type"] == 'VCARD' || Auth::user()->user_type == 'A') {
+                ///set pair_transaction
+                $pair_transaction = new Transaction();
+                $pair_transaction->vcard = Auth::user()->user_type == 'V' ? $validated_data["payment_reference"] : $validated_data["vcard"];
+                $pair_transaction->date = date("Y-m-d");
+                date_default_timezone_set('Europe/Lisbon');
+                $pair_transaction->datetime = date('Y-m-d h:i:s', time());
+                $pair_transaction->type = 'C';
+                $pair_transaction->value = $validated_data["value"];
+                $pair_transaction->old_balance = $pair_transaction->vcard_ref->balance;
+                $pair_transaction->new_balance = $pair_transaction->vcard_ref->balance + $pair_transaction->value;
+                //Credit part
+                $pair_transaction->new_balance = $pair_transaction->vcard_ref->balance + $pair_transaction->value;
 
-                    $pair_transaction->payment_type = Auth::user()->user_type == 'V' ? $validated_data["payment_type"] : 'MBWAY';
-                    $pair_transaction->payment_reference = $transaction->vcard ?? '91XXXXXXX';
-                    $pair_transaction->category_id = null;
-                    if ($request->has("description"))
-                        $pair_transaction->description = $validated_data["description"];
-                    if ($request->has("custom_options"))
-                        $pair_transaction->custom_options = $validated_data["custom_options"];
-                    if ($request->has("custom_data"))
-                        $pair_transaction->custom_data = $validated_data["custom_data"];
+                $pair_transaction->payment_type = $validated_data["payment_type"];
+                $pair_transaction->payment_reference = Auth::user()->user_type == 'V' ? $transaction->vcard : $validated_data["payment_reference"];
+                $pair_transaction->category_id = null;
+                if ($request->has("description"))
+                    $pair_transaction->description = $validated_data["description"];
+                if ($request->has("custom_options"))
+                    $pair_transaction->custom_options = $validated_data["custom_options"];
+                if ($request->has("custom_data"))
+                    $pair_transaction->custom_data = $validated_data["custom_data"];
+                $pair_transaction->save();
+
+                $pairVcard = $pair_transaction->vcard_ref;
+                $pairVcard->balance = $pair_transaction->new_balance;
+                $pairVcard->save();
+
+                if (Auth::user()->user_type == 'V') {
+                    $transaction->pair_transaction = $pair_transaction->id;
+                    $transaction->pair_vcard = $pair_transaction->vcard;
+                    $pair_transaction->pair_transaction = $transaction->id;
+                    $pair_transaction->pair_vcard = $transaction->vcard;
+
+                    $transaction->save();
                     $pair_transaction->save();
+                }
 
-                    $pairVcard = $pair_transaction->vcard_ref;
-                    $pairVcard->balance = $pair_transaction->new_balance;
-                    $pairVcard->save();
-
-                    if (Auth::user()->user_type == 'V') {
-                        $transaction->pair_transaction = $pair_transaction->id;
-                        $transaction->pair_vcard = $pair_transaction->vcard;
-                        $pair_transaction->pair_transaction = $transaction->id;
-                        $pair_transaction->pair_vcard = $transaction->vcard;
-
-                        $transaction->save();
-                        $pair_transaction->save();
-                    }
-
-                    break;
             }
 
             if (Auth::user()->user_type == 'V') {
@@ -174,6 +181,12 @@ class TransactionController extends Controller
             $transaction->description = $data["description"];
         }
         if ($request->has("category") && $data["category"] != null) {
+            if (Auth::user()->user_type == 'V' && Category::findOrFail($data["category"])->type != $transaction->type) {
+                return response()->json(array(
+                    'code'      =>  400,
+                    'message'   =>  'Invalid Category, the category need to be the type of transaction.'
+                    ), 422);
+            }
             $transaction->category_id = Category::findOrFail($data["category"])->id;
         }else{
             $transaction->category_id = null;

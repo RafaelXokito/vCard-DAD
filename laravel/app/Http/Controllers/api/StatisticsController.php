@@ -64,7 +64,81 @@ class StatisticsController extends Controller
         $datasets[0] = ["label"=> 'Financial', "data" => $data, "fill"=> false, "borderColor"=> '#42A5F5', "tension"=> .4];
 
         return response()->json(["labels" => $labels, "datasets"=>$datasets]);
+    }
 
-        return $labels;
+    public function getBalancePerTime(Request $request)
+    {
+        //How much weeks/months.. want to see
+        if ($request->has("labelSize")) {
+            $labelSize = $request->labelSize;
+        }else {
+            $labelSize = 6;
+        }
+        //Week, Month, Year
+        if ($request->has("labelCategory")) {
+            $labelCategory = $request->labelCategory;
+        }else {
+            $labelCategory = 'month';
+        }
+
+        $labelMiniCategory = [];
+        switch ($labelCategory) {
+            case 'week':
+                $labelMiniCategory[0] = 'W';
+                $labelMiniCategory[1] = '%V';
+                break;
+            case 'year':
+                $labelMiniCategory[0] = 'Y';
+                $labelMiniCategory[1] = '%Y';
+                break;
+            case 'day':
+                $labelMiniCategory[0] = 'd, l';
+                $labelMiniCategory[1] = '%d';
+                break;
+            default: //'month'
+                $labelMiniCategory[0] = 'F';
+                $labelMiniCategory[1] = '%M';
+                $labelSize -= 1; //When i chose 'month' is giving one less, i dont know why, so i tried to hard coded
+                break;
+        }
+
+        $labels = [];
+
+        $datasets = [];
+
+        if (Auth::user()->user_type == 'V') {
+            $data = DB::table('transactions')->select(DB::raw("AVG(new_balance) as `count`, DATE_FORMAT(datetime, '".$labelMiniCategory[1]."') as `group`"))->whereRaw(DB::raw("DATE(datetime) >= '".date('Y-m-d',strtotime("-".$labelSize ." ".strtolower($labelCategory)."s"))."'"))->where('vcard', Auth::user()->vcard_ref->phone_number)->groupBy('group')->pluck('count','group');
+        }else {
+            $data = DB::table('transactions')->select(DB::raw("AVG(new_balance) as `count`, DATE_FORMAT(datetime, '".$labelMiniCategory[1]."') as `group`"))->whereRaw(DB::raw("DATE(datetime) >= '".date('Y-m-d',strtotime("-".$labelSize ." ".strtolower($labelCategory)."s"))."'"))->groupBy('group')->pluck('count','group');
+        }
+        $labels = array_keys($data->toArray());
+
+        $data = array_values($data->toArray());
+
+        $datasets[0] = ["label"=> 'Financial', "data" => $data, "fill"=> false, "borderColor"=> '#42A5F5', "tension"=> .4];
+
+        return response()->json(["labels" => $labels, "datasets"=>$datasets]);
+    }
+
+    public function getTotalSpent(Request $request)
+    {
+        if (Auth::user()->user_type == 'V') {
+            $data = DB::table('transactions')->select(DB::raw("SUM(value) as `totalspent`"))->where("type", "D")->where('vcard', Auth::user()->vcard_ref->phone_number)->first();
+        }else {
+            $data = DB::table('transactions')->select(DB::raw("SUM(value) as `totalspent`"))->where("type", "D")->first();
+        }
+
+        return response()->json($data);
+    }
+
+    public function getTotalRecieved(Request $request)
+    {
+        if (Auth::user()->user_type == 'V') {
+            $data = DB::table('transactions')->select(DB::raw("SUM(value) as `totalrecieved`"))->where("type", "C")->where('vcard', Auth::user()->vcard_ref->phone_number)->first();
+        }else {
+            $data = DB::table('transactions')->select(DB::raw("SUM(value) as `totalrecieved`"))->where("type", "C")->first();
+        }
+
+        return response()->json($data);
     }
 }

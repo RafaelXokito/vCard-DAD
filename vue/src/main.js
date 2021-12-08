@@ -16,6 +16,7 @@ import ConfirmationService from "primevue/confirmationservice";
 import PrimeVue from "primevue/config";
 import VueSocketIO from "vue-3-socket.io";
 
+
 import FieldErrorMessage from "./components/global/FieldErrorMessage.vue";
 import ConfirmationDialog from "./components/global/ConfirmationDialog.vue";
 
@@ -37,6 +38,7 @@ const socketIO = new VueSocketIO({
     mutationPrefix: "SOCKET_",
   },
 });
+
 
 const app = createApp(App)
   .use(router)

@@ -45,12 +45,12 @@ class CategoryController extends Controller
         if ($request->has("name")) {
             $categories = $categories->where("name",'LIKE', "%".$request->name."%");
         }
-        // if ($request->has("page")) {
-        //     $categories = $categories->orderBy('created_at', 'desc')->paginate(15);
-        // }else {
-        //     $categories = $categories->orderBy('created_at', 'desc')->get();
-        // }
-        return CategoryResource::collection($categories->paginate(15));
+        if ($request->has("page")) {
+            $categories = $categories->orderBy('created_at', 'desc')->paginate(15);
+        }else {
+            $categories = $categories->orderBy('created_at', 'desc')->get();
+        }
+        return CategoryResource::collection($categories);
     }
 
     public function getCategoryByTransaction(Request $request, Transaction $transaction)

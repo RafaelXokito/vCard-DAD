@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Category;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TransactionResource extends JsonResource
@@ -27,10 +28,12 @@ class TransactionResource extends JsonResource
                     'old_balance' => $this->old_balance,
                     'new_balance' => $this->new_balance,
                     'payment_type' => $this->payment_type,
+                    'payment_type_name' => $this->payment_type != null ? $this->paymentType->name : null,
                     'payment_reference' => $this->payment_reference,
                     'pair_transaction' => $this->pair_transaction,
                     'pair_vcard' => $this->pair_vcard,
                     'category' => $this->category_id,
+                    'category_name' => $this->category_id != null ? $this->category->name : null,
                     'description' => $this->description,
                 ];
                 break;

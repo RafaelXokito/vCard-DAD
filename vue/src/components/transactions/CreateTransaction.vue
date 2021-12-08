@@ -27,7 +27,11 @@
                         <br>
                     </div>
                     <ErrorMessage name="payment_type" class="error-feedback" />
-
+                    <div class="row justify-content-center" v-if="payment_type">
+                        <div class="col-12 text-center">
+                            <span>{{paymentTypes.filter((e)=>e.code===payment_type)[0].description}}</span>
+                        </div>
+                    </div>
                     <!-- NOT IMPLEMENTED YET
                     <div class="row justify-content-center form-group">
                         <div class="col-12 px-auto">
@@ -40,6 +44,14 @@
                             <div class="input-group"> 
                                 <Field type="text" class="card" name="payment_reference" placeholder="9XX XXX XXX" title="Payment Reference" /> <label>Payment Reference</label>
                                 <ErrorMessage name="payment_reference" class="error-feedback" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center" v-if="currentUser.user_type === 'A'">
+                        <div class="col-12">
+                            <div class="input-group"> 
+                                <Field type="text" class="card" name="vcard" placeholder="9XX XXX XXX" title="vCard" /> <label>vCard</label>
+                                <ErrorMessage name="vcard" class="error-feedback" />
                             </div>
                         </div>
                     </div>
@@ -114,6 +126,8 @@ export default {
     },
     data() {
         const schema = yup.object().shape({
+            vcard: yup
+                .string(),
             payment_reference: yup.string().required("Payment Reference is required!"),
             payment_type: yup.string().required("Payment Type is required!"),
             value: yup.string().required("Value is required!").min(0.01),
@@ -162,7 +176,6 @@ export default {
                 (transaction) => {
                     this.$socket.emit('newTransaction', transaction.data.data)
                     this.$toast.success(`Transaction done with success.`, {autoHideDelay: 2000, appendToast: true})
-                    console.log(transaction.data.data.new_balance)
                     this.$store.dispatch("user/setBalance", transaction.data.data.new_balance) 
                     this.$router.push("/transactions")
                     // this.$store.dispatch("user/getMe", '?balance=true').then(
@@ -209,12 +222,13 @@ export default {
         this.balance = this.currentUser.balance
         await PaymentTypeService.getPaymentType().then(
             ({data}) => {
-                if (this.currentUser.user_type === 'V') {
+                if (this.currentUser.user_type == 'V') {
                     this.paymentTypes = data.data;
-                }else {
-                    this.paymentTypes = data.data.filter((e)=>e.code==='VCARD');
+                    this.payment_type = "VCARD";
+                } else {
+                    this.paymentTypes = data.data.filter((e)=>e.code!=='VCARD');
+                    this.payment_type = data.data[0].code;
                 }
-                this.payment_type = "VCARD";
             },
             (error) => {
                 this.messageCreate =

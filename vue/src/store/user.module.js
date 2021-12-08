@@ -18,6 +18,12 @@ export const user = {
         setBalance({ commit }, balance) {
             commit('setBalance', balance);
         },
+        logout({ commit }){
+            commit('logoutSucess');
+        },
+        incrementTransactions({ commit }, increment){
+            commit('incrementTransactionsSuccess', increment);
+        }
     },
     mutations: {
         getMeSucess(state, user){
@@ -26,5 +32,12 @@ export const user = {
         setBalance(state, balance){
             state.data.balance = balance;
         },
+        logoutSucess(state){
+            this.$socket.emit('logged_out', state.data)
+            state.data = {}
+        },
+        incrementTransactionsSuccess(state, increment){
+            state.data.count_transactions += increment;
+        }
     }
 };
