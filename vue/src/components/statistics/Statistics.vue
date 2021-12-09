@@ -303,8 +303,7 @@ export default {
     }
 }
 </script>
-
-<style scoped>
+<style>
 #numberDiv {
     margin-right: -39px;
 }

@@ -97,8 +97,9 @@ export default {
         editCategory(defaultcategory){
             defaultcategory["id"] = this.defaultcategory.id
             CategoryService.patchDefaultCategory(defaultcategory).then(
-                () => {
+                (e) => {
                     this.$toast.success(`Default category ${defaultcategory.name} edited successful.`, {autoHideDelay: 2000, appendToast: true}) 
+                    this.$socket.emit('Administrators', e.data.data)
                     this.back();
                 },
                 (error) => {

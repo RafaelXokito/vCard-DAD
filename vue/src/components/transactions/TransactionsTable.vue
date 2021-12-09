@@ -72,7 +72,7 @@
             v-if="showId"
             class="align-middle"
           >{{ transaction.id }}</td>
-          <td class="align-middle">{{ formatDate(transaction.datetime) }}</td>
+          <td class="align-middle">{{ formatDate(transaction.date) }}</td>
           <td class="align-middle">{{ transaction.old_balance }}</td>
           <td class="align-middle">{{ transaction.new_balance }}</td>
           <td class="align-middle" v-html="highlightPaymentTypeMatches(transaction.payment_type)"></td>

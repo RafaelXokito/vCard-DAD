@@ -82,14 +82,14 @@ class TransactionController extends Controller
             // (credit transactions are not allowed for the vCard owner)
         //TODO uma transação secundária tem categoria? como e porquê? para quem eu
         //transfiro dinheiro tem ou pode saber qual é a minha categoria
+        date_default_timezone_set('Europe/Lisbon');
         $validated_data = $request->validated();
         try {
             if (Auth::user()->user_type == 'V') {
                 ///set transaction
                 $transaction->vcard = Auth::user()->vcard_ref->phone_number;
                 $transaction->date = date("Y-m-d");
-                date_default_timezone_set('Europe/Lisbon');
-                $transaction->datetime = date('Y-m-d h:i:s', time());
+                $transaction->datetime = date('Y-m-d G:i:s', time());
                 $transaction->type = $validated_data["type"];
                 $transaction->value = $validated_data["value"];
                 $transaction->old_balance = $transaction->vcard_ref->balance;
@@ -121,8 +121,7 @@ class TransactionController extends Controller
                 $pair_transaction = new Transaction();
                 $pair_transaction->vcard = Auth::user()->user_type == 'V' ? $validated_data["payment_reference"] : $validated_data["vcard"];
                 $pair_transaction->date = date("Y-m-d");
-                date_default_timezone_set('Europe/Lisbon');
-                $pair_transaction->datetime = date('Y-m-d h:i:s', time());
+                $pair_transaction->datetime = date('Y-m-d G:i:s', time());
                 $pair_transaction->type = 'C';
                 $pair_transaction->value = $validated_data["value"];
                 $pair_transaction->old_balance = $pair_transaction->vcard_ref->balance;
