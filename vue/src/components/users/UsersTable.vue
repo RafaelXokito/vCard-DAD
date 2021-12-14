@@ -62,6 +62,7 @@
           ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />&nbsp; Create Administrator</router-link>
       </div>
     </div>
+    <div class="table-responsive">
     <table class="table">
       <thead>
         <tr>
@@ -78,10 +79,18 @@
             v-if="showEmail"
             class="align-middle"
           >Email</th>
-          <th class="align-middle" v-if="showBlock">
+          <th
+            v-if="showPhoneNumber"
+            class="align-middle"
+          >Phone Number</th>
+          <th
+            v-if="showBalance"
+            class="align-middle"
+          >Balance</th>
+          <th class="align-middle" v-if="showMaxDebit">
             Max Debit
           </th>
-          <th class="align-middle" v-if="showMaxDebit">
+          <th class="align-middle" v-if="showBlock">
             Blocked
           </th>
           <th class="align-middle" v-if="showDelete">
@@ -113,6 +122,14 @@
             v-if="showEmail"
             class="align-middle"
           >{{ user.email }}</td>
+          <td
+            class="align-middle"
+            v-if="showPhoneNumber"
+          ><span v-if="user.user_type === 'V'">{{ user.username }}</span></td>
+          <td
+            class="align-middle"
+            v-if="showBalance"
+          ><span v-if="user.user_type === 'V'">{{ user.balance }} €</span></td>
           <td
             class="text-end align-middle"
             v-if="showMaxDebit"
@@ -154,6 +171,7 @@
     <div class="d-flex justify-content-center" v-if="users.links">
         <pagination class="mx-auto" align="center" :data="users" @pagination-change-page="list"></pagination>
     </div>
+    </div>
   </div>
 </template>
 
@@ -174,7 +192,11 @@ export default {
       filterByName: '',
       filterByEmail: '',
       filterByPhoneNumber: '',
-      optionsfilter: ''
+      optionsfilter: '',
+      showBalance: true,
+      showPhoneNumber: true,
+      showMaxDebit: true,
+      showBlock: true,
     }
   },
   props: {
@@ -187,14 +209,6 @@ export default {
       default: true,
     },
     showEmail: {
-      type: Boolean,
-      default: true,
-    },
-    showBlock: {
-      type: Boolean,
-      default: true,
-    },
-    showMaxDebit: {
       type: Boolean,
       default: true,
     },
@@ -251,6 +265,17 @@ export default {
     async filterByType(newVal){
       this.isTableVisible = false
       this.optionsfilter = ""
+      if (this.filterByType == "A") {
+        this.showBalance = false;
+        this.showPhoneNumber = false;
+        this.showBlock = false;
+        this.showMaxDebit = false;
+      } else {
+        this.showBalance = true;
+        this.showPhoneNumber = true;
+        this.showBlock = true;
+        this.showMaxDebit = true;
+      }
       if (newVal) {
         this.optionsfilter += '&type='+newVal
       }
@@ -269,6 +294,17 @@ export default {
     async filterByName(newVal){
       this.isTableVisible = false
       this.optionsfilter = ""
+      if (this.filterByType == "A") {
+        this.showBalance = false;
+        this.showPhoneNumber = false;
+        this.showBlock = false;
+        this.showMaxDebit = false;
+      } else {
+        this.showBalance = true;
+        this.showPhoneNumber = true;
+        this.showBlock = true;
+        this.showMaxDebit = true;
+      }
       if (newVal) {
         this.optionsfilter += '&name='+newVal
       }
@@ -287,6 +323,17 @@ export default {
     async filterByEmail(newVal){
       this.isTableVisible = false
       this.optionsfilter = ""
+      if (this.filterByType == "A") {
+        this.showBalance = false;
+        this.showPhoneNumber = false;
+        this.showBlock = false;
+        this.showMaxDebit = false;
+      } else {
+        this.showBalance = true;
+        this.showPhoneNumber = true;
+        this.showBlock = true;
+        this.showMaxDebit = true;
+      }
       if (this.filterByName) {
         this.optionsfilter += '&name='+this.filterByName
       }
@@ -310,6 +357,17 @@ export default {
       }
       this.isTableVisible = false
       this.optionsfilter = ""
+      if (this.filterByType == "A") {
+        this.showBalance = false;
+        this.showPhoneNumber = false;
+        this.showBlock = false;
+        this.showMaxDebit = false;
+      } else {
+        this.showBalance = true;
+        this.showPhoneNumber = true;
+        this.showBlock = true;
+        this.showMaxDebit = true;
+      }
       if (this.filterByName) {
         this.optionsfilter += '&name='+this.filterByName
       }

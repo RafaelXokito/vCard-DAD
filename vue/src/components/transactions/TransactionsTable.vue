@@ -48,6 +48,7 @@
         ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />&nbsp; Create Transaction</router-link>
       </div>
     </div>
+    <div class="table-responsive">
     <table class="table">
       <thead>
         <tr>
@@ -92,7 +93,7 @@
     <div class="d-flex justify-content-center">
         <pagination class="mx-auto" align="center" :data="transactions" @pagination-change-page="list"></pagination>
     </div>
-    
+    </div>
   </div>
   <div class="d-flex justify-content-center p-5" v-else>
       <div class="spinner-grow text-info" style="width: 3rem; height: 3rem;" role="status">

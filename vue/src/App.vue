@@ -60,7 +60,7 @@
                 <router-link
                   class="dropdown-item"
                   :class="{active: $route.name === 'changePassword'}"
-                  to="/changePassword"
+                  :to="{name: 'changePassword'}"
                 >
                   <font-awesome-icon :icon="['fas', 'key']" size="lg" /> Change password
                 </router-link>
@@ -70,7 +70,7 @@
                   v-if="currentUser.user_type === 'V'"
                   class="dropdown-item"
                   :class="{active: $route.name === 'changeConfirmationCode'}"
-                  to="/changeConfirmationCode"
+                  :to="{name: 'changeConfirmationCode'}"
                 >
                   <font-awesome-icon :icon="['fas', 'fingerprint']" size="lg" /> Change confirmation code
                 </router-link>

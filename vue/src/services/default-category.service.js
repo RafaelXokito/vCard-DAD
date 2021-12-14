@@ -26,6 +26,10 @@ class DefaultCategoryService {
     return axios.delete(`defaultcategories/${defaultcategory.id}`, { headers: authHeader() });
   }
 
+  forceDeleteDefaultCategory(defaultcategory){
+    return axios.post(`defaultcategories/${defaultcategory.id}`,{}, { headers: authHeader() });
+  }
+
   restoreDefaultCategory(defaultcategory){
     return axios.post(`defaultcategories/${defaultcategory.id}/restore`, {}, { headers: authHeader() });
   }

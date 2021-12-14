@@ -3,7 +3,7 @@ import authHeader from './auth-header';
 
 class AdminService {
   async postAdmin(user) {
-      return await axios.post('admin',user, { headers: authHeader() })
+      return await axios.post('users',user, { headers: authHeader() })
   }
 }
 

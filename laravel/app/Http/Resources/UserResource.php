@@ -64,6 +64,7 @@ class UserResource extends JsonResource
                         'username' => $this->username,
                         'name' => $this->name,
                         'email' => $this->email,
+                        'balance' => vCard::withTrashed()->find($this->username)->balance,
                         'photo_url' => $this->photo_url != null ? "/storage/fotos/" . $this->photo_url : "/storage/fotos/avatar.jpg",
                         'user_type' => $this->user_type,
                         'blocked'   => $this->blocked,

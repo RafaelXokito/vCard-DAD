@@ -31,11 +31,11 @@
       </select>
     </div>
     <div class="mx-2 mt-2">
-      <a
+      <router-link
         class="btn btn-success px-4 btn-addtask"
-        href="#"
+        :to="{name: 'createEditDefaultCategory'}"
         @click.prevent="showCreate"
-      ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />&nbsp; Create Default Category</a>
+      ><font-awesome-icon :icon="['fas', 'plus-circle']" size="lg" />&nbsp; Create Default Category</router-link>
     </div>
   </div>
   <div v-if="isTableVisible">
@@ -66,12 +66,17 @@
           >{{ category.id }}</td>
           <td class="align-middle" v-html="highlightNameMatches(category.name.charAt(0).toUpperCase() + category.name.slice(1))"></td>
           <td class="align-middle" v-html="highlightTypeMatches(category.type === 'C' ? 'Credit' : 'Debit')"></td>
-          <td v-if="showEdit && category.deleted === 0" 
+          <td 
             class="text-end align-middle"
           >
-            <div class="d-flex justify-content-end" >
+            <div class="d-flex justify-content-end" v-if="category.deleted === 0">
               <button class="btn btn-xs btn-warning" @click="editClick(category)">
                 <font-awesome-icon :icon="['fas', 'pen']" size="xs" />
+              </button>
+            </div>
+            <div v-else>
+              <button class="btn btn-xs btn-dark" @click="forceDeleteClick(category)">
+                <font-awesome-icon :icon="['fas', 'dumpster']" size="xs" />
               </button>
             </div>
           </td>
@@ -82,9 +87,11 @@
               <button class="btn btn-xs btn-danger" @click="deleteClick(category)" v-if="category.deleted === 0">
                 <font-awesome-icon :icon="['fas', 'trash']" size="xs" />
               </button>
-              <button class="btn btn-xs btn-success" @click="restoreClick(category)" v-else-if="category.deleted === 1">
-                <font-awesome-icon :icon="['fas', 'trash-restore']" size="xs" />
-              </button>
+              <div v-else-if="category.deleted === 1">
+                <button class="btn btn-xs btn-success" @click="restoreClick(category)">
+                  <font-awesome-icon :icon="['fas', 'trash-restore']" size="xs" />
+                </button>
+              </div>
               <button class="btn btn-xs btn-warning" v-else>
                   <span class="spinner-border spinner-border-sm"></span>
               </button>
@@ -130,6 +137,7 @@ export default {
     'edit',
     'list',
     'delete',
+    'forceDelete',
     'showCreate'
   ],
   data() {
@@ -149,6 +157,9 @@ export default {
     },
     deleteClick(category) {
       this.$emit('delete', category)
+    },
+    forceDeleteClick(category) {
+      this.$emit('forceDelete', category)
     },
     restoreClick(category) {
       this.$emit('restoreClick', category)

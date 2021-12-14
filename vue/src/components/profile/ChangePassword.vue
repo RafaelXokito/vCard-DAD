@@ -91,8 +91,7 @@ export default {
             this.successful = false;
             this.loading = true;
 
-            user["username"] = this.user["username"]
-
+            user["username"] = this.user["id"]
             UserService.updatePasswordUser(user).then(
                 () => {
                     this.$toast.success(`Password updated successful.`, {autoHideDelay: 2000, appendToast: true}) 

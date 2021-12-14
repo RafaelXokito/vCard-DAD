@@ -138,13 +138,34 @@ class DefaultCategoryController extends Controller
         $oldDefaultCategoryID = $defaultcategory->id;
         try {
             $defaultcategory->delete();
-
-            return "Default Category ".$oldName." was deleted.";
+            return response()->json(array(
+                    'code'      =>  200,
+                    'message'   =>  "Default Category ".$oldName." was deleted."
+                ), 200);
         } catch (\Throwable $th) {
             return response()->json(array(
                         'code'      =>  400,
                         'message'   =>  "Default Category ".$oldName." was NOT deleted"
                     ), 400);
+        }
+    }
+
+    public function forceDeleteDefaultCategory(Request $request, $defaultcategory)
+    {
+        $categoria = DefaultCategory::withTrashed()->findOrFail($defaultcategory);
+        $this->authorize('forceDelete', $categoria);
+        $nome = $categoria->nome;
+        try {
+            $categoria->forceDelete();
+            return response()->json(array(
+                'code'      =>  200,
+                'message'   =>  'Default category "' . $nome . '" was deleted for ever.'
+            ), 200);
+        } catch (\Throwable $th) {
+            return response()->json(array(
+                'code'      =>  400,
+                'message'   =>  'Was not possible to force delete '. $nome .' default category.'
+            ), 400);
         }
     }
 

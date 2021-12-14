@@ -49,7 +49,9 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(funct
 
     Route::patch('defaultcategories/{defaultcategory}', [DefaultCategoryController::class, 'patchDefaultCategory'])->middleware('can:update,defaultcategory');
 
-    Route::delete('defaultcategories/{defaultcategory}', [DefaultCategoryController::class, 'deleteDefaultCategory'])->middleware('can:viewAny,defaultcategory');
+    Route::delete('defaultcategories/{defaultcategory}', [DefaultCategoryController::class, 'deleteDefaultCategory'])->middleware('can:delete,defaultcategory');
+
+    Route::post('defaultcategories/{defaultcategory}', [DefaultCategoryController::class, 'forceDeleteDefaultCategory']); //middleware executado no método 'forceDelete'
 
     Route::post('defaultcategories/{id}/restore', [DefaultCategoryController::class, 'restore']); //middleware executado no método 'restore'
 
@@ -121,7 +123,7 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(funct
 
     Route::post('vards/{vcard}/confirmationCode', [AuthController::class, 'confirmationCode'])->middleware('can:view,vcard');
 
-    Route::post('admin', [AdministratorController::class, 'postAdmin'])->middleware('can:store,App\Models\Administrator');
+    Route::post('users', [AdministratorController::class, 'postAdmin'])->middleware('can:store,App\Models\Administrator');
 
     //STATISTICS
     Route::get('statistics/financial', [StatisticsController::class, 'getFinancial']);

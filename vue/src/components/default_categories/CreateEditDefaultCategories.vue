@@ -6,7 +6,7 @@
         </button>
     </div>
     <div>
-        <h1 class="text-center">{{defaultcategory ? 'Edit' : 'Create' }} Default Category</h1>
+        <h1 class="text-center">{{isCreate ? 'Create' : 'Edit' }} Default Category</h1>
     </div>
     <hr>
     <Form @submit="handleEdit" :validation-schema="schema" class="w-75 mx-auto">
@@ -114,7 +114,7 @@ export default {
             );
         },
         createCategory(defaultcategory){
-            defaultcategory["id"] = this.defaultcategory.id
+            //defaultcategory["id"] = this.defaultcategory.id
             CategoryService.postDefaultCategory(defaultcategory).then(
                 () => {
                     this.$toast.success(`Default category ${defaultcategory.name} created successful.`, {autoHideDelay: 2000, appendToast: true}) 
@@ -133,6 +133,9 @@ export default {
         },
         back(){
             this.$emit('close');
+            if (this.isCreate) {
+                this.$router.back();
+            }
         }
   },
 }

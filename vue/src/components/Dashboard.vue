@@ -10,7 +10,7 @@
       </template>
       <template #content>
           <p class="text-center">{{currentUser.balance}} €</p>
-          <Card v-if="showlastTransation" class="card">
+          <Card v-if="showlastTransation && currentUser.count_transactions > 0" class="card">
             <template #title>
               <p class="text-center">Last Transaction</p>
             </template>
@@ -36,7 +36,7 @@
       </template>
     </Card>
   </div>
-  <div class="pt-3">
+  <div class="pt-3" v-if="currentUser.count_transactions > 0">
     <statistics></statistics>
   </div>
 </div>
@@ -65,7 +65,9 @@ export default {
     },
   },
   async mounted() {
-    await TransactionService.getLastTransaction().then((result)=>{this.showlastTransation = true; this.lastTransation = result.data.data;});
+    if (this.currentUser.count_transactions > 0) {
+      await TransactionService.getLastTransaction().then((result)=>{this.showlastTransation = true; this.lastTransation = result.data.data;});
+    }
   },
   methods: {
     getDate : function (date) {

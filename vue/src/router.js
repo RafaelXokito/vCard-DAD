@@ -49,20 +49,6 @@ const routes = [
     // lazy-loaded
   },
   {
-    path: '/changePassword',
-    component: ChangePassword,
-    props: true,
-    name: "changePassword",
-    // lazy-loaded
-  },
-  {
-    path: '/changeConfirmationCode',
-    component: ChangeConfirmationCode,
-    props: true,
-    name: "changeConfirmationCode",
-    // lazy-loaded
-  },
-  {
     path: '/confirmationPhoneNumber/:phoneNumber',
     component: ConfirmationPhoneNumber,
     props: true,
@@ -88,14 +74,14 @@ const routes = [
         // lazy-loaded
       },
       {
-        path: '/changePassword',
+        path: '/profile/changePassword',
         component: ChangePassword,
         props: true,
         name: "changePassword",
         // lazy-loaded
       },
       {
-        path: '/changeConfirmationCode',
+        path: '/profile/changeConfirmationCode',
         component: ChangeConfirmationCode,
         props: true,
         name: "changeConfirmationCode",
@@ -117,7 +103,7 @@ const routes = [
     component: BoardUsers,
   },
   {
-    path: "/createAdmin",
+    path: "/users/create",
     name: "createAdmin",
     component: CreateAdmin
   },
@@ -154,7 +140,7 @@ const routes = [
     ]
   },
   {
-    path: "/defaultCategories",
+    path: "/defaultcategories",
     name: "defaultCategories",
     // lazy-loaded
     component: BoardDefaultCategories,
@@ -169,6 +155,7 @@ const routes = [
       {
         path: "createEdit",
         name: "createEditDefaultCategory",
+        props: true,
         // lazy-loaded
         component: CreateEditDefaultCategory,
       },
