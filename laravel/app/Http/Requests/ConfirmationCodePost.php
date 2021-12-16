@@ -28,4 +28,12 @@ class ConfirmationCodePost extends FormRequest
             'confirmationCode' => ['required', 'digits:4']
         ];
     }
+
+    public function messages()
+	{
+		return [
+			'confirmationCode.required' => 'Confirmation code is required',
+            'confirmationCode.digits:4' => 'Confirmation code must have 4 digits',
+		];
+	}
 }

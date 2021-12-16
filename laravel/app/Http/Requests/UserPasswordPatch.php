@@ -29,4 +29,14 @@ class UserPasswordPatch extends FormRequest
             'password_new'          => ['required', 'string']
         ];
     }
+	
+	public function messages()
+	{
+		return [
+			'password_old.required' => "User's password is required",
+            'password_old.string' => "User's password must be a string",
+			'password_new.required' => "User's password is required",
+            'password_new.string' => "User's Password must be a string",
+		];
+	}
 }

@@ -29,4 +29,14 @@ class UserConfirmationCodePatch extends FormRequest
             'confirmation_code' => ['required', 'digits:4']
         ];
     }
+	
+	public function messages()
+	{
+		return [
+			'password.required' => 'A password is required',
+            'password.string' => 'Password must be a string',
+			'confirmation_code.required' => 'Confirmation code is required',
+            'confirmation_code.digits:4' => 'Confirmation code must have 4 digits',
+		];
+	}
 }

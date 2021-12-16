@@ -28,4 +28,11 @@ class PaymentTypePost extends FormRequest
             //
         ];
     }
+	
+	public function messages()
+	{
+		return [
+			//
+		];
+	}
 }

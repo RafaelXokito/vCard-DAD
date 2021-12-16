@@ -30,4 +30,14 @@ class CategoryPost extends FormRequest
             'type' => ['required', Rule::in(['D', 'C'])]
         ];
     }
+
+    public function messages()
+	{
+		return [
+			'name.required' => "Category's name is required",
+            'name.string' => "Category's name must be a string",
+            'type.required' => "Category's type is required",
+			'type.Rule::in(['D', 'C'])' => "Category's type can either be Credit or Debit",
+		];
+	}
 }

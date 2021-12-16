@@ -30,4 +30,17 @@ class AdministratorPost extends FormRequest
             'password'          => ['required', 'string'],
         ];
     }
+	
+	public function messages()
+	{
+		return [
+			'name.required' => "Administrator's name is required",
+			'name.string' => "Administrator's name must be a string",
+			'email.required' => "Administrator's email is required",
+			'email.email' => 'Wrong format for an email',
+			'email.unique:App\Models\User,email' => 'The email has already been taken',
+			'password.required' => "Administrator's password is required",
+			'password.string' => "Administrator's password must be a string",
+		];
+	}
 }

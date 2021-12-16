@@ -81,4 +81,18 @@ class TransactionPost extends FormRequest
             'custom_data'       => 'nullable'
         ];
     }
+	
+	public function messages()
+	{
+		return [
+			'type.required' => 'A transaction type is required',
+            'type.Rule::in(['D', 'C'])' => 'Transaction type can either be Credit or Debit',
+			'value.required' => 'A transaction value is required',
+            'value.numeric' => 'Transaction must have a numeric value',
+            'category.exists:categories,id' => 'Category does not exist',
+            'payment_type.required' => 'A payment type is required',
+            'payment_type.exists:payment_types,code' => 'A payment type does not exist',
+            'payment_reference.required' => 'A payment reference is required',
+		];
+	}
 }

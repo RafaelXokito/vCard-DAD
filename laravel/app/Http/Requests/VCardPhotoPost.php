@@ -28,4 +28,13 @@ class VCardPhotoPost extends FormRequest
             'photo_url'         => ['required', 'mimes:jpeg,jpg,png', 'max:8192'],
         ];
     }
+
+    public function messages()
+	{
+		return [
+			'photo_url.required' => 'A photo is required',
+            'photo_url.mimes:jpeg,jpg,png' => 'Must be jpeg, jpg or png format',
+			'photo_url.max:8192' => 'Maximum size of photo is 8192 pixels',
+		];
+	}
 }

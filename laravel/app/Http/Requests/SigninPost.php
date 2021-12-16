@@ -33,4 +33,13 @@ class SigninPost extends FormRequest
             'password' => 'required|string',
         ];
     }
+	
+	public function messages()
+	{
+		return [
+			'username.required' => 'A username is required',
+			'password.required' => 'A password is required',
+            'password.string' => 'Password must be a string',
+		];
+	}
 }

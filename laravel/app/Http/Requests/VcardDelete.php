@@ -29,4 +29,14 @@ class VcardDelete extends FormRequest
             'confirmation_code' => ['required', 'digits:4']
         ];
     }
+
+    public function messages()
+	{
+		return [
+			'password.required' => "vCard's password is required",
+            'password.string' => "vCard's password must be a string",
+			'confirmation_code.required' => "vCard's confirmation code is required",
+            'confirmation_code.digits:4' => "vCard's confirmation code must have 4 digits",
+		];
+	}
 }

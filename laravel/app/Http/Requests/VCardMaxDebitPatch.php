@@ -28,4 +28,13 @@ class VCardMaxDebitPatch extends FormRequest
             'max_debit' => 'required|numeric|min:0.01'
         ];
     }
+
+    public function messages()
+	{
+		return [
+			'max_debit.required' => 'Maximum debit is required',
+            'max_debit.numeric' => 'Maximum debit must be a numeric value',
+			'max_debit.min:0.01' => 'Minimum debit is 0.01 €',
+		];
+	}
 }

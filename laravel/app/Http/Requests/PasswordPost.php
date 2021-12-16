@@ -29,4 +29,14 @@ class UpdateUserPasswordRequest extends FormRequest
             'oldpassword' => 'current_password:api',
         ];
     }
+
+    public function messages()
+	{
+		return [
+			'password.required' => 'A password is required',
+            'password.confirmed' => 'Password must be confirmed',
+            'password.Password::min(4)' => 'Password must have at least 4 characters!',
+            'oldpassword.current_password:api' => 'Old Password does not match with the current password!',
+		];
+	}
 }

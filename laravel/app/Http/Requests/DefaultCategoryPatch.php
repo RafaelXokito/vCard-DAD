@@ -30,4 +30,12 @@ class DefaultCategoryPatch extends FormRequest
             'type' => ['nullable', Rule::in(['D', 'C'])]
         ];
     }
+
+    public function messages()
+	{
+		return [
+			'name.string' => "Default Category's name must be a string",
+			'type.Rule::in(['D', 'C'])' => "Default Category's type can either be Credit or Debit",
+		];
+	}
 }
