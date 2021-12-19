@@ -19,7 +19,6 @@ class TransactionService {
   }
 
   postTransaction(transaction){
-    transaction["type"] = "D";
     return axios.post('transactions',transaction, { headers: authHeader() })
   }
 

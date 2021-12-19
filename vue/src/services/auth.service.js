@@ -21,7 +21,7 @@ class AuthService {
   }
 
   register(form_data) {
-    return axios.post('registerVCard', form_data)
+    return axios.post('vcards', form_data)
     .then(response => {
       if (response.data.user) {
         localStorage.setItem('user', JSON.stringify(response.data.user));

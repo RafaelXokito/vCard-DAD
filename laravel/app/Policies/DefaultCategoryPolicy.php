@@ -24,7 +24,7 @@ class DefaultCategoryPolicy
 
     public function view(User $user, DefaultCategory $defaultCategory)
     {
-        return true;
+        return false;
     }
 
     public function create(User $user)

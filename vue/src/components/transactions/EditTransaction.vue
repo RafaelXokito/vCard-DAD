@@ -196,7 +196,7 @@ export default {
             this.$emit('close');
         },
         getDate : function (date) {
-            return moment(date, 'YYYY-MM-DD').format('LLL');
+            return moment(date).utc().fromNow();
         }
     },
     emits: [

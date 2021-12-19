@@ -140,7 +140,7 @@ Route::middleware(['auth:api','can:accessCritial,App\Models\User'])->group(funct
 
 });
 
-Route::post('registerVCard', [AuthController::class, 'registerVCard']);
+Route::post('vcards', [AuthController::class, 'registerVCard']);
 
 Route::get('vards/{vcard}/makeConfirmationPhoneNumber', [AuthController::class, 'makeConfirmationPhoneNumber']);//->middleware('can:view,vcard');
 

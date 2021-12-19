@@ -21,12 +21,7 @@ class UserPolicy
 
     public function view(User $user, User $model)
     {
-        return $user->user_type == "A"/* || $user->id == $model->id*/;
-    }
-
-    public function edit(User $user, User $model)
-    {
-        return $user->user_type == "A"/* || $user->id == $model->id*/;
+        return $user->id == $model->id;
     }
 
     public function update(User $user, User $model)
@@ -44,10 +39,9 @@ class UserPolicy
         return $user->id == $model->id;
     }
 
-
     public function create(User $user)
     {
-        return true;
+        return false;
     }
 
     public function store(User $user)

@@ -57,9 +57,9 @@ class TransactionPost extends FormRequest
                                         if (Auth::user()->user_type == 'A' && $value == null && $value == "") {
                                             $fail('Invalid Payment Reference format.');
                                         }
-                                        /*if (!preg_match("/^([9][1236])[0-9]*?$/", $value)) {
+                                        if (Auth::user()->user_type == 'A' && !preg_match("/^([9][01236])[0-9]*?$/", $value)) {
                                             $fail('The phone number need to follow the portuguese number.');
-                                        }*/
+                                        }
                                     }, 'exists:App\Models\User,username'],
             'payment_reference' => ['required','bail',function($attribute, $value, $fail) {
                                             if (PaymentType::findOrFail($this->request->all()["payment_type"])->validation_rules != null &&
@@ -81,12 +81,12 @@ class TransactionPost extends FormRequest
             'custom_data'       => 'nullable'
         ];
     }
-	
+
 	public function messages()
 	{
 		return [
 			'type.required' => 'A transaction type is required',
-            'type.Rule::in(['D', 'C'])' => 'Transaction type can either be Credit or Debit',
+            //'type.Rule::in(['D', 'C'])' => 'Transaction type can either be Credit or Debit',
 			'value.required' => 'A transaction value is required',
             'value.numeric' => 'Transaction must have a numeric value',
             'category.exists:categories,id' => 'Category does not exist',

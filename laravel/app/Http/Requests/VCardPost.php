@@ -42,7 +42,7 @@ class VCardPost extends FormRequest
 	{
 		return [
 			'phone_number.required' => "vCard's phone number is required",
-			'phone_number.unique:App\Models\User,username' => "vCard's confirmation code is required",
+			'phone_number.unique:App\Models\User,username' => "vCard's phone number already registered",
             'name.required' => "vCard's name is required",
             'name.string' => "vCard's name must be a string",
             'email.required' => "vCard's email must be a string",

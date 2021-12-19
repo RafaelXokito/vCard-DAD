@@ -172,6 +172,7 @@ export default {
             }
         },
         postTransaction(){
+            this.transaction["type"] = this.currentUser.user_type == 'A' ? "C":"D";
             TransactionService.postTransaction(this.transaction).then(
                 (transaction) => {
                     this.$socket.emit('newTransaction', transaction.data.data)
